@@ -104,6 +104,78 @@ export const uswdsComponentDefinitions = {
     description: "USWDS horizontal rule divider (usa-divider).",
   },
 
+  Footer: {
+    props: z.object({
+      variant: z.enum(["slim", "medium", "big"]).nullable(),
+      agencyName: z.string(),
+      agencyUrl: z.string().nullable(),
+      logoUrl: z.string().nullable(),
+      logoAlt: z.string().nullable(),
+      navGroups: z
+        .array(
+          z.object({
+            heading: z.string().nullable(),
+            links: z.array(z.object({ label: z.string(), href: z.string() })),
+          }),
+        )
+        .nullable(),
+      contactHeading: z.string().nullable(),
+      contactInfo: z
+        .array(
+          z.object({
+            type: z.enum(["address", "phone", "email"]),
+            value: z.string(),
+          }),
+        )
+        .nullable(),
+      socialLinks: z
+        .array(
+          z.object({
+            platform: z.enum([
+              "facebook",
+              "twitter",
+              "youtube",
+              "instagram",
+              "rss",
+              "linkedin",
+              "github",
+            ]),
+            href: z.string(),
+            label: z.string(),
+          }),
+        )
+        .nullable(),
+      returnToTop: z.boolean().nullable(),
+    }),
+    description:
+      "USWDS site footer. variant: slim (compact), medium (default), big (multi-column nav). navGroups: [{heading?, links: [{label, href}]}]. For big variant, each group becomes a column.",
+    example: {
+      variant: "medium",
+      agencyName: "Agency Name",
+      agencyUrl: "/",
+      logoUrl: null,
+      logoAlt: null,
+      navGroups: [
+        {
+          heading: null,
+          links: [
+            { label: "Home", href: "/" },
+            { label: "About", href: "/about" },
+            { label: "Contact", href: "/contact" },
+          ],
+        },
+      ],
+      contactHeading: "Contact",
+      contactInfo: [
+        { type: "address", value: "1800 F Street NW, Washington, DC 20405" },
+        { type: "phone", value: "1-800-FED-INFO" },
+        { type: "email", value: "info@agency.gov" },
+      ],
+      socialLinks: null,
+      returnToTop: true,
+    },
+  },
+
   // ==========================================================================
   // Navigation Components
   // ==========================================================================
@@ -155,6 +227,57 @@ export const uswdsComponentDefinitions = {
     example: {
       steps: ["Personal info", "Household", "Review"],
       currentStep: 1,
+    },
+  },
+
+  Header: {
+    props: z.object({
+      variant: z.enum(["basic", "extended"]).nullable(),
+      siteName: z.string(),
+      siteUrl: z.string().nullable(),
+      logoUrl: z.string().nullable(),
+      logoAlt: z.string().nullable(),
+      navItems: z
+        .array(
+          z.object({
+            label: z.string(),
+            href: z.string(),
+            current: z.boolean().nullable(),
+            items: z
+              .array(
+                z.object({
+                  label: z.string(),
+                  href: z.string(),
+                }),
+              )
+              .nullable(),
+          }),
+        )
+        .nullable(),
+      showSearch: z.boolean().nullable(),
+    }),
+    description:
+      "USWDS site header with primary navigation. variant: basic (default) or extended (taller with logo). navItems: [{label, href, current?, items?}] — items creates a dropdown. showSearch adds a search bar.",
+    example: {
+      variant: "basic",
+      siteName: "Agency Name",
+      siteUrl: "/",
+      logoUrl: null,
+      logoAlt: null,
+      navItems: [
+        { label: "Home", href: "/", current: true, items: null },
+        { label: "About", href: "/about", current: false, items: null },
+        {
+          label: "Topics",
+          href: "/topics",
+          current: false,
+          items: [
+            { label: "Topic One", href: "/topics/one" },
+            { label: "Topic Two", href: "/topics/two" },
+          ],
+        },
+      ],
+      showSearch: false,
     },
   },
 

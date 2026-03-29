@@ -187,6 +187,242 @@ export const uswdsComponents = {
     );
   },
 
+  Footer: ({ props }: BaseComponentProps<UswdsProps<"Footer">>) => {
+    const variant = props.variant ?? "medium";
+    const groups = props.navGroups ?? [];
+    const contact = props.contactInfo ?? [];
+
+    const socialIcons: Record<string, string> = {
+      facebook:
+        "M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z",
+      twitter:
+        "M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z",
+      youtube:
+        "M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46a2.78 2.78 0 0 0-1.95 1.96A29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58 2.78 2.78 0 0 0 1.95 1.95C5.12 20 12 20 12 20s6.88 0 8.59-.47a2.78 2.78 0 0 0 1.95-1.95A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58zM9.75 15.02V8.98L15.5 12l-5.75 3.02z",
+      instagram:
+        "M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37zm1.5-4.87h.01M7.5 2h9A5.5 5.5 0 0 1 22 7.5v9A5.5 5.5 0 0 1 16.5 22h-9A5.5 5.5 0 0 1 2 16.5v-9A5.5 5.5 0 0 1 7.5 2z",
+      linkedin:
+        "M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2z M4 6a2 2 0 1 0 0-4 2 2 0 0 0 0 4z",
+      github:
+        "M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22",
+      rss: "M4 11a9 9 0 0 1 9 9M4 4a16 16 0 0 1 16 16 M5 19a1 1 0 1 0 0-2 1 1 0 0 0 0 2z",
+    };
+
+    const returnToTopEl = props.returnToTop ? (
+      <div className="grid-container usa-footer__return-to-top">
+        <a href="#top">Return to top</a>
+      </div>
+    ) : null;
+
+    const logoEl = (
+      <div className="usa-footer__logo grid-row grid-gap-2">
+        {props.logoUrl && (
+          <div className="grid-col-auto">
+            <img
+              className="usa-footer__logo-img"
+              src={props.logoUrl}
+              alt={props.logoAlt ?? ""}
+            />
+          </div>
+        )}
+        <div className="grid-col-auto">
+          <p className="usa-footer__logo-heading">
+            <a
+              className="usa-footer__logo-anchor"
+              href={props.agencyUrl ?? "/"}
+            >
+              {props.agencyName}
+            </a>
+          </p>
+        </div>
+      </div>
+    );
+
+    const contactEl =
+      contact.length > 0 ? (
+        <address className="usa-footer__address">
+          {props.contactHeading && (
+            <p className="usa-footer__contact-heading">
+              {props.contactHeading}
+            </p>
+          )}
+          <div className="usa-footer__contact-info grid-row grid-gap">
+            {contact.map((item, i) => (
+              <div key={i} className="grid-col-auto">
+                {item.type === "email" ? (
+                  <a href={`mailto:${item.value}`}>{item.value}</a>
+                ) : item.type === "phone" ? (
+                  <a href={`tel:${item.value.replace(/\D/g, "")}`}>
+                    {item.value}
+                  </a>
+                ) : (
+                  <p>{item.value}</p>
+                )}
+              </div>
+            ))}
+          </div>
+        </address>
+      ) : null;
+
+    const socialEl =
+      (props.socialLinks ?? []).length > 0 ? (
+        <div className="usa-footer__social-links grid-row grid-gap-1">
+          {(props.socialLinks ?? []).map((s) => (
+            <div key={s.platform} className="grid-col-auto">
+              <a
+                className="usa-social-link"
+                href={s.href}
+                aria-label={s.label}
+                rel="noreferrer"
+                target="_blank"
+              >
+                <svg
+                  className="usa-icon"
+                  aria-hidden="true"
+                  viewBox="0 0 24 24"
+                  width="24"
+                  height="24"
+                >
+                  <path d={socialIcons[s.platform] ?? ""} />
+                </svg>
+              </a>
+            </div>
+          ))}
+        </div>
+      ) : null;
+
+    if (variant === "slim") {
+      const links = groups[0]?.links ?? [];
+      return (
+        <footer className="usa-footer usa-footer--slim">
+          {returnToTopEl}
+          <div className="usa-footer__primary-section">
+            <div className="grid-container">
+              <div className="grid-row grid-gap">
+                <div className="tablet:grid-col-fill usa-footer__primary-content">
+                  {logoEl}
+                </div>
+                {links.length > 0 && (
+                  <div className="tablet:grid-col-auto usa-footer__primary-content usa-footer__primary-content--collapsible">
+                    <nav aria-label="Footer navigation">
+                      <ul className="grid-row grid-gap">
+                        {links.map((link, i) => (
+                          <li
+                            key={i}
+                            className="mobile-lg:grid-col-auto usa-footer__primary-content"
+                          >
+                            <a
+                              href={link.href}
+                              className="usa-footer__primary-link"
+                            >
+                              {link.label}
+                            </a>
+                          </li>
+                        ))}
+                      </ul>
+                    </nav>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+          {(contact.length > 0 || socialEl) && (
+            <div className="usa-footer__secondary-section">
+              <div className="grid-container">
+                <div className="grid-row grid-gap">
+                  <div className="usa-footer__contact-links mobile-lg:grid-col-12">
+                    {socialEl}
+                    {contactEl}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </footer>
+      );
+    }
+
+    if (variant === "big") {
+      return (
+        <footer className="usa-footer usa-footer--big">
+          {returnToTopEl}
+          <div className="usa-footer__primary-section">
+            <div className="grid-container">
+              <div className="grid-row grid-gap-4">
+                {groups.map((group, i) => (
+                  <div key={i} className="tablet:grid-col-4">
+                    {group.heading && (
+                      <p className="usa-footer__primary-link">
+                        {group.heading}
+                      </p>
+                    )}
+                    <ul className="usa-list usa-list--unstyled">
+                      {group.links.map((link, j) => (
+                        <li key={j} className="usa-footer__secondary-link">
+                          <a href={link.href}>{link.label}</a>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+          <div className="usa-footer__secondary-section">
+            <div className="grid-container">
+              <div className="grid-row grid-gap">
+                <div className="tablet:grid-col-4">{logoEl}</div>
+                {(contact.length > 0 || socialEl) && (
+                  <div className="tablet:grid-col-8 usa-footer__contact-links">
+                    {socialEl}
+                    {contactEl}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </footer>
+      );
+    }
+
+    // medium (default)
+    const links = groups[0]?.links ?? [];
+    return (
+      <footer className="usa-footer">
+        {returnToTopEl}
+        <div className="usa-footer__primary-section">
+          <nav className="usa-footer__nav" aria-label="Footer navigation">
+            <ul className="grid-row grid-gap">
+              {links.map((link, i) => (
+                <li
+                  key={i}
+                  className="mobile-lg:grid-col-4 desktop:grid-col-auto usa-footer__primary-content"
+                >
+                  <a href={link.href} className="usa-footer__primary-link">
+                    {link.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        </div>
+        <div className="usa-footer__secondary-section">
+          <div className="grid-container">
+            <div className="grid-row grid-gap">
+              <div className="tablet:grid-col-4">{logoEl}</div>
+              {(contact.length > 0 || socialEl) && (
+                <div className="tablet:grid-col-8 usa-footer__contact-links">
+                  {socialEl}
+                  {contactEl}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </footer>
+    );
+  },
+
   // ── Navigation ────────────────────────────────────────────────────────
 
   Accordion: ({ props }: BaseComponentProps<UswdsProps<"Accordion">>) => {
@@ -471,6 +707,152 @@ export const uswdsComponents = {
           })}
         </ol>
       </nav>
+    );
+  },
+
+  Header: ({ props }: BaseComponentProps<UswdsProps<"Header">>) => {
+    const [mobileOpen, setMobileOpen] = useState(false);
+    const [openDropdown, setOpenDropdown] = useState<number | null>(null);
+    const isExtended = props.variant === "extended";
+    const navItems = props.navItems ?? [];
+
+    return (
+      <div className={`usa-overlay${mobileOpen ? " is-visible" : ""}`}>
+        <header
+          className={`usa-header${isExtended ? " usa-header--extended" : " usa-header--basic"}`}
+        >
+          <div className="usa-nav-container">
+            <div className="usa-navbar">
+              <div className="usa-logo">
+                <em className="usa-logo__text">
+                  <a href={props.siteUrl ?? "/"} title="Home">
+                    {props.logoUrl && (
+                      <img
+                        className="usa-identifier__logo-img"
+                        src={props.logoUrl}
+                        alt={props.logoAlt ?? ""}
+                        style={{
+                          maxHeight: "2.5rem",
+                          marginRight: "0.5rem",
+                          verticalAlign: "middle",
+                        }}
+                      />
+                    )}
+                    {props.siteName}
+                  </a>
+                </em>
+              </div>
+              <button
+                type="button"
+                className="usa-menu-btn"
+                onClick={() => setMobileOpen(true)}
+              >
+                Menu
+              </button>
+            </div>
+
+            <nav
+              aria-label="Primary navigation"
+              className={`usa-nav${mobileOpen ? " is-visible" : ""}`}
+            >
+              <button
+                type="button"
+                className="usa-nav__close"
+                onClick={() => {
+                  setMobileOpen(false);
+                  setOpenDropdown(null);
+                }}
+              >
+                <svg
+                  className="usa-icon"
+                  aria-hidden="true"
+                  focusable="false"
+                  role="img"
+                  viewBox="0 0 24 24"
+                  width="24"
+                  height="24"
+                >
+                  <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
+                </svg>
+                Close
+              </button>
+
+              {props.showSearch && (
+                <div role="search" className="usa-search usa-search--small">
+                  <label className="usa-sr-only" htmlFor="header-search">
+                    Search
+                  </label>
+                  <input
+                    className="usa-input"
+                    id="header-search"
+                    type="search"
+                    name="search"
+                  />
+                  <button className="usa-button" type="submit">
+                    <svg
+                      className="usa-icon"
+                      aria-hidden="true"
+                      role="img"
+                      viewBox="0 0 24 24"
+                      width="24"
+                      height="24"
+                    >
+                      <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14" />
+                    </svg>
+                    <span className="usa-sr-only">Search</span>
+                  </button>
+                </div>
+              )}
+
+              <ul className="usa-nav__primary usa-accordion">
+                {navItems.map((item, i) => {
+                  const hasDropdown = item.items && item.items.length > 0;
+                  const isOpen = openDropdown === i;
+                  return (
+                    <li
+                      key={i}
+                      className={`usa-nav__primary-item${item.current ? " usa-current" : ""}`}
+                    >
+                      {hasDropdown ? (
+                        <>
+                          <button
+                            type="button"
+                            className={`usa-accordion__button usa-nav__link${item.current ? " usa-current" : ""}`}
+                            aria-expanded={isOpen}
+                            aria-controls={`nav-dropdown-${i}`}
+                            onClick={() => setOpenDropdown(isOpen ? null : i)}
+                          >
+                            <span>{item.label}</span>
+                          </button>
+                          <ul
+                            id={`nav-dropdown-${i}`}
+                            className="usa-nav__submenu"
+                            hidden={!isOpen}
+                          >
+                            {(item.items ?? []).map((sub, j) => (
+                              <li key={j} className="usa-nav__submenu-item">
+                                <a href={sub.href}>{sub.label}</a>
+                              </li>
+                            ))}
+                          </ul>
+                        </>
+                      ) : (
+                        <a
+                          href={item.href}
+                          className={`usa-nav__link${item.current ? " usa-current" : ""}`}
+                          aria-current={item.current ? "page" : undefined}
+                        >
+                          <span>{item.label}</span>
+                        </a>
+                      )}
+                    </li>
+                  );
+                })}
+              </ul>
+            </nav>
+          </div>
+        </header>
+      </div>
     );
   },
 
