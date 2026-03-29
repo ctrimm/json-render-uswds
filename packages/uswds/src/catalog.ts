@@ -1201,6 +1201,83 @@ export const uswdsComponentDefinitions = {
       ],
     },
   },
+
+  Prose: {
+    props: z.object({
+      element: z.enum(["div", "article", "section", "main"]).nullable(),
+    }),
+    slots: ["default"],
+    description:
+      "USWDS prose typography wrapper (usa-prose). Applies USWDS text styles — headings, paragraphs, lists, links, blockquotes, code blocks — to nested content. element: div (default), article, section, or main.",
+    example: { element: "article" },
+  },
+
+  Hero: {
+    props: z.object({
+      heading: z.string(),
+      eyebrow: z.string().nullable(),
+      body: z.string().nullable(),
+      backgroundUrl: z.string().nullable(),
+      ariaLabel: z.string().nullable(),
+    }),
+    description:
+      "USWDS hero section — full-width landing page callout with optional background image. heading: headline text. eyebrow: smaller label above the headline. body: supporting paragraph. backgroundUrl: CSS background image URL (user-supplied).",
+    example: {
+      heading: "A tagline that explains your agency\u2019s focus",
+      eyebrow: null,
+      body: "Support the text about your agency with a brief, relevant sentence or two.",
+      backgroundUrl: null,
+      ariaLabel: "Introduction",
+    },
+  },
+
+  GraphicList: {
+    props: z.object({
+      heading: z.string().nullable(),
+      items: z.array(
+        z.object({
+          imageUrl: z.string().nullable(),
+          imageAlt: z.string().nullable(),
+          heading: z.string(),
+          content: z.string(),
+        }),
+      ),
+    }),
+    description:
+      "USWDS graphic list — a responsive grid of image+text media blocks for showcasing values, programs, or features. items: [{imageUrl?, imageAlt?, heading, content}].",
+    example: {
+      heading: null,
+      items: [
+        {
+          imageUrl: null,
+          imageAlt: null,
+          heading: "Graphic heading",
+          content: "A short description of what this item represents.",
+        },
+        {
+          imageUrl: null,
+          imageAlt: null,
+          heading: "Graphic heading",
+          content: "A short description of what this item represents.",
+        },
+      ],
+    },
+  },
+
+  EmbedContainer: {
+    props: z.object({
+      src: z.string(),
+      title: z.string(),
+      ratio: z.enum(["16x9", "4x3"]).nullable(),
+    }),
+    description:
+      "USWDS embed container — a responsive aspect-ratio wrapper for iframe embeds such as YouTube videos. ratio: 16x9 (default) or 4x3. Provide a descriptive title for accessibility.",
+    example: {
+      src: "https://www.youtube.com/embed/example",
+      title: "An example video",
+      ratio: "16x9",
+    },
+  },
 };
 
 // =============================================================================

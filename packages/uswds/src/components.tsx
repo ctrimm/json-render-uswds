@@ -3092,6 +3092,90 @@ export const uswdsComponents = {
     );
   },
 
+  // ── Page-level / Layout Components ───────────────────────────────────
+
+  Prose: ({ props, children }: BaseComponentProps<UswdsProps<"Prose">>) => {
+    const element = props.element ?? "div";
+    if (element === "article")
+      return <article className="usa-prose">{children}</article>;
+    if (element === "section")
+      return <section className="usa-prose">{children}</section>;
+    if (element === "main")
+      return <main className="usa-prose">{children}</main>;
+    return <div className="usa-prose">{children}</div>;
+  },
+
+  Hero: ({ props }: BaseComponentProps<UswdsProps<"Hero">>) => {
+    return (
+      <section
+        className="usa-hero"
+        aria-label={props.ariaLabel ?? "Introduction"}
+        style={
+          props.backgroundUrl
+            ? { backgroundImage: `url(${props.backgroundUrl})` }
+            : undefined
+        }
+      >
+        <div className="grid-container">
+          <div className="usa-hero__callout">
+            <h1 className="usa-hero__heading">
+              {props.eyebrow && (
+                <span className="usa-hero__heading--alt">{props.eyebrow}</span>
+              )}
+              {props.heading}
+            </h1>
+            {props.body && <p>{props.body}</p>}
+          </div>
+        </div>
+      </section>
+    );
+  },
+
+  GraphicList: ({ props }: BaseComponentProps<UswdsProps<"GraphicList">>) => {
+    const items = props.items ?? [];
+    return (
+      <section className="usa-graphic-list usa-section">
+        <div className="grid-container">
+          {props.heading && (
+            <h2 className="usa-graphic-list__heading">{props.heading}</h2>
+          )}
+          <div className="usa-graphic-list__row grid-row grid-gap">
+            {items.map((item, i) => (
+              <div key={i} className="usa-media-block tablet:grid-col">
+                {item.imageUrl && (
+                  <img
+                    className="usa-media-block__img"
+                    src={item.imageUrl}
+                    alt={item.imageAlt ?? ""}
+                  />
+                )}
+                <div className="usa-media-block__body">
+                  <h3 className="usa-graphic-list__heading">{item.heading}</h3>
+                  <p>{item.content}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  },
+
+  EmbedContainer: ({
+    props,
+  }: BaseComponentProps<UswdsProps<"EmbedContainer">>) => {
+    return (
+      <div className="usa-embed-container">
+        <iframe
+          src={props.src}
+          title={props.title}
+          allowFullScreen
+          loading="lazy"
+        />
+      </div>
+    );
+  },
+
   // ── Overlay / Modal ───────────────────────────────────────────────────
 
   Modal: ({ props, children }: BaseComponentProps<UswdsProps<"Modal">>) => {
