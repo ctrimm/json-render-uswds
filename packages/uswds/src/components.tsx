@@ -3094,6 +3094,39 @@ export const uswdsComponents = {
 
   // ── Page-level / Layout Components ───────────────────────────────────
 
+  Form: ({ props, children, emit }: BaseComponentProps<UswdsProps<"Form">>) => {
+    return (
+      <form
+        className={`usa-form${props.large ? " usa-form--large" : ""}`}
+        onSubmit={(e) => {
+          e.preventDefault();
+          emit("submit");
+        }}
+      >
+        {children}
+      </form>
+    );
+  },
+
+  Section: ({ props, children }: BaseComponentProps<UswdsProps<"Section">>) => {
+    const variantClass =
+      props.variant === "light"
+        ? " usa-section--light"
+        : props.variant === "dark"
+          ? " usa-section--dark"
+          : "";
+
+    return (
+      <section className={`usa-section${variantClass}`}>
+        <div className="grid-container">
+          {props.title && <h2 className="usa-prose">{props.title}</h2>}
+          {props.text && <p className="usa-prose">{props.text}</p>}
+          {children}
+        </div>
+      </section>
+    );
+  },
+
   Prose: ({ props, children }: BaseComponentProps<UswdsProps<"Prose">>) => {
     const element = props.element ?? "div";
     if (element === "article")

@@ -1278,6 +1278,33 @@ export const uswdsComponentDefinitions = {
       ratio: "16x9",
     },
   },
+
+  Form: {
+    props: z.object({
+      large: z.boolean().nullable(),
+    }),
+    slots: ["default"],
+    events: ["submit"],
+    description:
+      "USWDS form container (usa-form). Applies USWDS form layout — constrained max-width and consistent label/input spacing — to nested form elements. large: wider form variant. Wrap Input, Select, Checkbox, Radio, and other form components as children.",
+    example: { large: false },
+  },
+
+  Section: {
+    props: z.object({
+      title: z.string().nullable(),
+      text: z.string().nullable(),
+      variant: z.enum(["default", "light", "dark"]).nullable(),
+    }),
+    slots: ["default"],
+    description:
+      "USWDS page section (usa-section). Applies consistent vertical padding to a full-width page section inside a grid-container. variant: default, light (lighter background), dark (darker background). title and text are optional — use children slots for richer content.",
+    example: {
+      title: "Section title",
+      text: "Supporting section description text.",
+      variant: null,
+    },
+  },
 };
 
 // =============================================================================
