@@ -49,6 +49,41 @@ export const uswdsComponentDefinitions = {
     example: { columns: 3, gap: "md" },
   },
 
+  CardGroup: {
+    props: z.object({
+      cards: z.array(
+        z.object({
+          title: z.string().nullable(),
+          description: z.string().nullable(),
+          mediaUrl: z.string().nullable(),
+          mediaAlt: z.string().nullable(),
+          footer: z.string().nullable(),
+        }),
+      ),
+      flag: z.boolean().nullable(),
+    }),
+    description:
+      "USWDS group of cards in a responsive grid. cards: [{title, description, mediaUrl?, mediaAlt?, footer?}]. flag for horizontal card layout.",
+    example: {
+      cards: [
+        {
+          title: "Card One",
+          description: "Description one.",
+          mediaUrl: null,
+          mediaAlt: null,
+          footer: null,
+        },
+        {
+          title: "Card Two",
+          description: "Description two.",
+          mediaUrl: null,
+          mediaAlt: null,
+          footer: null,
+        },
+      ],
+    },
+  },
+
   Card: {
     props: z.object({
       title: z.string().nullable(),
@@ -123,6 +158,41 @@ export const uswdsComponentDefinitions = {
     },
   },
 
+  Link: {
+    props: z.object({
+      label: z.string(),
+      href: z.string(),
+      external: z.boolean().nullable(),
+      variant: z.enum(["default", "nav"]).nullable(),
+    }),
+    events: ["press"],
+    description:
+      "USWDS anchor link. external adds an external-link indicator. variant: default or nav (for navigation contexts).",
+    example: { label: "Learn more", href: "/about" },
+  },
+
+  InPageNavigation: {
+    props: z.object({
+      items: z.array(
+        z.object({
+          label: z.string(),
+          href: z.string(),
+        }),
+      ),
+      heading: z.string().nullable(),
+    }),
+    description:
+      "USWDS in-page navigation with jump links to sections. items: [{label, href}] where href is an anchor like '#section-1'.",
+    example: {
+      heading: "On this page",
+      items: [
+        { label: "Introduction", href: "#introduction" },
+        { label: "Requirements", href: "#requirements" },
+        { label: "How to apply", href: "#how-to-apply" },
+      ],
+    },
+  },
+
   Breadcrumb: {
     props: z.object({
       items: z.array(
@@ -146,6 +216,64 @@ export const uswdsComponentDefinitions = {
   // ==========================================================================
   // Data Display Components
   // ==========================================================================
+
+  GovBanner: {
+    props: z.object({
+      tld: z.enum([".gov", ".mil"]).nullable(),
+      expanded: z.boolean().nullable(),
+    }),
+    description:
+      "USWDS government site banner ('An official website of the United States government'). tld: '.gov' (default) or '.mil'. expanded: show expanded explanation by default.",
+    example: { tld: ".gov" },
+  },
+
+  Collection: {
+    props: z.object({
+      items: z.array(
+        z.object({
+          heading: z.string(),
+          href: z.string().nullable(),
+          description: z.string().nullable(),
+          date: z.string().nullable(),
+          dateLabel: z.string().nullable(),
+          tags: z.array(z.string()).nullable(),
+          thumbnailUrl: z.string().nullable(),
+          thumbnailAlt: z.string().nullable(),
+        }),
+      ),
+    }),
+    description:
+      "USWDS collection list of content items. items: [{heading, href?, description?, date?, dateLabel?, tags?, thumbnailUrl?, thumbnailAlt?}].",
+    example: {
+      items: [
+        {
+          heading: "Article Title",
+          href: "/articles/1",
+          description: "A short description of the article.",
+          date: "2024-01-15",
+          dateLabel: "January 15, 2024",
+          tags: ["Policy", "Health"],
+          thumbnailUrl: null,
+          thumbnailAlt: null,
+        },
+      ],
+    },
+  },
+
+  Tooltip: {
+    props: z.object({
+      label: z.string(),
+      content: z.string(),
+      position: z.enum(["top", "bottom", "left", "right"]).nullable(),
+    }),
+    description:
+      "USWDS tooltip shown on hover. label: the visible trigger text. content: tooltip text. position: top (default), bottom, left, right.",
+    example: {
+      label: "Hover me",
+      content: "This is a tooltip",
+      position: "top",
+    },
+  },
 
   Table: {
     props: z.object({
@@ -503,6 +631,103 @@ export const uswdsComponentDefinitions = {
     description:
       "USWDS range slider input. Use { $bindState } on value for binding.",
     example: { label: "Select a value", name: "range", min: 0, max: 100 },
+  },
+
+  ComboBox: {
+    props: z.object({
+      label: z.string(),
+      name: z.string(),
+      options: z.array(
+        z.union([
+          z.string(),
+          z.object({ label: z.string(), value: z.string() }),
+        ]),
+      ),
+      placeholder: z.string().nullable(),
+      hint: z.string().nullable(),
+      value: z.string().nullable(),
+      required: z.boolean().nullable(),
+      checks: validationCheckSchema,
+      validateOn: validateOnSchema,
+    }),
+    events: ["change"],
+    description:
+      "USWDS combo box — a searchable/filterable select dropdown. options: strings or {label, value}. Use { $bindState } on value for binding.",
+    example: {
+      label: "Select a fruit",
+      name: "fruit",
+      options: ["Apple", "Banana", "Cherry", "Date", "Elderberry"],
+      placeholder: "- Select -",
+    },
+  },
+
+  DatePicker: {
+    props: z.object({
+      label: z.string(),
+      name: z.string(),
+      hint: z.string().nullable(),
+      value: z.string().nullable(),
+      minDate: z.string().nullable(),
+      maxDate: z.string().nullable(),
+      required: z.boolean().nullable(),
+      checks: validationCheckSchema,
+      validateOn: validateOnSchema,
+    }),
+    events: ["change"],
+    description:
+      "USWDS date picker. value/minDate/maxDate are ISO date strings (YYYY-MM-DD). Use { $bindState } on value for binding.",
+    example: {
+      label: "Date of birth",
+      name: "dob",
+      hint: "mm/dd/yyyy",
+    },
+  },
+
+  TimePicker: {
+    props: z.object({
+      label: z.string(),
+      name: z.string(),
+      hint: z.string().nullable(),
+      value: z.string().nullable(),
+      minTime: z.string().nullable(),
+      maxTime: z.string().nullable(),
+      step: z.number().nullable(),
+      required: z.boolean().nullable(),
+    }),
+    events: ["change"],
+    description:
+      "USWDS time picker. value/minTime/maxTime use 'HH:MM' 24-hour format. step is in minutes (default 30). Use { $bindState } on value.",
+    example: {
+      label: "Appointment time",
+      name: "appt_time",
+      hint: "Select a time",
+      step: 30,
+    },
+  },
+
+  CharacterCount: {
+    props: z.object({
+      label: z.string(),
+      name: z.string(),
+      maxLength: z.number(),
+      hint: z.string().nullable(),
+      value: z.string().nullable(),
+      multiline: z.boolean().nullable(),
+      rows: z.number().nullable(),
+      required: z.boolean().nullable(),
+      checks: validationCheckSchema,
+      validateOn: validateOnSchema,
+    }),
+    events: ["change"],
+    description:
+      "USWDS input or textarea with a live character count indicator. maxLength: character limit. multiline: renders as textarea. Use { $bindState } on value.",
+    example: {
+      label: "Brief description",
+      name: "description",
+      maxLength: 150,
+      hint: "Enter a short summary",
+      multiline: true,
+    },
   },
 
   // ==========================================================================

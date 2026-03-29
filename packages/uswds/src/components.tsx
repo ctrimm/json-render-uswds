@@ -148,6 +148,45 @@ export const uswdsComponents = {
     return <hr className="usa-divider" />;
   },
 
+  CardGroup: ({ props }: BaseComponentProps<UswdsProps<"CardGroup">>) => {
+    const cards = props.cards ?? [];
+    return (
+      <ul className="usa-card-group">
+        {cards.map((card, i) => (
+          <li
+            key={i}
+            className={`usa-card tablet:grid-col-4${props.flag ? " usa-card--flag" : ""}`}
+          >
+            <div className="usa-card__container">
+              {card.mediaUrl && (
+                <div className="usa-card__media">
+                  <div className="usa-card__img">
+                    <img src={card.mediaUrl} alt={card.mediaAlt ?? ""} />
+                  </div>
+                </div>
+              )}
+              {card.title && (
+                <div className="usa-card__header">
+                  <h2 className="usa-card__heading">{card.title}</h2>
+                </div>
+              )}
+              {card.description && (
+                <div className="usa-card__body">
+                  <p>{card.description}</p>
+                </div>
+              )}
+              {card.footer && (
+                <div className="usa-card__footer">
+                  <p>{card.footer}</p>
+                </div>
+              )}
+            </div>
+          </li>
+        ))}
+      </ul>
+    );
+  },
+
   // ── Navigation ────────────────────────────────────────────────────────
 
   Accordion: ({ props }: BaseComponentProps<UswdsProps<"Accordion">>) => {
@@ -435,6 +474,60 @@ export const uswdsComponents = {
     );
   },
 
+  Link: ({ props, emit }: BaseComponentProps<UswdsProps<"Link">>) => {
+    return (
+      <a
+        href={props.href}
+        className={props.variant === "nav" ? "usa-nav__link" : "usa-link"}
+        target={props.external ? "_blank" : undefined}
+        rel={props.external ? "noreferrer" : undefined}
+        onClick={() => emit("press")}
+      >
+        {props.label}
+        {props.external && (
+          <svg
+            className="usa-icon"
+            aria-label="(external link)"
+            role="img"
+            viewBox="0 0 24 24"
+            width="16"
+            height="16"
+            style={{ marginLeft: "0.25em", verticalAlign: "middle" }}
+          >
+            <path d="M19 19H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7h-2zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3z" />
+          </svg>
+        )}
+      </a>
+    );
+  },
+
+  InPageNavigation: ({
+    props,
+  }: BaseComponentProps<UswdsProps<"InPageNavigation">>) => {
+    const items = props.items ?? [];
+    return (
+      <nav
+        aria-label={props.heading ?? "On this page"}
+        className="usa-in-page-nav"
+      >
+        <div className="usa-in-page-nav__header">
+          <p className="usa-in-page-nav__title">
+            {props.heading ?? "On this page"}
+          </p>
+        </div>
+        <ul className="usa-in-page-nav__list">
+          {items.map((item, i) => (
+            <li key={i} className="usa-in-page-nav__item">
+              <a href={item.href} className="usa-in-page-nav__link">
+                {item.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    );
+  },
+
   // ── Data Display ──────────────────────────────────────────────────────
 
   Table: ({ props }: BaseComponentProps<UswdsProps<"Table">>) => {
@@ -609,6 +702,193 @@ export const uswdsComponents = {
           </li>
         ))}
       </ol>
+    );
+  },
+
+  GovBanner: ({ props }: BaseComponentProps<UswdsProps<"GovBanner">>) => {
+    const [expanded, setExpanded] = useState(props.expanded ?? false);
+    const tld = props.tld ?? ".gov";
+    const isMil = tld === ".mil";
+
+    return (
+      <section
+        className={`usa-banner${expanded ? " usa-banner--expanded" : ""}`}
+        aria-label="Official website of the United States government"
+      >
+        <div className="usa-accordion">
+          <header className="usa-banner__header">
+            <div className="usa-banner__inner">
+              <div className="grid-col-auto">
+                <img
+                  aria-hidden="true"
+                  className="usa-banner__header-flag"
+                  src="https://designsystem.digital.gov/assets/img/us_flag_small.png"
+                  alt=""
+                  width="16"
+                  height="11"
+                />
+              </div>
+              <div
+                className="grid-col-fill tablet:grid-col-auto"
+                aria-hidden="true"
+              >
+                <p className="usa-banner__header-text">
+                  An official website of the United States government
+                </p>
+                <p className="usa-banner__header-action">
+                  Here&#39;s how you know
+                </p>
+              </div>
+              <button
+                type="button"
+                className="usa-accordion__button usa-banner__button"
+                aria-expanded={expanded}
+                aria-controls="gov-banner-content"
+                onClick={() => setExpanded((v) => !v)}
+              >
+                <span className="usa-banner__button-text">
+                  Here&#39;s how you know
+                </span>
+              </button>
+            </div>
+          </header>
+          <div
+            className="usa-banner__content usa-accordion__content"
+            id="gov-banner-content"
+            hidden={!expanded}
+          >
+            <div className="grid-row grid-gap-lg">
+              <div className="usa-banner__guidance tablet:grid-col-6">
+                <img
+                  className="usa-banner__icon usa-media-block__img"
+                  src="https://designsystem.digital.gov/assets/img/icon-dot-gov.svg"
+                  role="img"
+                  alt=""
+                  aria-hidden="true"
+                  width="40"
+                  height="40"
+                />
+                <div className="usa-media-block__body">
+                  <p>
+                    <strong>
+                      Official {isMil ? ".mil" : ".gov"} websites use HTTPS
+                    </strong>
+                    <br />A <strong>lock</strong> or <strong>https://</strong>{" "}
+                    means you&#39;ve safely connected to the{" "}
+                    {isMil ? ".mil" : ".gov"} website.
+                  </p>
+                </div>
+              </div>
+              <div className="usa-banner__guidance tablet:grid-col-6">
+                <img
+                  className="usa-banner__icon usa-media-block__img"
+                  src="https://designsystem.digital.gov/assets/img/icon-https.svg"
+                  role="img"
+                  alt=""
+                  aria-hidden="true"
+                  width="40"
+                  height="40"
+                />
+                <div className="usa-media-block__body">
+                  <p>
+                    <strong>
+                      Secure {isMil ? ".mil" : ".gov"} websites use HTTPS
+                    </strong>
+                    <br />
+                    Share sensitive information only on official, secure
+                    websites.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  },
+
+  Collection: ({ props }: BaseComponentProps<UswdsProps<"Collection">>) => {
+    const items = props.items ?? [];
+    return (
+      <ul className="usa-collection">
+        {items.map((item, i) => (
+          <li key={i} className="usa-collection__item">
+            {item.thumbnailUrl && (
+              <img
+                className="usa-collection__thumbnail"
+                src={item.thumbnailUrl}
+                alt={item.thumbnailAlt ?? ""}
+              />
+            )}
+            <div className="usa-collection__body">
+              <h3 className="usa-collection__heading">
+                {item.href ? (
+                  <a className="usa-link" href={item.href}>
+                    {item.heading}
+                  </a>
+                ) : (
+                  item.heading
+                )}
+              </h3>
+              {item.description && (
+                <p className="usa-collection__description">
+                  {item.description}
+                </p>
+              )}
+              {(item.date || (item.tags && item.tags.length > 0)) && (
+                <ul className="usa-collection__meta" aria-label="Topics">
+                  {item.date && (
+                    <li className="usa-collection__meta-item usa-collection__calendar-date">
+                      <time dateTime={item.date}>
+                        {item.dateLabel ?? item.date}
+                      </time>
+                    </li>
+                  )}
+                  {(item.tags ?? []).map((tag) => (
+                    <li key={tag} className="usa-collection__meta-item usa-tag">
+                      {tag}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          </li>
+        ))}
+      </ul>
+    );
+  },
+
+  Tooltip: ({ props }: BaseComponentProps<UswdsProps<"Tooltip">>) => {
+    const [visible, setVisible] = useState(false);
+    const position = props.position ?? "top";
+
+    const positionClass = `usa-tooltip__body--${position}`;
+
+    return (
+      <span
+        className="usa-tooltip"
+        style={{ position: "relative", display: "inline-block" }}
+        onMouseEnter={() => setVisible(true)}
+        onMouseLeave={() => setVisible(false)}
+        onFocus={() => setVisible(true)}
+        onBlur={() => setVisible(false)}
+      >
+        <span
+          tabIndex={0}
+          className="usa-tooltip__trigger"
+          aria-describedby="tooltip-description"
+        >
+          {props.label}
+        </span>
+        <span
+          id="tooltip-description"
+          className={`usa-tooltip__body ${positionClass}${visible ? " is-set is-visible" : ""}`}
+          role="tooltip"
+          aria-hidden={!visible}
+        >
+          {props.content}
+        </span>
+      </span>
     );
   },
 
@@ -1192,6 +1472,403 @@ export const uswdsComponents = {
             emit("change");
           }}
         />
+      </div>
+    );
+  },
+
+  ComboBox: ({
+    props,
+    bindings,
+    emit,
+  }: BaseComponentProps<UswdsProps<"ComboBox">>) => {
+    const [boundValue, setBoundValue] = useBoundProp<string>(
+      props.value as string | undefined,
+      bindings?.value,
+    );
+    const [localValue, setLocalValue] = useState("");
+    const isBound = !!bindings?.value;
+    const value = isBound ? (boundValue ?? "") : localValue;
+    const setValue = isBound ? setBoundValue : setLocalValue;
+
+    const [query, setQuery] = useState("");
+    const [open, setOpen] = useState(false);
+    const validateOn = props.validateOn ?? "change";
+
+    const hasValidation = !!(bindings?.value && props.checks?.length);
+    const { errors, validate } = useFieldValidation(
+      bindings?.value ?? "",
+      hasValidation ? { checks: props.checks ?? [], validateOn } : undefined,
+    );
+
+    const allOptions = (props.options ?? []).map((opt) =>
+      typeof opt === "string" ? { label: opt, value: opt } : opt,
+    );
+    const filtered = query
+      ? allOptions.filter((o) =>
+          o.label.toLowerCase().includes(query.toLowerCase()),
+        )
+      : allOptions;
+
+    const selectedLabel =
+      allOptions.find((o) => o.value === value)?.label ?? value;
+    const hasError = errors.length > 0;
+    const inputId = props.name;
+    const hintId = props.hint ? `${inputId}-hint` : undefined;
+    const errorId = hasError ? `${inputId}-error` : undefined;
+
+    return (
+      <div
+        className={`usa-form-group${hasError ? " usa-form-group--error" : ""}`}
+      >
+        <label className="usa-label" htmlFor={`${inputId}-combo`}>
+          {props.label}
+          {props.required && <span className="usa-sr-only"> (required)</span>}
+        </label>
+        {props.hint && (
+          <span className="usa-hint" id={hintId}>
+            {props.hint}
+          </span>
+        )}
+        {hasError && (
+          <span className="usa-error-message" id={errorId} role="alert">
+            {errors[0]}
+          </span>
+        )}
+        <div
+          className={`usa-combo-box${value ? " usa-combo-box--pristine" : ""}`}
+          style={{ position: "relative" }}
+        >
+          <select
+            className="usa-select usa-sr-only"
+            name={props.name}
+            id={inputId}
+            aria-hidden="true"
+            tabIndex={-1}
+            value={value}
+            onChange={() => {}}
+            required={props.required ?? undefined}
+          >
+            {props.placeholder && <option value="">{props.placeholder}</option>}
+            {allOptions.map((opt) => (
+              <option key={opt.value} value={opt.value}>
+                {opt.label}
+              </option>
+            ))}
+          </select>
+          <input
+            id={`${inputId}-combo`}
+            className={`usa-combo-box__input${hasError ? " usa-input--error" : ""}`}
+            type="text"
+            autoComplete="off"
+            role="combobox"
+            aria-owns={`${inputId}-list`}
+            aria-expanded={open}
+            aria-autocomplete="list"
+            aria-describedby={
+              [hintId, errorId].filter(Boolean).join(" ") || undefined
+            }
+            placeholder={props.placeholder ?? undefined}
+            value={open ? query : selectedLabel}
+            onFocus={() => {
+              setOpen(true);
+              setQuery("");
+            }}
+            onBlur={() => setTimeout(() => setOpen(false), 150)}
+            onChange={(e) => setQuery(e.target.value)}
+          />
+          <span className="usa-combo-box__toggle-list__wrapper">
+            <button
+              type="button"
+              className="usa-combo-box__toggle-list"
+              aria-label="Toggle the dropdown list"
+              tabIndex={-1}
+              onClick={() => setOpen((v) => !v)}
+            >
+              &nbsp;
+            </button>
+          </span>
+          {open && filtered.length > 0 && (
+            <ul
+              id={`${inputId}-list`}
+              className="usa-combo-box__list"
+              role="listbox"
+              aria-label={props.label}
+              style={{
+                position: "absolute",
+                zIndex: 100,
+                width: "100%",
+                background: "#fff",
+                border: "1px solid #565c65",
+                maxHeight: 220,
+                overflowY: "auto",
+                margin: 0,
+                padding: 0,
+                listStyle: "none",
+              }}
+            >
+              {filtered.map((opt) => (
+                <li
+                  key={opt.value}
+                  className={`usa-combo-box__list-option${value === opt.value ? " usa-combo-box__list-option--selected" : ""}`}
+                  role="option"
+                  aria-selected={value === opt.value}
+                  aria-setsize={filtered.length}
+                  style={{ padding: "0.5rem 1rem", cursor: "pointer" }}
+                  onMouseDown={() => {
+                    setValue(opt.value);
+                    setQuery("");
+                    setOpen(false);
+                    if (hasValidation && validateOn === "change") validate();
+                    emit("change");
+                  }}
+                >
+                  {opt.label}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      </div>
+    );
+  },
+
+  DatePicker: ({
+    props,
+    bindings,
+    emit,
+  }: BaseComponentProps<UswdsProps<"DatePicker">>) => {
+    const [boundValue, setBoundValue] = useBoundProp<string>(
+      props.value as string | undefined,
+      bindings?.value,
+    );
+    const [localValue, setLocalValue] = useState(props.value ?? "");
+    const isBound = !!bindings?.value;
+    const value = isBound ? (boundValue ?? "") : localValue;
+    const setValue = isBound ? setBoundValue : setLocalValue;
+    const validateOn = props.validateOn ?? "change";
+
+    const hasValidation = !!(bindings?.value && props.checks?.length);
+    const { errors, validate } = useFieldValidation(
+      bindings?.value ?? "",
+      hasValidation ? { checks: props.checks ?? [], validateOn } : undefined,
+    );
+
+    const hasError = errors.length > 0;
+    const inputId = props.name;
+    const hintId = props.hint ? `${inputId}-hint` : undefined;
+    const errorId = hasError ? `${inputId}-error` : undefined;
+
+    return (
+      <div
+        className={`usa-form-group${hasError ? " usa-form-group--error" : ""}`}
+      >
+        <label className="usa-label" htmlFor={inputId}>
+          {props.label}
+          {props.required && <span className="usa-sr-only"> (required)</span>}
+        </label>
+        {props.hint && (
+          <span className="usa-hint" id={hintId}>
+            {props.hint ?? "mm/dd/yyyy"}
+          </span>
+        )}
+        {hasError && (
+          <span className="usa-error-message" id={errorId} role="alert">
+            {errors[0]}
+          </span>
+        )}
+        <div className="usa-date-picker">
+          <input
+            className={`usa-input${hasError ? " usa-input--error" : ""}`}
+            id={inputId}
+            name={props.name}
+            type="date"
+            required={props.required ?? undefined}
+            min={props.minDate ?? undefined}
+            max={props.maxDate ?? undefined}
+            value={value}
+            aria-describedby={
+              [hintId, errorId].filter(Boolean).join(" ") || undefined
+            }
+            onChange={(e) => {
+              setValue(e.target.value);
+              if (hasValidation && validateOn === "change") validate();
+              emit("change");
+            }}
+            onBlur={() => {
+              if (hasValidation && validateOn === "blur") validate();
+            }}
+          />
+        </div>
+      </div>
+    );
+  },
+
+  TimePicker: ({
+    props,
+    bindings,
+    emit,
+  }: BaseComponentProps<UswdsProps<"TimePicker">>) => {
+    const [boundValue, setBoundValue] = useBoundProp<string>(
+      props.value as string | undefined,
+      bindings?.value,
+    );
+    const [localValue, setLocalValue] = useState(props.value ?? "");
+    const isBound = !!bindings?.value;
+    const value = isBound ? (boundValue ?? "") : localValue;
+    const setValue = isBound ? setBoundValue : setLocalValue;
+
+    const step = props.step ?? 30;
+    const toMinutes = (t: string) => {
+      const [h, m] = t.split(":").map(Number);
+      return (h ?? 0) * 60 + (m ?? 0);
+    };
+    const toTime = (mins: number) => {
+      const h = Math.floor(mins / 60);
+      const m = mins % 60;
+      return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
+    };
+    const minMins = props.minTime ? toMinutes(props.minTime) : 0;
+    const maxMins = props.maxTime ? toMinutes(props.maxTime) : 23 * 60 + 59;
+
+    const options: string[] = [];
+    for (let m = minMins; m <= maxMins; m += step) {
+      options.push(toTime(m));
+    }
+
+    const formatDisplay = (t: string) => {
+      if (!t) return "";
+      const [h, m] = t.split(":").map(Number);
+      const hour = h ?? 0;
+      const suffix = hour >= 12 ? "p.m." : "a.m.";
+      const displayH = hour % 12 || 12;
+      return `${displayH}:${String(m ?? 0).padStart(2, "0")} ${suffix}`;
+    };
+
+    const inputId = props.name;
+    const hintId = props.hint ? `${inputId}-hint` : undefined;
+
+    return (
+      <div className="usa-form-group">
+        <label className="usa-label" htmlFor={inputId}>
+          {props.label}
+          {props.required && <span className="usa-sr-only"> (required)</span>}
+        </label>
+        {props.hint && (
+          <span className="usa-hint" id={hintId}>
+            {props.hint}
+          </span>
+        )}
+        <div className="usa-time-picker">
+          <select
+            className="usa-select"
+            id={inputId}
+            name={props.name}
+            required={props.required ?? undefined}
+            value={value}
+            aria-describedby={hintId}
+            onChange={(e) => {
+              setValue(e.target.value);
+              emit("change");
+            }}
+          >
+            <option value="">- Select -</option>
+            {options.map((t) => (
+              <option key={t} value={t}>
+                {formatDisplay(t)}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+    );
+  },
+
+  CharacterCount: ({
+    props,
+    bindings,
+    emit,
+  }: BaseComponentProps<UswdsProps<"CharacterCount">>) => {
+    const [boundValue, setBoundValue] = useBoundProp<string>(
+      props.value as string | undefined,
+      bindings?.value,
+    );
+    const [localValue, setLocalValue] = useState(props.value ?? "");
+    const isBound = !!bindings?.value;
+    const value = isBound ? (boundValue ?? "") : localValue;
+    const setValue = isBound ? setBoundValue : setLocalValue;
+    const validateOn = props.validateOn ?? "change";
+
+    const hasValidation = !!(bindings?.value && props.checks?.length);
+    const { errors, validate } = useFieldValidation(
+      bindings?.value ?? "",
+      hasValidation ? { checks: props.checks ?? [], validateOn } : undefined,
+    );
+
+    const remaining = props.maxLength - value.length;
+    const isOver = remaining < 0;
+    const hasError = errors.length > 0 || isOver;
+    const inputId = props.name;
+    const hintId = props.hint ? `${inputId}-hint` : undefined;
+    const statusId = `${inputId}-status`;
+    const errorId = hasError ? `${inputId}-error` : undefined;
+
+    const sharedProps = {
+      id: inputId,
+      name: props.name,
+      className: `usa-${props.multiline ? "textarea" : "input"}${hasError ? " usa-input--error" : ""}`,
+      maxLength: props.maxLength,
+      required: props.required ?? undefined,
+      value,
+      "aria-describedby": [hintId, statusId, errorId].filter(Boolean).join(" "),
+      onChange: (
+        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+      ) => {
+        setValue(e.target.value);
+        if (hasValidation && validateOn === "change") validate();
+        emit("change");
+      },
+      onBlur: () => {
+        if (hasValidation && validateOn === "blur") validate();
+      },
+    };
+
+    return (
+      <div
+        className={`usa-form-group usa-character-count${hasError ? " usa-form-group--error" : ""}`}
+      >
+        <label className="usa-label" htmlFor={inputId}>
+          {props.label}
+          {props.required && <span className="usa-sr-only"> (required)</span>}
+        </label>
+        {props.hint && (
+          <span className="usa-hint" id={hintId}>
+            {props.hint}
+          </span>
+        )}
+        {isOver && (
+          <span className="usa-error-message" id={errorId} role="alert">
+            {`${Math.abs(remaining)} characters over limit`}
+          </span>
+        )}
+        {!isOver && errors.length > 0 && (
+          <span className="usa-error-message" id={errorId} role="alert">
+            {errors[0]}
+          </span>
+        )}
+        {props.multiline ? (
+          <textarea {...sharedProps} rows={props.rows ?? 4} />
+        ) : (
+          <input {...sharedProps} type="text" />
+        )}
+        <span
+          id={statusId}
+          className={`usa-character-count__status${isOver ? " usa-character-count__status--invalid" : ""}`}
+          aria-live="polite"
+        >
+          {isOver
+            ? `${Math.abs(remaining)} characters over limit`
+            : `${remaining} characters allowed`}
+        </span>
       </div>
     );
   },
