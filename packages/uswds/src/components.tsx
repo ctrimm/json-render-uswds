@@ -474,6 +474,96 @@ export const uswdsComponents = {
     );
   },
 
+  SkipNav: ({ props }: BaseComponentProps<UswdsProps<"SkipNav">>) => {
+    return (
+      <a className="usa-skipnav" href={props.href ?? "#main-content"}>
+        {props.label ?? "Skip to main content"}
+      </a>
+    );
+  },
+
+  SideNav: ({ props }: BaseComponentProps<UswdsProps<"SideNav">>) => {
+    const items = props.items ?? [];
+    return (
+      <nav aria-label={props.ariaLabel ?? "Side navigation"}>
+        <ul className="usa-sidenav">
+          {items.map((item, i) => (
+            <li key={i} className="usa-sidenav__item">
+              <a
+                href={item.href}
+                className={item.current ? "usa-current" : undefined}
+                aria-current={item.current ? "page" : undefined}
+              >
+                {item.label}
+              </a>
+              {item.children && item.children.length > 0 && (
+                <ul className="usa-sidenav__sublist">
+                  {item.children.map((child, j) => (
+                    <li key={j} className="usa-sidenav__item">
+                      <a
+                        href={child.href}
+                        className={child.current ? "usa-current" : undefined}
+                        aria-current={child.current ? "page" : undefined}
+                      >
+                        {child.label}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </li>
+          ))}
+        </ul>
+      </nav>
+    );
+  },
+
+  LanguageSelector: ({
+    props,
+  }: BaseComponentProps<UswdsProps<"LanguageSelector">>) => {
+    const [open, setOpen] = useState(false);
+    const languages = props.languages ?? [];
+    const current = props.currentLang ?? "";
+
+    return (
+      <nav aria-label="Language selector" className="usa-language-container">
+        <ul className="usa-language__primary">
+          <li className="usa-language__primary-item">
+            <button
+              type="button"
+              className="usa-accordion__button usa-language__link"
+              aria-expanded={open}
+              aria-controls="language-submenu"
+              onClick={() => setOpen((v) => !v)}
+            >
+              {languages.find((l) => l.lang === current)?.label ?? "Language"}
+            </button>
+            <ul
+              id="language-submenu"
+              className="usa-language__submenu"
+              hidden={!open}
+            >
+              {languages
+                .filter((l) => l.lang !== current)
+                .map((lang) => (
+                  <li key={lang.lang} className="usa-language__submenu-item">
+                    <a
+                      href={lang.href}
+                      lang={lang.lang}
+                      hrefLang={lang.lang}
+                      className="usa-language__submenu-link"
+                    >
+                      {lang.localLabel ?? lang.label}
+                    </a>
+                  </li>
+                ))}
+            </ul>
+          </li>
+        </ul>
+      </nav>
+    );
+  },
+
   Link: ({ props, emit }: BaseComponentProps<UswdsProps<"Link">>) => {
     return (
       <a
@@ -804,6 +894,147 @@ export const uswdsComponents = {
           </div>
         </div>
       </section>
+    );
+  },
+
+  Identifier: ({ props }: BaseComponentProps<UswdsProps<"Identifier">>) => {
+    const links = props.links ?? [];
+    return (
+      <section className="usa-identifier">
+        <section
+          className="usa-identifier__section usa-identifier__section--masthead"
+          aria-label="Agency identifier"
+        >
+          <div className="usa-identifier__container">
+            {props.logoUrl && (
+              <div className="usa-identifier__logos">
+                <a
+                  href={props.agencyUrl ?? "/"}
+                  className="usa-identifier__logo"
+                >
+                  <img
+                    className="usa-identifier__logo-img"
+                    src={props.logoUrl}
+                    alt={props.logoAlt ?? `${props.agencyName} logo`}
+                    role="img"
+                  />
+                </a>
+              </div>
+            )}
+            <section
+              className="usa-identifier__identity"
+              aria-label="Agency description"
+            >
+              <p className="usa-identifier__identity-domain">{props.domain}</p>
+              <p className="usa-identifier__identity-disclaimer">
+                {props.disclaimer ?? (
+                  <>
+                    An official website of the{" "}
+                    <a className="usa-link" href={props.agencyUrl ?? "/"}>
+                      {props.agencyName}
+                    </a>
+                  </>
+                )}
+              </p>
+            </section>
+          </div>
+        </section>
+        {links.length > 0 && (
+          <nav
+            className="usa-identifier__section usa-identifier__section--required-links"
+            aria-label="Important links"
+          >
+            <div className="usa-identifier__container">
+              <ul className="usa-identifier__required-links-list">
+                {links.map((link, i) => (
+                  <li key={i} className="usa-identifier__required-links-item">
+                    <a
+                      href={link.href}
+                      className="usa-identifier__required-link usa-link"
+                    >
+                      {link.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </nav>
+        )}
+        {(props.showUsagov ?? true) && (
+          <section
+            className="usa-identifier__section usa-identifier__section--usagov"
+            aria-label="U.S. government information and services"
+          >
+            <div className="usa-identifier__container">
+              <div className="usa-identifier__usagov-description">
+                Looking for U.S. government information and services?{" "}
+                <a className="usa-link" href="https://www.usa.gov/">
+                  Visit USA.gov
+                </a>
+              </div>
+            </div>
+          </section>
+        )}
+      </section>
+    );
+  },
+
+  IconList: ({ props }: BaseComponentProps<UswdsProps<"IconList">>) => {
+    const items = props.items ?? [];
+    const sizeClass = props.size ? ` usa-icon-list--size-${props.size}` : "";
+
+    const colorMap: Record<string, string> = {
+      success: "text-green",
+      error: "text-red",
+      warning: "text-gold",
+      info: "text-blue",
+      default: "",
+    };
+
+    // Inline SVG icons for common USWDS icon names
+    const iconPaths: Record<string, string> = {
+      check_circle:
+        "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5l-4.5-4.5 1.41-1.41L10 13.67l7.09-7.09 1.41 1.41L10 16.5z",
+      cancel:
+        "M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z",
+      info: "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z",
+      warning: "M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z",
+      error:
+        "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z",
+      star: "M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z",
+      arrow_forward:
+        "M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z",
+    };
+
+    return (
+      <ul className={`usa-icon-list${sizeClass}`}>
+        {props.title && (
+          <li className="usa-icon-list__item">
+            <p className="usa-icon-list__title">{props.title}</p>
+          </li>
+        )}
+        {items.map((item, i) => {
+          const color = colorMap[item.color ?? "default"] ?? "";
+          const path = iconPaths[item.icon] ?? iconPaths["info"];
+          return (
+            <li key={i} className="usa-icon-list__item">
+              <div className={`usa-icon-list__icon${color ? ` ${color}` : ""}`}>
+                <svg
+                  className="usa-icon"
+                  aria-hidden="true"
+                  role="img"
+                  viewBox="0 0 24 24"
+                  width="24"
+                  height="24"
+                >
+                  <path d={path} />
+                </svg>
+              </div>
+              <div className="usa-icon-list__content">{item.content}</div>
+            </li>
+          );
+        })}
+      </ul>
     );
   },
 
@@ -1472,6 +1703,395 @@ export const uswdsComponents = {
             emit("change");
           }}
         />
+      </div>
+    );
+  },
+
+  DateInputGroup: ({
+    props,
+    bindings,
+    emit,
+  }: BaseComponentProps<UswdsProps<"DateInputGroup">>) => {
+    const [boundMonth, setBoundMonth] = useBoundProp<string>(
+      props.monthValue as string | undefined,
+      bindings?.monthValue,
+    );
+    const [boundDay, setBoundDay] = useBoundProp<string>(
+      props.dayValue as string | undefined,
+      bindings?.dayValue,
+    );
+    const [boundYear, setBoundYear] = useBoundProp<string>(
+      props.yearValue as string | undefined,
+      bindings?.yearValue,
+    );
+    const [localMonth, setLocalMonth] = useState(props.monthValue ?? "");
+    const [localDay, setLocalDay] = useState(props.dayValue ?? "");
+    const [localYear, setLocalYear] = useState(props.yearValue ?? "");
+
+    const monthVal = bindings?.monthValue ? (boundMonth ?? "") : localMonth;
+    const dayVal = bindings?.dayValue ? (boundDay ?? "") : localDay;
+    const yearVal = bindings?.yearValue ? (boundYear ?? "") : localYear;
+
+    const hintId = props.hint ? `${props.name}-hint` : undefined;
+
+    return (
+      <fieldset className="usa-fieldset">
+        <legend className="usa-legend">{props.label}</legend>
+        {props.hint && (
+          <span className="usa-hint" id={hintId}>
+            {props.hint}
+          </span>
+        )}
+        <div className="usa-memorable-date">
+          <div className="usa-form-group usa-form-group--month">
+            <label className="usa-label" htmlFor={`${props.name}-month`}>
+              Month
+            </label>
+            <input
+              className="usa-input usa-input--inline"
+              id={`${props.name}-month`}
+              name={`${props.name}_month`}
+              type="text"
+              inputMode="numeric"
+              minLength={1}
+              maxLength={2}
+              pattern="[0-9]*"
+              placeholder="MM"
+              required={props.required ?? undefined}
+              value={monthVal}
+              aria-describedby={hintId}
+              onChange={(e) => {
+                const v = e.target.value.replace(/\D/g, "").slice(0, 2);
+                if (bindings?.monthValue) setBoundMonth(v);
+                else setLocalMonth(v);
+                emit("change");
+              }}
+            />
+          </div>
+          <div className="usa-form-group usa-form-group--day">
+            <label className="usa-label" htmlFor={`${props.name}-day`}>
+              Day
+            </label>
+            <input
+              className="usa-input usa-input--inline"
+              id={`${props.name}-day`}
+              name={`${props.name}_day`}
+              type="text"
+              inputMode="numeric"
+              minLength={1}
+              maxLength={2}
+              pattern="[0-9]*"
+              placeholder="DD"
+              required={props.required ?? undefined}
+              value={dayVal}
+              onChange={(e) => {
+                const v = e.target.value.replace(/\D/g, "").slice(0, 2);
+                if (bindings?.dayValue) setBoundDay(v);
+                else setLocalDay(v);
+                emit("change");
+              }}
+            />
+          </div>
+          <div className="usa-form-group usa-form-group--year">
+            <label className="usa-label" htmlFor={`${props.name}-year`}>
+              Year
+            </label>
+            <input
+              className="usa-input usa-input--inline"
+              id={`${props.name}-year`}
+              name={`${props.name}_year`}
+              type="text"
+              inputMode="numeric"
+              minLength={4}
+              maxLength={4}
+              pattern="[0-9]*"
+              placeholder="YYYY"
+              required={props.required ?? undefined}
+              value={yearVal}
+              onChange={(e) => {
+                const v = e.target.value.replace(/\D/g, "").slice(0, 4);
+                if (bindings?.yearValue) setBoundYear(v);
+                else setLocalYear(v);
+                emit("change");
+              }}
+            />
+          </div>
+        </div>
+      </fieldset>
+    );
+  },
+
+  DateRangePicker: ({
+    props,
+    bindings,
+    emit,
+  }: BaseComponentProps<UswdsProps<"DateRangePicker">>) => {
+    const [boundStart, setBoundStart] = useBoundProp<string>(
+      props.startValue as string | undefined,
+      bindings?.startValue,
+    );
+    const [boundEnd, setBoundEnd] = useBoundProp<string>(
+      props.endValue as string | undefined,
+      bindings?.endValue,
+    );
+    const [localStart, setLocalStart] = useState(props.startValue ?? "");
+    const [localEnd, setLocalEnd] = useState(props.endValue ?? "");
+
+    const startVal = bindings?.startValue ? (boundStart ?? "") : localStart;
+    const endVal = bindings?.endValue ? (boundEnd ?? "") : localEnd;
+
+    const hintId = props.hint ? `${props.startName}-hint` : undefined;
+
+    return (
+      <div className="usa-date-range-picker">
+        {props.hint && (
+          <span className="usa-hint" id={hintId}>
+            {props.hint}
+          </span>
+        )}
+        <div className="usa-date-range-picker__range-start">
+          <div className="usa-form-group">
+            <label className="usa-label" htmlFor={props.startName}>
+              {props.startLabel}
+              {props.required && (
+                <span className="usa-sr-only"> (required)</span>
+              )}
+            </label>
+            <div className="usa-date-picker">
+              <input
+                className="usa-input"
+                id={props.startName}
+                name={props.startName}
+                type="date"
+                required={props.required ?? undefined}
+                min={props.minDate ?? undefined}
+                max={endVal || props.maxDate || undefined}
+                value={startVal}
+                aria-describedby={hintId}
+                onChange={(e) => {
+                  const v = e.target.value;
+                  if (bindings?.startValue) setBoundStart(v);
+                  else setLocalStart(v);
+                  emit("change");
+                }}
+              />
+            </div>
+          </div>
+        </div>
+        <div className="usa-date-range-picker__range-end">
+          <div className="usa-form-group">
+            <label className="usa-label" htmlFor={props.endName}>
+              {props.endLabel}
+              {props.required && (
+                <span className="usa-sr-only"> (required)</span>
+              )}
+            </label>
+            <div className="usa-date-picker">
+              <input
+                className="usa-input"
+                id={props.endName}
+                name={props.endName}
+                type="date"
+                required={props.required ?? undefined}
+                min={startVal || props.minDate || undefined}
+                max={props.maxDate ?? undefined}
+                value={endVal}
+                onChange={(e) => {
+                  const v = e.target.value;
+                  if (bindings?.endValue) setBoundEnd(v);
+                  else setLocalEnd(v);
+                  emit("change");
+                }}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  },
+
+  InputMask: ({
+    props,
+    bindings,
+    emit,
+  }: BaseComponentProps<UswdsProps<"InputMask">>) => {
+    const PRESETS: Record<string, string> = {
+      phone: "(___) ___-____",
+      zip: "_____",
+      "zip+4": "_____-____",
+      ssn: "___-__-____",
+    };
+
+    const pattern =
+      props.preset && props.preset !== "custom"
+        ? (PRESETS[props.preset] ?? "")
+        : (props.pattern ?? "");
+
+    function applyMask(raw: string): string {
+      const digits = raw.replace(/\D/g, "");
+      let result = "";
+      let di = 0;
+      for (const ch of pattern) {
+        if (di >= digits.length) break;
+        if (ch === "_") {
+          result += digits[di++];
+        } else {
+          result += ch;
+        }
+      }
+      return result;
+    }
+
+    const [boundValue, setBoundValue] = useBoundProp<string>(
+      props.value as string | undefined,
+      bindings?.value,
+    );
+    const [localValue, setLocalValue] = useState(
+      props.value ? applyMask(props.value) : "",
+    );
+    const isBound = !!bindings?.value;
+    const value = isBound ? (boundValue ?? "") : localValue;
+    const setValue = isBound ? setBoundValue : setLocalValue;
+
+    const validateOn = props.validateOn ?? "blur";
+    const hasValidation = !!(bindings?.value && props.checks?.length);
+    const { errors, validate } = useFieldValidation(
+      bindings?.value ?? "",
+      hasValidation ? { checks: props.checks ?? [], validateOn } : undefined,
+    );
+
+    const hasError = errors.length > 0;
+    const inputId = props.name;
+    const hintId = props.hint ? `${inputId}-hint` : undefined;
+    const errorId = hasError ? `${inputId}-error` : undefined;
+    const placeholder = pattern.length > 0 ? pattern : undefined;
+
+    return (
+      <div
+        className={`usa-form-group${hasError ? " usa-form-group--error" : ""}`}
+      >
+        <label className="usa-label" htmlFor={inputId}>
+          {props.label}
+          {props.required && <span className="usa-sr-only"> (required)</span>}
+        </label>
+        {props.hint && (
+          <span className="usa-hint" id={hintId}>
+            {props.hint}
+          </span>
+        )}
+        {hasError && (
+          <span className="usa-error-message" id={errorId} role="alert">
+            {errors[0]}
+          </span>
+        )}
+        <div className="usa-input-mask" data-mask={pattern}>
+          <input
+            className={`usa-masked usa-input${hasError ? " usa-input--error" : ""}`}
+            id={inputId}
+            name={props.name}
+            type="text"
+            inputMode="numeric"
+            placeholder={placeholder}
+            required={props.required ?? undefined}
+            value={value}
+            aria-describedby={
+              [hintId, errorId].filter(Boolean).join(" ") || undefined
+            }
+            onChange={(e) => {
+              const masked = applyMask(e.target.value);
+              setValue(masked);
+              if (hasValidation && validateOn === "change") validate();
+              emit("change");
+            }}
+            onBlur={() => {
+              if (hasValidation && validateOn === "blur") validate();
+              emit("blur");
+            }}
+          />
+        </div>
+      </div>
+    );
+  },
+
+  Password: ({
+    props,
+    bindings,
+    emit,
+  }: BaseComponentProps<UswdsProps<"Password">>) => {
+    const [boundValue, setBoundValue] = useBoundProp<string>(
+      props.value as string | undefined,
+      bindings?.value,
+    );
+    const [localValue, setLocalValue] = useState("");
+    const isBound = !!bindings?.value;
+    const value = isBound ? (boundValue ?? "") : localValue;
+    const setValue = isBound ? setBoundValue : setLocalValue;
+
+    const [visible, setVisible] = useState(false);
+    const validateOn = props.validateOn ?? "blur";
+    const hasValidation = !!(bindings?.value && props.checks?.length);
+    const { errors, validate } = useFieldValidation(
+      bindings?.value ?? "",
+      hasValidation ? { checks: props.checks ?? [], validateOn } : undefined,
+    );
+
+    const hasError = errors.length > 0;
+    const inputId = props.name;
+    const hintId = props.hint ? `${inputId}-hint` : undefined;
+    const errorId = hasError ? `${inputId}-error` : undefined;
+
+    return (
+      <div
+        className={`usa-form-group${hasError ? " usa-form-group--error" : ""}`}
+      >
+        <label className="usa-label" htmlFor={inputId}>
+          {props.label}
+          {props.required && <span className="usa-sr-only"> (required)</span>}
+        </label>
+        {props.hint && (
+          <span className="usa-hint" id={hintId}>
+            {props.hint}
+          </span>
+        )}
+        {hasError && (
+          <span className="usa-error-message" id={errorId} role="alert">
+            {errors[0]}
+          </span>
+        )}
+        <div className="usa-input-group">
+          <input
+            className={`usa-input${hasError ? " usa-input--error" : ""}`}
+            id={inputId}
+            name={props.name}
+            type={visible ? "text" : "password"}
+            autoComplete="current-password"
+            required={props.required ?? undefined}
+            value={value}
+            aria-describedby={
+              [hintId, errorId].filter(Boolean).join(" ") || undefined
+            }
+            onChange={(e) => {
+              setValue(e.target.value);
+              if (hasValidation && validateOn === "change") validate();
+              emit("change");
+            }}
+            onBlur={() => {
+              if (hasValidation && validateOn === "blur") validate();
+              emit("blur");
+            }}
+          />
+          <div className="usa-input-group__append">
+            <button
+              type="button"
+              className="usa-show-password usa-button usa-button--unstyled"
+              aria-controls={inputId}
+              aria-label={visible ? "Hide password" : "Show password"}
+              onClick={() => setVisible((v) => !v)}
+            >
+              {visible ? "Hide password" : "Show password"}
+            </button>
+          </div>
+        </div>
       </div>
     );
   },

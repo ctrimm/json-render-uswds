@@ -158,6 +158,92 @@ export const uswdsComponentDefinitions = {
     },
   },
 
+  SkipNav: {
+    props: z.object({
+      href: z.string().nullable(),
+      label: z.string().nullable(),
+    }),
+    description:
+      "USWDS skip navigation link. Renders an off-screen anchor that appears on focus, letting keyboard users jump past repeated navigation. href defaults to '#main-content'.",
+    example: { href: "#main-content", label: "Skip to main content" },
+  },
+
+  SideNav: {
+    props: z.object({
+      items: z.array(
+        z.object({
+          label: z.string(),
+          href: z.string(),
+          current: z.boolean().nullable(),
+          children: z
+            .array(
+              z.object({
+                label: z.string(),
+                href: z.string(),
+                current: z.boolean().nullable(),
+              }),
+            )
+            .nullable(),
+        }),
+      ),
+      ariaLabel: z.string().nullable(),
+    }),
+    description:
+      "USWDS side navigation. items: [{label, href, current?, children?}]. Mark the active page with current: true.",
+    example: {
+      ariaLabel: "Side navigation",
+      items: [
+        {
+          label: "Overview",
+          href: "/overview",
+          current: false,
+          children: null,
+        },
+        {
+          label: "Getting started",
+          href: "/getting-started",
+          current: true,
+          children: [
+            {
+              label: "Installation",
+              href: "/getting-started/install",
+              current: false,
+            },
+            {
+              label: "Configuration",
+              href: "/getting-started/config",
+              current: false,
+            },
+          ],
+        },
+      ],
+    },
+  },
+
+  LanguageSelector: {
+    props: z.object({
+      languages: z.array(
+        z.object({
+          label: z.string(),
+          href: z.string(),
+          lang: z.string(),
+          localLabel: z.string().nullable(),
+        }),
+      ),
+      currentLang: z.string().nullable(),
+    }),
+    description:
+      "USWDS language selector. languages: [{label, href, lang, localLabel?}]. currentLang: BCP-47 code of the active language (e.g. 'en').",
+    example: {
+      currentLang: "en",
+      languages: [
+        { label: "English", href: "/en", lang: "en", localLabel: null },
+        { label: "Spanish", href: "/es", lang: "es", localLabel: "Español" },
+        { label: "French", href: "/fr", lang: "fr", localLabel: "Français" },
+      ],
+    },
+  },
+
   Link: {
     props: z.object({
       label: z.string(),
@@ -217,6 +303,41 @@ export const uswdsComponentDefinitions = {
   // Data Display Components
   // ==========================================================================
 
+  Identifier: {
+    props: z.object({
+      domain: z.string(),
+      agencyName: z.string(),
+      agencyUrl: z.string().nullable(),
+      logoUrl: z.string().nullable(),
+      logoAlt: z.string().nullable(),
+      disclaimer: z.string().nullable(),
+      links: z
+        .array(z.object({ label: z.string(), href: z.string() }))
+        .nullable(),
+      showUsagov: z.boolean().nullable(),
+    }),
+    description:
+      "USWDS agency identifier section. Shows domain, agency name, logo, required links, and USA.gov footer. Place at the bottom of .gov pages.",
+    example: {
+      domain: "agency.gov",
+      agencyName: "U.S. Department of Example",
+      agencyUrl: "/",
+      logoUrl: null,
+      logoAlt: null,
+      disclaimer: null,
+      links: [
+        { label: "About agency.gov", href: "/about" },
+        { label: "Accessibility statement", href: "/accessibility" },
+        { label: "Privacy policy", href: "/privacy" },
+        { label: "No FEAR Act data", href: "/no-fear" },
+        { label: "Office of the Inspector General", href: "/oig" },
+        { label: "Performance reports", href: "/performance" },
+        { label: "FOIA requests", href: "/foia" },
+      ],
+      showUsagov: true,
+    },
+  },
+
   GovBanner: {
     props: z.object({
       tld: z.enum([".gov", ".mil"]).nullable(),
@@ -255,6 +376,44 @@ export const uswdsComponentDefinitions = {
           tags: ["Policy", "Health"],
           thumbnailUrl: null,
           thumbnailAlt: null,
+        },
+      ],
+    },
+  },
+
+  IconList: {
+    props: z.object({
+      items: z.array(
+        z.object({
+          icon: z.string(),
+          content: z.string(),
+          color: z
+            .enum(["default", "success", "warning", "error", "info"])
+            .nullable(),
+        }),
+      ),
+      title: z.string().nullable(),
+      size: z.enum(["sm", "lg", "xl", "2xl", "3xl"]).nullable(),
+    }),
+    description:
+      "USWDS icon list. items: [{icon, content, color?}]. icon is a USWDS icon name (e.g. 'check_circle', 'cancel', 'info'). size controls icon size.",
+    example: {
+      title: "Requirements",
+      items: [
+        {
+          icon: "check_circle",
+          content: "Requirement one is met.",
+          color: "success",
+        },
+        {
+          icon: "check_circle",
+          content: "Requirement two is met.",
+          color: "success",
+        },
+        {
+          icon: "cancel",
+          content: "Requirement three is not met.",
+          color: "error",
         },
       ],
     },
@@ -631,6 +790,94 @@ export const uswdsComponentDefinitions = {
     description:
       "USWDS range slider input. Use { $bindState } on value for binding.",
     example: { label: "Select a value", name: "range", min: 0, max: 100 },
+  },
+
+  DateInputGroup: {
+    props: z.object({
+      label: z.string(),
+      name: z.string(),
+      hint: z.string().nullable(),
+      required: z.boolean().nullable(),
+      monthValue: z.string().nullable(),
+      dayValue: z.string().nullable(),
+      yearValue: z.string().nullable(),
+    }),
+    events: ["change"],
+    description:
+      "USWDS three-field date input (separate month, day, year inputs). Use { $bindState } on monthValue/dayValue/yearValue for individual field bindings.",
+    example: {
+      label: "Date of birth",
+      name: "dob",
+      hint: "For example: January 19 2000",
+    },
+  },
+
+  DateRangePicker: {
+    props: z.object({
+      startLabel: z.string(),
+      endLabel: z.string(),
+      startName: z.string(),
+      endName: z.string(),
+      hint: z.string().nullable(),
+      startValue: z.string().nullable(),
+      endValue: z.string().nullable(),
+      minDate: z.string().nullable(),
+      maxDate: z.string().nullable(),
+      required: z.boolean().nullable(),
+    }),
+    events: ["change"],
+    description:
+      "USWDS date range picker with start and end date inputs. Values are ISO date strings (YYYY-MM-DD). Use { $bindState } on startValue/endValue.",
+    example: {
+      startLabel: "Start date",
+      endLabel: "End date",
+      startName: "start_date",
+      endName: "end_date",
+      hint: "mm/dd/yyyy",
+    },
+  },
+
+  InputMask: {
+    props: z.object({
+      label: z.string(),
+      name: z.string(),
+      preset: z.enum(["phone", "zip", "zip+4", "ssn", "custom"]).nullable(),
+      pattern: z.string().nullable(),
+      hint: z.string().nullable(),
+      value: z.string().nullable(),
+      required: z.boolean().nullable(),
+      checks: validationCheckSchema,
+      validateOn: validateOnSchema,
+    }),
+    events: ["change", "blur"],
+    description:
+      "USWDS input with automatic formatting mask. preset: phone '(___) ___-____', zip '_____', zip+4 '_____-____', ssn '___-__-____'. Or supply a custom pattern where '_' = digit.",
+    example: {
+      label: "Phone number",
+      name: "phone",
+      preset: "phone",
+      hint: "(___) ___-____",
+    },
+  },
+
+  Password: {
+    props: z.object({
+      label: z.string(),
+      name: z.string(),
+      hint: z.string().nullable(),
+      value: z.string().nullable(),
+      required: z.boolean().nullable(),
+      checks: validationCheckSchema,
+      validateOn: validateOnSchema,
+    }),
+    events: ["change", "blur"],
+    description:
+      "USWDS password input with show/hide toggle button. Use { $bindState } on value for binding. Supports validation checks.",
+    example: {
+      label: "Password",
+      name: "password",
+      hint: "Must be at least 12 characters",
+    },
   },
 
   ComboBox: {
