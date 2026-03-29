@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useId } from "react";
 import {
   useBoundProp,
   useStateBinding,
@@ -713,11 +713,14 @@ export const uswdsComponents = {
   Header: ({ props }: BaseComponentProps<UswdsProps<"Header">>) => {
     const [mobileOpen, setMobileOpen] = useState(false);
     const [openDropdown, setOpenDropdown] = useState<number | null>(null);
+    const uid = useId();
     const isExtended = props.variant === "extended";
     const navItems = props.navItems ?? [];
 
+    // Overlay is a sibling to the header, not a wrapper
     return (
-      <div className={`usa-overlay${mobileOpen ? " is-visible" : ""}`}>
+      <>
+        <div className={`usa-overlay${mobileOpen ? " is-visible" : ""}`} />
         <header
           className={`usa-header${isExtended ? " usa-header--extended" : " usa-header--basic"}`}
         >
@@ -728,7 +731,7 @@ export const uswdsComponents = {
                   <a href={props.siteUrl ?? "/"} title="Home">
                     {props.logoUrl && (
                       <img
-                        className="usa-identifier__logo-img"
+                        className="usa-header__logo"
                         src={props.logoUrl}
                         alt={props.logoAlt ?? ""}
                         style={{
@@ -766,7 +769,7 @@ export const uswdsComponents = {
                 <svg
                   className="usa-icon"
                   aria-hidden="true"
-                  focusable="false"
+                  focusable={false}
                   role="img"
                   viewBox="0 0 24 24"
                   width="24"
@@ -779,12 +782,15 @@ export const uswdsComponents = {
 
               {props.showSearch && (
                 <div role="search" className="usa-search usa-search--small">
-                  <label className="usa-sr-only" htmlFor="header-search">
+                  <label
+                    className="usa-sr-only"
+                    htmlFor={`${uid}-header-search`}
+                  >
                     Search
                   </label>
                   <input
                     className="usa-input"
-                    id="header-search"
+                    id={`${uid}-header-search`}
                     type="search"
                     name="search"
                   />
@@ -808,6 +814,7 @@ export const uswdsComponents = {
                 {navItems.map((item, i) => {
                   const hasDropdown = item.items && item.items.length > 0;
                   const isOpen = openDropdown === i;
+                  const dropdownId = `${uid}-nav-dropdown-${i}`;
                   return (
                     <li
                       key={i}
@@ -819,13 +826,13 @@ export const uswdsComponents = {
                             type="button"
                             className={`usa-accordion__button usa-nav__link${item.current ? " usa-current" : ""}`}
                             aria-expanded={isOpen}
-                            aria-controls={`nav-dropdown-${i}`}
+                            aria-controls={dropdownId}
                             onClick={() => setOpenDropdown(isOpen ? null : i)}
                           >
                             <span>{item.label}</span>
                           </button>
                           <ul
-                            id={`nav-dropdown-${i}`}
+                            id={dropdownId}
                             className="usa-nav__submenu"
                             hidden={!isOpen}
                           >
@@ -852,7 +859,7 @@ export const uswdsComponents = {
             </nav>
           </div>
         </header>
-      </div>
+      </>
     );
   },
 
@@ -904,6 +911,8 @@ export const uswdsComponents = {
     props,
   }: BaseComponentProps<UswdsProps<"LanguageSelector">>) => {
     const [open, setOpen] = useState(false);
+    const uid = useId();
+    const submenuId = `${uid}-language-submenu`;
     const languages = props.languages ?? [];
     const current = props.currentLang ?? "";
 
@@ -915,16 +924,12 @@ export const uswdsComponents = {
               type="button"
               className="usa-accordion__button usa-language__link"
               aria-expanded={open}
-              aria-controls="language-submenu"
+              aria-controls={submenuId}
               onClick={() => setOpen((v) => !v)}
             >
               {languages.find((l) => l.lang === current)?.label ?? "Language"}
             </button>
-            <ul
-              id="language-submenu"
-              className="usa-language__submenu"
-              hidden={!open}
-            >
+            <ul id={submenuId} className="usa-language__submenu" hidden={!open}>
               {languages
                 .filter((l) => l.lang !== current)
                 .map((lang) => (
@@ -1135,18 +1140,17 @@ export const uswdsComponents = {
   },
 
   SummaryBox: ({ props }: BaseComponentProps<UswdsProps<"SummaryBox">>) => {
+    const uid = useId();
+    const headingId = `${uid}-summary-heading`;
     const items = props.items ?? [];
     return (
       <div
         className="usa-summary-box"
         role="region"
-        aria-labelledby="summary-box-key-information"
+        aria-labelledby={headingId}
       >
         <div className="usa-summary-box__body">
-          <h3
-            className="usa-summary-box__heading"
-            id="summary-box-key-information"
-          >
+          <h3 className="usa-summary-box__heading" id={headingId}>
             {props.heading}
           </h3>
           <div className="usa-summary-box__text">
@@ -1191,14 +1195,24 @@ export const uswdsComponents = {
           <header className="usa-banner__header">
             <div className="usa-banner__inner">
               <div className="grid-col-auto">
-                <img
+                {/* US flag — inline SVG, no external dependency */}
+                <svg
                   aria-hidden="true"
                   className="usa-banner__header-flag"
-                  src="https://designsystem.digital.gov/assets/img/us_flag_small.png"
-                  alt=""
                   width="16"
                   height="11"
-                />
+                  viewBox="0 0 16 11"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <rect width="16" height="11" fill="#B22234" />
+                  <rect y="0.846" width="16" height="0.846" fill="white" />
+                  <rect y="2.539" width="16" height="0.846" fill="white" />
+                  <rect y="4.231" width="16" height="0.846" fill="white" />
+                  <rect y="5.923" width="16" height="0.846" fill="white" />
+                  <rect y="7.615" width="16" height="0.846" fill="white" />
+                  <rect y="9.307" width="16" height="0.846" fill="white" />
+                  <rect width="6.4" height="5.923" fill="#3C3B6E" />
+                </svg>
               </div>
               <div
                 className="grid-col-fill tablet:grid-col-auto"
@@ -1231,15 +1245,21 @@ export const uswdsComponents = {
           >
             <div className="grid-row grid-gap-lg">
               <div className="usa-banner__guidance tablet:grid-col-6">
-                <img
+                {/* .gov domain icon — inline SVG */}
+                <svg
                   className="usa-banner__icon usa-media-block__img"
-                  src="https://designsystem.digital.gov/assets/img/icon-dot-gov.svg"
-                  role="img"
-                  alt=""
                   aria-hidden="true"
                   width="40"
                   height="40"
-                />
+                  viewBox="0 0 40 40"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <circle cx="20" cy="20" r="20" fill="#005ea2" />
+                  <path
+                    fill="white"
+                    d="M20 9l11 6.5V17H9v-1.5L20 9zM11 19h3v11h-3V19zm7.5 0h3v11h-3V19zm7 0h3v11h-3V19zM9 31h22v2H9V31z"
+                  />
+                </svg>
                 <div className="usa-media-block__body">
                   <p>
                     <strong>
@@ -1252,15 +1272,21 @@ export const uswdsComponents = {
                 </div>
               </div>
               <div className="usa-banner__guidance tablet:grid-col-6">
-                <img
+                {/* HTTPS lock icon — inline SVG */}
+                <svg
                   className="usa-banner__icon usa-media-block__img"
-                  src="https://designsystem.digital.gov/assets/img/icon-https.svg"
-                  role="img"
-                  alt=""
                   aria-hidden="true"
                   width="40"
                   height="40"
-                />
+                  viewBox="0 0 40 40"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <circle cx="20" cy="20" r="20" fill="#005ea2" />
+                  <path
+                    fill="white"
+                    d="M20 10c-3.9 0-7 3.1-7 7v2h-2v13h18V19h-2v-2c0-3.9-3.1-7-7-7zm0 3c2.2 0 4 1.8 4 4v2h-8v-2c0-2.2 1.8-4 4-4zm0 11a2 2 0 1 1 0 4 2 2 0 0 1 0-4z"
+                  />
+                </svg>
                 <div className="usa-media-block__body">
                   <p>
                     <strong>
@@ -1473,6 +1499,8 @@ export const uswdsComponents = {
 
   Tooltip: ({ props }: BaseComponentProps<UswdsProps<"Tooltip">>) => {
     const [visible, setVisible] = useState(false);
+    const uid = useId();
+    const tooltipId = `${uid}-tooltip`;
     const position = props.position ?? "top";
 
     const positionClass = `usa-tooltip__body--${position}`;
@@ -1489,12 +1517,12 @@ export const uswdsComponents = {
         <span
           tabIndex={0}
           className="usa-tooltip__trigger"
-          aria-describedby="tooltip-description"
+          aria-describedby={tooltipId}
         >
           {props.label}
         </span>
         <span
-          id="tooltip-description"
+          id={tooltipId}
           className={`usa-tooltip__body ${positionClass}${visible ? " is-set is-visible" : ""}`}
           role="tooltip"
           aria-hidden={!visible}
@@ -1990,6 +2018,8 @@ export const uswdsComponents = {
       bindings?.value,
     );
     const [localValue, setLocalValue] = useState("");
+    const uid = useId();
+    const fieldId = `${uid}-search-field`;
     const isBound = !!bindings?.value;
     const value = isBound ? (boundValue ?? "") : localValue;
     const setValue = isBound ? setBoundValue : setLocalValue;
@@ -2001,50 +2031,46 @@ export const uswdsComponents = {
           ? " usa-search--big"
           : "";
 
-    const roleAttr = props.label ? undefined : "search";
-
     return (
-      <search className={`usa-search${sizeClass}`} role={roleAttr}>
-        <div role="search">
-          {props.label && (
-            <label className="usa-sr-only" htmlFor="search-field">
-              {props.label}
-            </label>
-          )}
-          <input
-            className="usa-input"
-            id="search-field"
-            type="search"
-            name="search"
-            placeholder={props.placeholder ?? undefined}
-            value={value}
-            onChange={(e) => {
-              setValue(e.target.value);
-              emit("change");
-            }}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") emit("submit");
-            }}
-          />
-          <button
-            className="usa-button"
-            type="submit"
-            onClick={() => emit("submit")}
+      <div role="search" className={`usa-search${sizeClass}`}>
+        {props.label && (
+          <label className="usa-sr-only" htmlFor={fieldId}>
+            {props.label}
+          </label>
+        )}
+        <input
+          className="usa-input"
+          id={fieldId}
+          type="search"
+          name="search"
+          placeholder={props.placeholder ?? undefined}
+          value={value}
+          onChange={(e) => {
+            setValue(e.target.value);
+            emit("change");
+          }}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") emit("submit");
+          }}
+        />
+        <button
+          className="usa-button"
+          type="submit"
+          onClick={() => emit("submit")}
+        >
+          <svg
+            className="usa-icon"
+            aria-hidden="true"
+            role="img"
+            viewBox="0 0 24 24"
+            width="24"
+            height="24"
           >
-            <svg
-              className="usa-icon"
-              aria-hidden="true"
-              role="img"
-              viewBox="0 0 24 24"
-              width="24"
-              height="24"
-            >
-              <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14" />
-            </svg>
-            <span className="usa-search__submit-text">Search</span>
-          </button>
-        </div>
-      </search>
+            <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14" />
+          </svg>
+          <span className="usa-search__submit-text">Search</span>
+        </button>
+      </div>
     );
   },
 
@@ -2875,13 +2901,204 @@ export const uswdsComponents = {
     );
   },
 
+  // ── Additional Display ────────────────────────────────────────────────
+
+  Icon: ({ props }: BaseComponentProps<UswdsProps<"Icon">>) => {
+    const sizeClass = props.size ? ` usa-icon--size-${props.size}` : "";
+    const colorClass = props.color ? ` ${props.color}` : "";
+
+    // Built-in paths for common USWDS icons
+    const iconPaths: Record<string, string> = {
+      check: "M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z",
+      check_circle:
+        "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5l-4.5-4.5 1.41-1.41L10 13.67l7.09-7.09 1.41 1.41L10 16.5z",
+      close:
+        "M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z",
+      cancel:
+        "M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z",
+      search:
+        "M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14",
+      arrow_forward:
+        "M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z",
+      arrow_back:
+        "M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z",
+      info: "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z",
+      warning: "M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z",
+      error:
+        "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z",
+      star: "M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z",
+      menu: "M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z",
+      expand_more: "M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z",
+      expand_less: "M12 8l-6 6 1.41 1.41L12 10.83l4.59 4.58L18 14z",
+      lock: "M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z",
+      mail: "M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z",
+      phone:
+        "M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z",
+      home: "M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z",
+      person:
+        "M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z",
+      settings:
+        "M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z",
+    };
+
+    const path = iconPaths[props.name] ?? iconPaths["info"];
+    const isAriaHidden = !props.ariaLabel;
+
+    return (
+      <svg
+        className={`usa-icon${sizeClass}${colorClass}`}
+        aria-hidden={isAriaHidden ? true : undefined}
+        aria-label={props.ariaLabel ?? undefined}
+        role={props.ariaLabel ? "img" : undefined}
+        viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path d={path} />
+      </svg>
+    );
+  },
+
+  InputGroup: ({
+    props,
+    bindings,
+    emit,
+  }: BaseComponentProps<UswdsProps<"InputGroup">>) => {
+    const [boundValue, setBoundValue] = useBoundProp<string>(
+      props.value as string | undefined,
+      bindings?.value,
+    );
+    const [localValue, setLocalValue] = useState("");
+    const isBound = !!bindings?.value;
+    const value = isBound ? (boundValue ?? "") : localValue;
+    const setValue = isBound ? setBoundValue : setLocalValue;
+    const validateOn = props.validateOn ?? "blur";
+
+    const hasValidation = !!(bindings?.value && props.checks?.length);
+    const { errors, validate } = useFieldValidation(
+      bindings?.value ?? "",
+      hasValidation ? { checks: props.checks ?? [], validateOn } : undefined,
+    );
+
+    const hasError = errors.length > 0;
+    const inputId = props.name;
+    const hintId = props.hint ? `${inputId}-hint` : undefined;
+    const errorId = hasError ? `${inputId}-error` : undefined;
+
+    return (
+      <div
+        className={`usa-form-group${hasError ? " usa-form-group--error" : ""}`}
+      >
+        <label className="usa-label" htmlFor={inputId}>
+          {props.label}
+          {props.required && <span className="usa-sr-only"> (required)</span>}
+        </label>
+        {props.hint && (
+          <span className="usa-hint" id={hintId}>
+            {props.hint}
+          </span>
+        )}
+        {hasError && (
+          <span className="usa-error-message" id={errorId} role="alert">
+            {errors[0]}
+          </span>
+        )}
+        <div
+          className={`usa-input-group${hasError ? " usa-input-group--error" : ""}`}
+        >
+          {props.prefix && (
+            <div className="usa-input-prefix" aria-hidden="true">
+              {props.prefix}
+            </div>
+          )}
+          <input
+            className={`usa-input${hasError ? " usa-input--error" : ""}`}
+            id={inputId}
+            name={props.name}
+            type={props.type ?? "text"}
+            placeholder={props.placeholder ?? undefined}
+            required={props.required ?? undefined}
+            disabled={props.disabled ?? undefined}
+            value={value}
+            aria-describedby={
+              [hintId, errorId].filter(Boolean).join(" ") || undefined
+            }
+            onChange={(e) => {
+              setValue(e.target.value);
+              if (hasValidation && validateOn === "change") validate();
+              emit("change");
+            }}
+            onBlur={() => {
+              if (hasValidation && validateOn === "blur") validate();
+              emit("blur");
+            }}
+          />
+          {props.suffix && (
+            <div className="usa-input-suffix" aria-hidden="true">
+              {props.suffix}
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  },
+
+  List: ({ props }: BaseComponentProps<UswdsProps<"List">>) => {
+    const items = props.items ?? [];
+    const variant = props.variant ?? "unordered";
+
+    const className =
+      variant === "unstyled" ? "usa-list usa-list--unstyled" : "usa-list";
+
+    if (variant === "ordered") {
+      return (
+        <ol className={className}>
+          {items.map((item, i) => (
+            <li key={i}>{item}</li>
+          ))}
+        </ol>
+      );
+    }
+    return (
+      <ul className={className}>
+        {items.map((item, i) => (
+          <li key={i}>{item}</li>
+        ))}
+      </ul>
+    );
+  },
+
+  ValidationChecklist: ({
+    props,
+  }: BaseComponentProps<UswdsProps<"ValidationChecklist">>) => {
+    const items = props.items ?? [];
+    return (
+      <div>
+        {props.heading && (
+          <p className="usa-prose">
+            <strong>{props.heading}</strong>
+          </p>
+        )}
+        <ul className="usa-checklist">
+          {items.map((item, i) => (
+            <li
+              key={i}
+              className={`usa-checklist__item${item.checked ? " usa-checklist__item--checked" : ""}`}
+            >
+              {item.label}
+            </li>
+          ))}
+        </ul>
+      </div>
+    );
+  },
+
   // ── Overlay / Modal ───────────────────────────────────────────────────
 
   Modal: ({ props, children }: BaseComponentProps<UswdsProps<"Modal">>) => {
     const [open, setOpen] = useStateBinding<boolean>(props.openPath ?? "");
     const isOpen = open ?? false;
-
-    const modalId = "modal-" + props.heading.toLowerCase().replace(/\s+/g, "-");
+    const uid = useId();
+    const modalId = `${uid}-modal`;
 
     return (
       <>

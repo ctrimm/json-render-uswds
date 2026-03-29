@@ -1120,6 +1120,87 @@ export const uswdsComponentDefinitions = {
       openPath: "/modal/open",
     },
   },
+
+  // ==========================================================================
+  // Additional Display Components
+  // ==========================================================================
+
+  Icon: {
+    props: z.object({
+      name: z.string(),
+      size: z.enum(["sm", "md", "lg", "xl", "2xl", "3xl"]).nullable(),
+      color: z.string().nullable(),
+      ariaLabel: z.string().nullable(),
+    }),
+    description:
+      "USWDS standalone SVG icon from the USWDS icon set. name: USWDS icon name (e.g. 'check', 'close', 'search', 'arrow_forward'). size: sm–3xl. color: a USWDS text-color utility class (e.g. 'text-primary').",
+    example: { name: "check_circle", size: "lg", color: "text-green" },
+  },
+
+  InputGroup: {
+    props: z.object({
+      label: z.string(),
+      name: z.string(),
+      type: z
+        .enum(["text", "email", "password", "number", "search", "tel", "url"])
+        .nullable(),
+      prefix: z.string().nullable(),
+      suffix: z.string().nullable(),
+      placeholder: z.string().nullable(),
+      hint: z.string().nullable(),
+      value: z.string().nullable(),
+      required: z.boolean().nullable(),
+      disabled: z.boolean().nullable(),
+      checks: validationCheckSchema,
+      validateOn: validateOnSchema,
+    }),
+    events: ["change", "blur"],
+    description:
+      "USWDS input group — a text input with an optional prefix and/or suffix add-on (e.g. currency symbol, unit label). Use { $bindState } on value for two-way binding.",
+    example: {
+      label: "Amount",
+      name: "amount",
+      prefix: "$",
+      suffix: ".00",
+      type: "number",
+      placeholder: "0",
+    },
+  },
+
+  List: {
+    props: z.object({
+      items: z.array(z.string()),
+      variant: z.enum(["unordered", "ordered", "unstyled"]).nullable(),
+    }),
+    description:
+      "USWDS list. variant: unordered (default, bullet list), ordered (numbered list), unstyled (no bullets/numbers).",
+    example: {
+      variant: "unordered",
+      items: ["First item", "Second item", "Third item"],
+    },
+  },
+
+  ValidationChecklist: {
+    props: z.object({
+      items: z.array(
+        z.object({
+          label: z.string(),
+          checked: z.boolean().nullable(),
+        }),
+      ),
+      heading: z.string().nullable(),
+    }),
+    description:
+      "USWDS validation checklist (usa-checklist). Displays a list of password/input requirements with checked/unchecked states.",
+    example: {
+      heading: "Password must contain:",
+      items: [
+        { label: "At least 12 characters", checked: true },
+        { label: "At least one uppercase letter", checked: false },
+        { label: "At least one number", checked: false },
+      ],
+    },
+  },
 };
 
 // =============================================================================
