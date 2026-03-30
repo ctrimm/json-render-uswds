@@ -1,0 +1,783 @@
+{
+  "root": "page-container",
+  "elements": {
+    "page-container": {
+      "type": "Prose",
+      "props": { "element": "div" },
+      "children": [
+        "skip-nav",
+        "gov-banner",
+        "site-header",
+        "site-alert",
+        "main-section"
+      ]
+    },
+    "skip-nav": {
+      "type": "SkipNav",
+      "props": { "href": "#main-content", "label": "Skip to main content" },
+      "children": []
+    },
+    "gov-banner": {
+      "type": "GovBanner",
+      "props": { "tld": ".gov" },
+      "children": []
+    },
+    "site-header": {
+      "type": "Header",
+      "props": {
+        "variant": "extended",
+        "siteName": "U.S. Department of Health & Human Services",
+        "siteUrl": "/",
+        "navItems": [
+          { "label": "Home", "href": "/", "current": false },
+          {
+            "label": "Benefits",
+            "href": "/benefits",
+            "current": true,
+            "items": [
+              { "label": "Apply for Benefits", "href": "/benefits/apply" },
+              { "label": "Check Application Status", "href": "/benefits/status" },
+              { "label": "Eligibility Requirements", "href": "/benefits/eligibility" }
+            ]
+          },
+          { "label": "Resources", "href": "/resources", "current": false },
+          { "label": "Help", "href": "/help", "current": false },
+          { "label": "Contact Us", "href": "/contact", "current": false }
+        ],
+        "showSearch": true
+      },
+      "children": []
+    },
+    "site-alert": {
+      "type": "SiteAlert",
+      "props": {
+        "type": "info",
+        "heading": "Application Deadline Approaching",
+        "message": "The deadline for FY2025 Federal Assistance Program applications is September 30, 2025. Submit your application early to allow time for processing.",
+        "slim": false
+      },
+      "children": []
+    },
+    "main-section": {
+      "type": "Section",
+      "props": { "variant": "default" },
+      "children": ["breadcrumb", "page-grid"]
+    },
+    "breadcrumb": {
+      "type": "Breadcrumb",
+      "props": {
+        "items": [
+          { "label": "Home", "href": "/" },
+          { "label": "Benefits", "href": "/benefits" },
+          { "label": "Apply for Benefits" }
+        ]
+      },
+      "children": []
+    },
+    "page-grid": {
+      "type": "Grid",
+      "props": { "columns": 2, "gap": "lg" },
+      "children": ["sidebar-col", "main-col"]
+    },
+    "sidebar-col": {
+      "type": "Prose",
+      "props": { "element": "div" },
+      "children": ["side-nav", "summary-box"]
+    },
+    "side-nav": {
+      "type": "SideNav",
+      "props": {
+        "ariaLabel": "Application sections",
+        "items": [
+          { "label": "Overview", "href": "#overview", "current": false },
+          { "label": "Step 1: Applicant Information", "href": "#step-1", "current": true },
+          { "label": "Step 2: Income Verification", "href": "#step-2", "current": false },
+          { "label": "Step 3: Document Upload", "href": "#step-3", "current": false },
+          { "label": "Step 4: Review & Submit", "href": "#step-4", "current": false }
+        ]
+      },
+      "children": []
+    },
+    "summary-box": {
+      "type": "SummaryBox",
+      "props": {
+        "heading": "Before You Begin",
+        "items": [
+          "You will need your Social Security Number",
+          "Have proof of income documents ready (W-2, pay stubs, or tax returns)",
+          "A valid government-issued photo ID",
+          "Proof of residency (utility bill or lease agreement)",
+          "Application takes approximately 20–30 minutes to complete",
+          "You can save your progress and return later"
+        ]
+      },
+      "children": []
+    },
+    "main-col": {
+      "type": "Prose",
+      "props": { "element": "main" },
+      "children": [
+        "page-heading",
+        "page-lead",
+        "step-indicator",
+        "process-overview",
+        "divider-1",
+        "form-section"
+      ]
+    },
+    "page-heading": {
+      "type": "Heading",
+      "props": { "text": "Federal Benefits Application", "level": "h1" },
+      "children": []
+    },
+    "page-lead": {
+      "type": "Text",
+      "props": {
+        "text": "Complete this application to determine your eligibility for federal assistance programs including SNAP, Medicaid, TANF, and housing assistance. All information provided is protected under the Privacy Act of 1974.",
+        "variant": "lead"
+      },
+      "children": []
+    },
+    "step-indicator": {
+      "type": "StepIndicator",
+      "props": {
+        "steps": ["Applicant Information", "Income Verification", "Document Upload", "Review & Submit"],
+        "currentStep": { "$state": "/currentStep" },
+        "counters": "default",
+        "centered": false
+      },
+      "children": []
+    },
+    "process-overview": {
+      "type": "ProcessList",
+      "props": {
+        "items": [
+          {
+            "heading": "Provide Your Personal Information",
+            "content": "Enter your full legal name, date of birth, Social Security Number, contact information, and current address. This information is used to verify your identity and determine program eligibility."
+          },
+          {
+            "heading": "Verify Your Income",
+            "content": "Report your household income from all sources including employment, self-employment, Social Security, pensions, and other benefits. Provide information for all household members age 18 and older."
+          },
+          {
+            "heading": "Upload Required Documents",
+            "content": "Upload digital copies of your identification, proof of income, and proof of residency. Accepted formats include PDF, JPG, and PNG files up to 10MB each."
+          },
+          {
+            "heading": "Review and Submit Your Application",
+            "content": "Review all information for accuracy, certify that the information is true and complete, and submit your application. You will receive a confirmation number and email receipt."
+          }
+        ]
+      },
+      "children": []
+    },
+    "divider-1": {
+      "type": "Divider",
+      "props": {},
+      "children": []
+    },
+    "form-section": {
+      "type": "Prose",
+      "props": { "element": "div" },
+      "children": ["section-1", "section-2", "section-3", "section-4"]
+    },
+    "section-1": {
+      "type": "Prose",
+      "props": { "element": "section" },
+      "children": ["section-1-heading", "section-1-alert", "form-applicant"]
+    },
+    "section-1-heading": {
+      "type": "Heading",
+      "props": { "text": "Step 1: Applicant Information", "level": "h2" },
+      "children": []
+    },
+    "section-1-alert": {
+      "type": "Alert",
+      "props": {
+        "type": "info",
+        "message": "Please enter your information exactly as it appears on your government-issued identification. Fields marked with an asterisk (*) are required.",
+        "slim": true
+      },
+      "children": []
+    },
+    "form-applicant": {
+      "type": "Form",
+      "props": { "large": true },
+      "children": [
+        "input-first-name", "input-middle-name", "input-last-name", "input-suffix",
+        "input-dob", "input-ssn", "input-email", "input-phone",
+        "input-address1", "input-address2", "input-city", "input-state-select",
+        "input-zip", "radio-citizenship", "divider-section1", "nav-buttons-1"
+      ]
+    },
+    "input-first-name": {
+      "type": "Input",
+      "props": {
+        "label": "First name", "name": "firstName", "type": "text", "required": true,
+        "value": { "$bindState": "/form/firstName" },
+        "checks": [{ "type": "required", "message": "First name is required" }],
+        "validateOn": "blur"
+      },
+      "children": []
+    },
+    "input-middle-name": {
+      "type": "Input",
+      "props": {
+        "label": "Middle name", "name": "middleName", "type": "text", "hint": "Optional",
+        "value": { "$bindState": "/form/middleName" }
+      },
+      "children": []
+    },
+    "input-last-name": {
+      "type": "Input",
+      "props": {
+        "label": "Last name", "name": "lastName", "type": "text", "required": true,
+        "value": { "$bindState": "/form/lastName" },
+        "checks": [{ "type": "required", "message": "Last name is required" }],
+        "validateOn": "blur"
+      },
+      "children": []
+    },
+    "input-suffix": {
+      "type": "Select",
+      "props": {
+        "label": "Suffix", "name": "suffix", "placeholder": "- Select -", "hint": "Optional",
+        "options": [
+          { "label": "Jr.", "value": "jr" }, { "label": "Sr.", "value": "sr" },
+          { "label": "II", "value": "ii" }, { "label": "III", "value": "iii" },
+          { "label": "IV", "value": "iv" }
+        ],
+        "value": { "$bindState": "/form/suffix" }
+      },
+      "children": []
+    },
+    "input-dob": {
+      "type": "DateInputGroup",
+      "props": {
+        "label": "Date of birth", "name": "dob", "hint": "For example: 04 28 1986", "required": true,
+        "monthValue": { "$bindState": "/form/dobMonth" },
+        "dayValue": { "$bindState": "/form/dobDay" },
+        "yearValue": { "$bindState": "/form/dobYear" }
+      },
+      "children": []
+    },
+    "input-ssn": {
+      "type": "InputMask",
+      "props": {
+        "label": "Social Security Number", "name": "ssn", "preset": "ssn",
+        "hint": "For example: 123-45-6789", "required": true,
+        "value": { "$bindState": "/form/ssn" },
+        "checks": [{ "type": "required", "message": "Social Security Number is required" }],
+        "validateOn": "blur"
+      },
+      "children": []
+    },
+    "input-email": {
+      "type": "Input",
+      "props": {
+        "label": "Email address", "name": "email", "type": "email", "required": true,
+        "hint": "We will send your confirmation to this address",
+        "value": { "$bindState": "/form/email" },
+        "checks": [
+          { "type": "required", "message": "Email address is required" },
+          { "type": "email", "message": "Please enter a valid email address" }
+        ],
+        "validateOn": "blur"
+      },
+      "children": []
+    },
+    "input-phone": {
+      "type": "InputMask",
+      "props": {
+        "label": "Phone number", "name": "phone", "preset": "phone",
+        "hint": "For example: (555) 123-4567", "required": true,
+        "value": { "$bindState": "/form/phone" },
+        "checks": [{ "type": "required", "message": "Phone number is required" }],
+        "validateOn": "blur"
+      },
+      "children": []
+    },
+    "input-address1": {
+      "type": "Input",
+      "props": {
+        "label": "Street address 1", "name": "address1", "type": "text", "required": true,
+        "value": { "$bindState": "/form/address1" },
+        "checks": [{ "type": "required", "message": "Street address is required" }],
+        "validateOn": "blur"
+      },
+      "children": []
+    },
+    "input-address2": {
+      "type": "Input",
+      "props": {
+        "label": "Street address 2", "name": "address2", "type": "text",
+        "hint": "Apartment, suite, unit, etc. (optional)",
+        "value": { "$bindState": "/form/address2" }
+      },
+      "children": []
+    },
+    "input-city": {
+      "type": "Input",
+      "props": {
+        "label": "City", "name": "city", "type": "text", "required": true,
+        "value": { "$bindState": "/form/city" },
+        "checks": [{ "type": "required", "message": "City is required" }],
+        "validateOn": "blur"
+      },
+      "children": []
+    },
+    "input-state-select": {
+      "type": "ComboBox",
+      "props": {
+        "label": "State", "name": "state", "required": true, "placeholder": "Select a state",
+        "value": { "$bindState": "/form/state" },
+        "options": [
+          "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado",
+          "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho",
+          "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana",
+          "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota",
+          "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada",
+          "New Hampshire", "New Jersey", "New Mexico", "New York",
+          "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon",
+          "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota",
+          "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington",
+          "West Virginia", "Wisconsin", "Wyoming", "District of Columbia"
+        ],
+        "checks": [{ "type": "required", "message": "State is required" }],
+        "validateOn": "blur"
+      },
+      "children": []
+    },
+    "input-zip": {
+      "type": "InputMask",
+      "props": {
+        "label": "ZIP code", "name": "zip", "preset": "zip", "required": true,
+        "value": { "$bindState": "/form/zip" },
+        "checks": [{ "type": "required", "message": "ZIP code is required" }],
+        "validateOn": "blur"
+      },
+      "children": []
+    },
+    "radio-citizenship": {
+      "type": "Radio",
+      "props": {
+        "legend": "Citizenship status", "name": "citizenship",
+        "options": [
+          { "label": "U.S. Citizen", "value": "citizen" },
+          { "label": "Permanent Resident (Green Card holder)", "value": "permanent_resident" },
+          { "label": "Qualified Non-Citizen", "value": "qualified_noncitizen", "hint": "Includes refugees, asylees, and certain other immigration statuses" }
+        ],
+        "value": { "$bindState": "/form/citizenship" },
+        "checks": [{ "type": "required", "message": "Citizenship status is required" }],
+        "validateOn": "blur"
+      },
+      "children": []
+    },
+    "divider-section1": { "type": "Divider", "props": {}, "children": [] },
+    "nav-buttons-1": {
+      "type": "ButtonGroup",
+      "props": {
+        "buttons": [{ "label": "Continue to Income Verification", "value": "next", "variant": "default" }]
+      },
+      "children": []
+    },
+    "section-2": {
+      "type": "Prose",
+      "props": { "element": "section" },
+      "children": ["section-2-heading", "section-2-alert", "form-income"]
+    },
+    "section-2-heading": {
+      "type": "Heading",
+      "props": { "text": "Step 2: Income Verification", "level": "h2" },
+      "children": []
+    },
+    "section-2-alert": {
+      "type": "Alert",
+      "props": {
+        "type": "info",
+        "message": "Report gross income (before taxes and deductions) for all household members age 18 and older. Include income from all sources.",
+        "slim": true
+      },
+      "children": []
+    },
+    "form-income": {
+      "type": "Form",
+      "props": { "large": true },
+      "children": [
+        "input-household-size", "radio-employment", "input-employer",
+        "input-annual-income", "checkbox-income-sources", "input-other-income",
+        "radio-tax-filed", "input-tax-year", "divider-section2", "nav-buttons-2"
+      ]
+    },
+    "input-household-size": {
+      "type": "Input",
+      "props": {
+        "label": "Number of people in household", "name": "householdSize", "type": "number", "required": true,
+        "hint": "Include yourself and all dependents living in your home",
+        "value": { "$bindState": "/form/householdSize" },
+        "checks": [
+          { "type": "required", "message": "Household size is required" },
+          { "type": "min", "message": "Must be at least 1", "args": { "min": 1 } }
+        ],
+        "validateOn": "blur"
+      },
+      "children": []
+    },
+    "radio-employment": {
+      "type": "Radio",
+      "props": {
+        "legend": "Current employment status", "name": "employmentStatus",
+        "options": [
+          { "label": "Employed full-time", "value": "full_time" },
+          { "label": "Employed part-time", "value": "part_time" },
+          { "label": "Self-employed", "value": "self_employed" },
+          { "label": "Unemployed", "value": "unemployed" },
+          { "label": "Retired", "value": "retired" },
+          { "label": "Disabled / Unable to work", "value": "disabled" }
+        ],
+        "value": { "$bindState": "/form/employmentStatus" },
+        "checks": [{ "type": "required", "message": "Employment status is required" }],
+        "validateOn": "blur"
+      },
+      "children": []
+    },
+    "input-employer": {
+      "type": "Input",
+      "props": {
+        "label": "Current employer name", "name": "employer", "type": "text",
+        "hint": "If currently employed, enter your employer's name",
+        "value": { "$bindState": "/form/employer" }
+      },
+      "children": []
+    },
+    "input-annual-income": {
+      "type": "InputGroup",
+      "props": {
+        "label": "Total annual household gross income", "name": "annualIncome", "type": "number",
+        "prefix": "$", "hint": "Enter the combined annual gross income for all household members", "required": true,
+        "value": { "$bindState": "/form/annualIncome" },
+        "checks": [
+          { "type": "required", "message": "Annual income is required" },
+          { "type": "numeric", "message": "Please enter a valid dollar amount" }
+        ],
+        "validateOn": "blur"
+      },
+      "children": []
+    },
+    "checkbox-income-sources": {
+      "type": "CheckboxGroup",
+      "props": {
+        "legend": "Additional sources of income (select all that apply)", "name": "incomeSources",
+        "options": [
+          { "label": "Social Security benefits", "value": "social_security" },
+          { "label": "Supplemental Security Income (SSI)", "value": "ssi" },
+          { "label": "Pension or retirement income", "value": "pension" },
+          { "label": "Unemployment benefits", "value": "unemployment" },
+          { "label": "Child support / Alimony", "value": "child_support" },
+          { "label": "Veterans benefits", "value": "veterans" },
+          { "label": "Rental or investment income", "value": "rental" },
+          { "label": "None of the above", "value": "none" }
+        ],
+        "values": { "$bindState": "/form/incomeSources" }
+      },
+      "children": []
+    },
+    "input-other-income": {
+      "type": "InputGroup",
+      "props": {
+        "label": "Total monthly income from other sources", "name": "otherIncome", "type": "number",
+        "prefix": "$", "suffix": "/month",
+        "hint": "Combined monthly amount from all additional income sources listed above",
+        "value": { "$bindState": "/form/otherIncome" }
+      },
+      "children": []
+    },
+    "radio-tax-filed": {
+      "type": "Radio",
+      "props": {
+        "legend": "Did you file a federal tax return last year?", "name": "taxFiled",
+        "options": [
+          { "label": "Yes", "value": "yes" },
+          { "label": "No", "value": "no" }
+        ],
+        "value": { "$bindState": "/form/taxFiled" },
+        "checks": [{ "type": "required", "message": "This field is required" }],
+        "validateOn": "blur"
+      },
+      "children": []
+    },
+    "input-tax-year": {
+      "type": "Select",
+      "props": {
+        "label": "Tax year filed", "name": "taxYear", "placeholder": "- Select tax year -",
+        "options": [
+          { "label": "2024", "value": "2024" },
+          { "label": "2023", "value": "2023" },
+          { "label": "2022", "value": "2022" }
+        ],
+        "value": { "$bindState": "/form/taxYear" }
+      },
+      "children": []
+    },
+    "divider-section2": { "type": "Divider", "props": {}, "children": [] },
+    "nav-buttons-2": {
+      "type": "Grid",
+      "props": { "columns": 2, "gap": "md" },
+      "children": ["btn-back-2", "btn-next-2"]
+    },
+    "btn-back-2": {
+      "type": "Button",
+      "props": { "label": "Back to Applicant Information", "variant": "outline" },
+      "children": []
+    },
+    "btn-next-2": {
+      "type": "Button",
+      "props": { "label": "Continue to Document Upload", "variant": "default" },
+      "children": []
+    },
+    "section-3": {
+      "type": "Prose",
+      "props": { "element": "section" },
+      "children": ["section-3-heading", "section-3-alert", "form-documents"]
+    },
+    "section-3-heading": {
+      "type": "Heading",
+      "props": { "text": "Step 3: Document Upload", "level": "h2" },
+      "children": []
+    },
+    "section-3-alert": {
+      "type": "Alert",
+      "props": {
+        "type": "warning", "heading": "Document Requirements",
+        "message": "All uploaded documents must be clear, legible, and unaltered. Accepted file formats: PDF, JPG, PNG. Maximum file size: 10MB per file. Do not upload password-protected files.",
+        "slim": false
+      },
+      "children": []
+    },
+    "form-documents": {
+      "type": "Form",
+      "props": { "large": true },
+      "children": [
+        "upload-id-heading", "upload-id",
+        "upload-income-heading", "upload-income",
+        "upload-residency-heading", "upload-residency",
+        "upload-additional-heading", "upload-additional",
+        "divider-section3", "nav-buttons-3"
+      ]
+    },
+    "upload-id-heading": {
+      "type": "Heading",
+      "props": { "text": "Government-issued photo identification", "level": "h3" },
+      "children": []
+    },
+    "upload-id": {
+      "type": "FileInput",
+      "props": {
+        "label": "Upload photo ID (driver's license, passport, or state ID)",
+        "name": "photoId", "accept": ".pdf,.jpg,.jpeg,.png", "required": true,
+        "hint": "Accepted formats: PDF, JPG, PNG — Max size: 10MB"
+      },
+      "children": []
+    },
+    "upload-income-heading": {
+      "type": "Heading",
+      "props": { "text": "Proof of income", "level": "h3" },
+      "children": []
+    },
+    "upload-income": {
+      "type": "FileInput",
+      "props": {
+        "label": "Upload proof of income (W-2, pay stubs, tax return, or benefit statement)",
+        "name": "incomeProof", "accept": ".pdf,.jpg,.jpeg,.png", "multiple": true, "required": true,
+        "hint": "You may upload multiple documents. Accepted formats: PDF, JPG, PNG — Max size: 10MB each"
+      },
+      "children": []
+    },
+    "upload-residency-heading": {
+      "type": "Heading",
+      "props": { "text": "Proof of residency", "level": "h3" },
+      "children": []
+    },
+    "upload-residency": {
+      "type": "FileInput",
+      "props": {
+        "label": "Upload proof of residency (utility bill, lease agreement, or mortgage statement)",
+        "name": "residencyProof", "accept": ".pdf,.jpg,.jpeg,.png", "required": true,
+        "hint": "Document must be dated within the last 60 days. Accepted formats: PDF, JPG, PNG — Max size: 10MB"
+      },
+      "children": []
+    },
+    "upload-additional-heading": {
+      "type": "Heading",
+      "props": { "text": "Additional supporting documents (optional)", "level": "h3" },
+      "children": []
+    },
+    "upload-additional": {
+      "type": "FileInput",
+      "props": {
+        "label": "Upload any additional supporting documents",
+        "name": "additionalDocs", "accept": ".pdf,.jpg,.jpeg,.png", "multiple": true,
+        "hint": "Examples: medical records, court orders, disability documentation. Accepted formats: PDF, JPG, PNG — Max size: 10MB each"
+      },
+      "children": []
+    },
+    "divider-section3": { "type": "Divider", "props": {}, "children": [] },
+    "nav-buttons-3": {
+      "type": "Grid",
+      "props": { "columns": 2, "gap": "md" },
+      "children": ["btn-back-3", "btn-next-3"]
+    },
+    "btn-back-3": {
+      "type": "Button",
+      "props": { "label": "Back to Income Verification", "variant": "outline" },
+      "children": []
+    },
+    "btn-next-3": {
+      "type": "Button",
+      "props": { "label": "Continue to Review & Submit", "variant": "default" },
+      "children": []
+    },
+    "section-4": {
+      "type": "Prose",
+      "props": { "element": "section" },
+      "children": [
+        "section-4-heading", "section-4-alert",
+        "review-info", "review-income", "review-docs",
+        "certification-section", "divider-section4", "nav-buttons-4"
+      ]
+    },
+    "section-4-heading": {
+      "type": "Heading",
+      "props": { "text": "Step 4: Review & Submit", "level": "h2" },
+      "children": []
+    },
+    "section-4-alert": {
+      "type": "Alert",
+      "props": {
+        "type": "warning",
+        "message": "Please review all information carefully before submitting. Once submitted, changes can only be made by contacting the Benefits Office directly.",
+        "slim": true
+      },
+      "children": []
+    },
+    "review-info": {
+      "type": "Prose",
+      "props": { "element": "div" },
+      "children": ["review-info-heading", "review-info-table"]
+    },
+    "review-info-heading": {
+      "type": "Heading",
+      "props": { "text": "Applicant Information", "level": "h3" },
+      "children": []
+    },
+    "review-info-table": {
+      "type": "Table",
+      "props": {
+        "columns": ["Field", "Your Response"],
+        "rows": [
+          ["Full Name", { "$template": "${/form/firstName} ${/form/lastName}" }],
+          ["Email", { "$state": "/form/email" }],
+          ["Phone", { "$state": "/form/phone" }],
+          ["Address", { "$template": "${/form/address1}, ${/form/city}, ${/form/state} ${/form/zip}" }]
+        ],
+        "borderless": false,
+        "striped": true
+      },
+      "children": []
+    },
+    "review-income": {
+      "type": "Prose",
+      "props": { "element": "div" },
+      "children": ["review-income-heading", "review-income-table"]
+    },
+    "review-income-heading": {
+      "type": "Heading",
+      "props": { "text": "Income Information", "level": "h3" },
+      "children": []
+    },
+    "review-income-table": {
+      "type": "Table",
+      "props": {
+        "columns": ["Field", "Your Response"],
+        "rows": [
+          ["Household Size", { "$state": "/form/householdSize" }],
+          ["Employment Status", { "$state": "/form/employmentStatus" }],
+          ["Annual Household Income", { "$template": "$${/form/annualIncome}" }],
+          ["Tax Return Filed", { "$state": "/form/taxFiled" }]
+        ],
+        "borderless": false,
+        "striped": true
+      },
+      "children": []
+    },
+    "review-docs": {
+      "type": "Prose",
+      "props": { "element": "div" },
+      "children": ["review-docs-heading", "review-docs-checklist"]
+    },
+    "review-docs-heading": {
+      "type": "Heading",
+      "props": { "text": "Uploaded Documents", "level": "h3" },
+      "children": []
+    },
+    "review-docs-checklist": {
+      "type": "IconList",
+      "props": {
+        "items": [
+          { "icon": "check_circle", "content": "Government-issued photo ID — Uploaded", "color": "success" },
+          { "icon": "check_circle", "content": "Proof of income — Uploaded", "color": "success" },
+          { "icon": "check_circle", "content": "Proof of residency — Uploaded", "color": "success" }
+        ],
+        "size": "lg"
+      },
+      "children": []
+    },
+    "certification-section": {
+      "type": "Prose",
+      "props": { "element": "div" },
+      "children": ["cert-heading", "cert-text", "cert-checkbox"]
+    },
+    "cert-heading": {
+      "type": "Heading",
+      "props": { "text": "Certification", "level": "h3" },
+      "children": []
+    },
+    "cert-text": {
+      "type": "Text",
+      "props": {
+        "text": "By checking the box below, I certify under penalty of perjury that the information provided in this application is true, correct, and complete to the best of my knowledge. I understand that providing false information may result in denial of benefits, repayment of benefits received, and/or criminal prosecution under 18 U.S.C. § 1001.",
+        "variant": "body"
+      },
+      "children": []
+    },
+    "cert-checkbox": {
+      "type": "Checkbox",
+      "props": {
+        "label": "I certify that all information provided is true and complete",
+        "name": "certification",
+        "checked": { "$bindState": "/form/certified" },
+        "tile": true,
+        "checks": [{ "type": "required", "message": "You must certify your application before submitting" }],
+        "validateOn": "change"
+      },
+      "children": []
+    },
+    "divider-section4": { "type": "Divider", "props": {}, "children": [] },
+    "nav-buttons-4": {
+      "type": "Grid",
+      "props": { "columns": 2, "gap": "md" },
+      "children": ["btn-back-4", "btn-submit"]
+    },
+    "btn-back-4": {
+      "type": "Button",
+      "props": { "label": "Back to Document Upload", "variant": "outline" },
+      "children": []
+    },
+    "btn-submit": {
+      "type": "Button",
+      "props": { "label": "Submit Application", "variant": "default", "type": "submit" },
+      "children": []
+    }
+  }
+}
