@@ -2,38 +2,9 @@
   "$schema": "https://unpkg.com/@changesets/config@3.1.1/schema.json",
   "changelog": "@changesets/cli/changelog",
   "commit": false,
-  "fixed": [
-    [
-      "@json-render/core",
-      "@json-render/react",
-      "@json-render/react-email",
-      "@json-render/react-pdf",
-      "@json-render/shadcn",
-      "@json-render/react-native",
-      "@json-render/remotion",
-      "@json-render/codegen",
-      "@json-render/zustand",
-      "@json-render/redux",
-      "@json-render/jotai",
-      "@json-render/vue",
-      "@json-render/xstate",
-      "@json-render/image",
-      "@json-render/mcp",
-      "@json-render/svelte",
-      "@json-render/solid",
-      "@json-render/react-three-fiber",
-      "@json-render/yaml",
-      "@json-render/shadcn-svelte",
-      "@json-render/ink",
-      "@json-render/next"
-    ]
-  ],
+  "fixed": [],
   "linked": [],
   "access": "public",
   "baseBranch": "main",
-  "updateInternalDependencies": "patch",
-  "privatePackages": {
-    "version": true,
-    "tag": false
-  }
+  "updateInternalDependencies": "patch"
 }
