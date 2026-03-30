@@ -4,6 +4,22 @@ U.S. Web Design System (USWDS) component library for [`@json-render/core`](https
 
 > Built on top of [json-render](https://github.com/vercel-labs/json-render) by [Vercel](https://vercel.com) — the Generative UI framework for safe, schema-constrained AI-generated interfaces.
 
+![Public Records Request page generated from a JSON spec](screenshots/preview.png)
+
+## Demo
+
+A live demo app is included in [`examples/demo`](examples/demo). It lets you describe a page in plain English and generate a USWDS spec via AI, or load pre-built fixture pages instantly.
+
+```bash
+cd examples/demo
+npm install
+# Add your Anthropic API key to .env.local
+cp .env.example .env.local
+npm run dev
+```
+
+Then open [http://localhost:3000](http://localhost:3000).
+
 ## Install
 
 ```bash
