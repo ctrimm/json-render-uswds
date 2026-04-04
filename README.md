@@ -9,6 +9,8 @@ Generate dynamic, personalized UIs from prompts without sacrificing reliability.
 npm install @json-render/core @json-render/react
 # for React with pre-built shadcn/ui components
 npm install @json-render/shadcn
+# or for React with U.S. Web Design System (USWDS) components
+npm install @json-render/uswds
 # or for React Native
 npm install @json-render/core @json-render/react-native
 # or for video
@@ -126,6 +128,7 @@ function Dashboard({ spec }) {
 | `@json-render/vue`          | Vue 3 renderer, composables, providers                                 |
 | `@json-render/svelte`       | Svelte 5 renderer with runes-based reactivity                          |
 | `@json-render/solid`        | SolidJS renderer with fine-grained reactive contexts                   |
+| `@json-render/uswds`        | 58 U.S. Web Design System components — accessible, government-compliant |
 | `@json-render/shadcn`       | 36 pre-built shadcn/ui components (Radix UI + Tailwind CSS)            |
 | `@json-render/shadcn-svelte`| 36 pre-built shadcn-svelte components (Svelte 5 + Tailwind CSS)        |
 | `@json-render/react-three-fiber` | React Three Fiber renderer for 3D scenes (19 built-in components)  |
@@ -229,6 +232,33 @@ const { registry } = defineRegistry(catalog, {
 });
 
 <Renderer spec={spec} registry={registry} />;
+```
+
+### USWDS (U.S. Web Design System)
+
+```tsx
+import "@uswds/uswds/css/uswds.css"; // or load via CDN
+import { defineCatalog } from "@json-render/core";
+import { schema } from "@json-render/react/schema";
+import { defineRegistry, Renderer } from "@json-render/react";
+import { uswdsComponentDefinitions } from "@json-render/uswds/catalog";
+import { uswdsComponents } from "@json-render/uswds";
+
+const catalog = defineCatalog(schema, {
+  components: {
+    Button: uswdsComponentDefinitions.Button,
+    Alert: uswdsComponentDefinitions.Alert,
+    Input: uswdsComponentDefinitions.Input,
+  },
+});
+
+const { registry } = defineRegistry(catalog, {
+  components: {
+    Button: uswdsComponents.Button,
+    Alert: uswdsComponents.Alert,
+    Input: uswdsComponents.Input,
+  },
+});
 ```
 
 ### shadcn/ui (Web)
