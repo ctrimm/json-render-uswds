@@ -1,783 +1,178 @@
-# json-render
+# @cdt5058/json-render-uswds
 
-**The Generative UI framework.**
+U.S. Web Design System (USWDS) component library for [`@json-render/core`](https://github.com/vercel-labs/json-render). Generate accessible, government-compliant React UIs from JSON specs.
 
-Generate dynamic, personalized UIs from prompts without sacrificing reliability. Predefined components and actions for safe, predictable output.
+> Built on top of [json-render](https://github.com/vercel-labs/json-render) by [Vercel](https://vercel.com) — the Generative UI framework for safe, schema-constrained AI-generated interfaces.
+
+![Public Records Request page generated from a JSON spec](screenshots/preview.png)
+
+## Demo
+
+A live demo app is included in [`examples/demo`](examples/demo). It lets you describe a page in plain English and generate a USWDS spec via AI, or load pre-built fixture pages instantly.
 
 ```bash
-# for React
-npm install @json-render/core @json-render/react
-# for React with pre-built shadcn/ui components
-npm install @json-render/shadcn
-# or for React with U.S. Web Design System (USWDS) components
-npm install @json-render/uswds
-# or for React Native
-npm install @json-render/core @json-render/react-native
-# or for video
-npm install @json-render/core @json-render/remotion
-# or for PDF documents
-npm install @json-render/core @json-render/react-pdf
-# or for HTML email
-npm install @json-render/core @json-render/react-email @react-email/components @react-email/render
-# or for Vue
-npm install @json-render/core @json-render/vue
-# or for Svelte
-npm install @json-render/core @json-render/svelte
-# or for SolidJS
-npm install @json-render/core @json-render/solid
-# or for terminal UIs
-npm install @json-render/core @json-render/ink ink react
-# or for full Next.js apps (routes, layouts, SSR, metadata)
-npm install @json-render/core @json-render/react @json-render/next
-# or for 3D scenes
-npm install @json-render/core @json-render/react-three-fiber @react-three/fiber @react-three/drei three
+cd examples/demo
+npm install
+# Add your Anthropic API key to .env.local
+cp .env.example .env.local
+npm run dev
 ```
 
-## Why json-render?
+Then open [http://localhost:3000](http://localhost:3000).
 
-json-render is a **Generative UI** framework: AI generates interfaces from natural language prompts, constrained to components you define. You set the guardrails, AI generates within them:
+## Install
 
-- **Guardrailed** - AI can only use components in your catalog
-- **Predictable** - JSON output matches your schema, every time
-- **Fast** - Stream and render progressively as the model responds
-- **Cross-Platform** - React, Vue, Svelte, Solid (web), React Native (mobile) from the same catalog
-- **Batteries Included** - 36 pre-built shadcn/ui components ready to use
+```bash
+npm install @cdt5058/json-render-uswds @json-render/core @json-render/react @uswds/uswds
+```
+
+## Import USWDS CSS
+
+```tsx
+import "@uswds/uswds/css/uswds.css";
+```
+
+Or via CDN:
+```html
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/uswds/3.8.2/css/uswds.min.css">
+```
 
 ## Quick Start
 
-### 1. Define Your Catalog
+### 1. Define your catalog
 
 ```typescript
 import { defineCatalog } from "@json-render/core";
 import { schema } from "@json-render/react/schema";
-import { z } from "zod";
+import { uswdsComponentDefinitions } from "@cdt5058/json-render-uswds/catalog";
 
 const catalog = defineCatalog(schema, {
-  components: {
-    Card: {
-      props: z.object({ title: z.string() }),
-      description: "A card container",
-    },
-    Metric: {
-      props: z.object({
-        label: z.string(),
-        value: z.string(),
-        format: z.enum(["currency", "percent", "number"]).nullable(),
-      }),
-      description: "Display a metric value",
-    },
-    Button: {
-      props: z.object({
-        label: z.string(),
-        action: z.string(),
-      }),
-      description: "Clickable button",
-    },
-  },
-  actions: {
-    export_report: { description: "Export dashboard to PDF" },
-    refresh_data: { description: "Refresh all metrics" },
-  },
+  components: uswdsComponentDefinitions,
 });
 ```
 
-### 2. Define Your Components
+### 2. Create a registry and render
 
 ```tsx
 import { defineRegistry, Renderer } from "@json-render/react";
+import { uswdsComponents } from "@cdt5058/json-render-uswds";
+import type { Spec } from "@json-render/core";
 
 const { registry } = defineRegistry(catalog, {
-  components: {
-    Card: ({ props, children }) => (
-      <div className="card">
-        <h3>{props.title}</h3>
-        {children}
-      </div>
-    ),
-    Metric: ({ props }) => (
-      <div className="metric">
-        <span>{props.label}</span>
-        <span>{format(props.value, props.format)}</span>
-      </div>
-    ),
-    Button: ({ props, emit }) => (
-      <button onClick={() => emit("press")}>{props.label}</button>
-    ),
-  },
+  components: uswdsComponents,
 });
-```
 
-### 3. Render AI-Generated Specs
-
-```tsx
-function Dashboard({ spec }) {
+export function MyApp({ spec }: { spec: Spec }) {
   return <Renderer spec={spec} registry={registry} />;
 }
 ```
 
-**That's it.** AI generates JSON, you render it safely.
-
----
-
-## Packages
-
-| Package                     | Description                                                            |
-| --------------------------- | ---------------------------------------------------------------------- |
-| `@json-render/core`         | Schemas, catalogs, AI prompts, dynamic props, SpecStream utilities     |
-| `@json-render/react`        | React renderer, contexts, hooks                                        |
-| `@json-render/vue`          | Vue 3 renderer, composables, providers                                 |
-| `@json-render/svelte`       | Svelte 5 renderer with runes-based reactivity                          |
-| `@json-render/solid`        | SolidJS renderer with fine-grained reactive contexts                   |
-| `@json-render/uswds`        | 58 U.S. Web Design System components — accessible, government-compliant |
-| `@json-render/shadcn`       | 36 pre-built shadcn/ui components (Radix UI + Tailwind CSS)            |
-| `@json-render/shadcn-svelte`| 36 pre-built shadcn-svelte components (Svelte 5 + Tailwind CSS)        |
-| `@json-render/react-three-fiber` | React Three Fiber renderer for 3D scenes (19 built-in components)  |
-| `@json-render/react-native` | React Native renderer with standard mobile components                  |
-| `@json-render/next`         | Next.js renderer — JSON becomes full apps with routes, layouts, SSR    |
-| `@json-render/remotion`     | Remotion video renderer, timeline schema                               |
-| `@json-render/react-pdf`    | React PDF renderer for generating PDF documents from specs             |
-| `@json-render/react-email`  | React Email renderer for HTML/plain-text emails from specs             |
-| `@json-render/ink`          | Ink terminal renderer with built-in components for interactive TUIs.   |
-| `@json-render/image`        | Image renderer for SVG/PNG output (OG images, social cards) via Satori |
-| `@json-render/codegen`      | Utilities for generating code from json-render UI trees                |
-| `@json-render/redux`        | Redux / Redux Toolkit adapter for `StateStore`                         |
-| `@json-render/zustand`      | Zustand adapter for `StateStore`                                       |
-| `@json-render/jotai`        | Jotai adapter for `StateStore`                                         |
-| `@json-render/xstate`       | XState Store (atom) adapter for `StateStore`                           |
-| `@json-render/mcp`          | MCP Apps integration for Claude, ChatGPT, Cursor, VS Code              |
-| `@json-render/yaml`         | YAML wire format with streaming parser, edit modes, AI SDK transform   |
-
-## Renderers
-
-### React (UI)
-
-```tsx
-import { defineRegistry, Renderer } from "@json-render/react";
-import { schema } from "@json-render/react/schema";
-
-// Flat spec format (root key + elements map)
-const spec = {
-  root: "card-1",
-  elements: {
-    "card-1": {
-      type: "Card",
-      props: { title: "Hello" },
-      children: ["button-1"],
-    },
-    "button-1": {
-      type: "Button",
-      props: { label: "Click me" },
-      children: [],
-    },
-  },
-};
-
-// defineRegistry creates a type-safe component registry
-const { registry } = defineRegistry(catalog, { components });
-<Renderer spec={spec} registry={registry} />;
-```
-
-### Vue (UI)
-
-```typescript
-import { h } from "vue";
-import { defineRegistry, Renderer } from "@json-render/vue";
-import { schema } from "@json-render/vue/schema";
-
-const { registry } = defineRegistry(catalog, {
-  components: {
-    Card: ({ props, children }) =>
-      h("div", { class: "card" }, [h("h3", null, props.title), children]),
-    Button: ({ props, emit }) =>
-      h("button", { onClick: () => emit("press") }, props.label),
-  },
-});
-
-// In your Vue component template:
-// <Renderer :spec="spec" :registry="registry" />
-```
-
-### Svelte (UI)
-
-```typescript
-import { defineRegistry, Renderer } from "@json-render/svelte";
-import { schema } from "@json-render/svelte/schema";
-
-const { registry } = defineRegistry(catalog, {
-  components: {
-    Card: ({ props, children }) => /* Svelte 5 snippet */,
-    Button: ({ props, emit }) => /* Svelte 5 snippet */,
-  },
-});
-
-// In your Svelte component:
-// <Renderer spec={spec} registry={registry} />
-```
-
-### Solid (UI)
-
-```tsx
-import { defineRegistry, Renderer } from "@json-render/solid";
-import { schema } from "@json-render/solid/schema";
-
-const { registry } = defineRegistry(catalog, {
-  components: {
-    Card: (renderProps) => <div>{renderProps.children}</div>,
-    Button: (renderProps) => (
-      <button onClick={() => renderProps.emit("press")}>
-        {renderProps.element.props.label as string}
-      </button>
-    ),
-  },
-});
-
-<Renderer spec={spec} registry={registry} />;
-```
-
-### USWDS (U.S. Web Design System)
-
-```tsx
-import "@uswds/uswds/css/uswds.css"; // or load via CDN
-import { defineCatalog } from "@json-render/core";
-import { schema } from "@json-render/react/schema";
-import { defineRegistry, Renderer } from "@json-render/react";
-import { uswdsComponentDefinitions } from "@json-render/uswds/catalog";
-import { uswdsComponents } from "@json-render/uswds";
-
-const catalog = defineCatalog(schema, {
-  components: {
-    Button: uswdsComponentDefinitions.Button,
-    Alert: uswdsComponentDefinitions.Alert,
-    Input: uswdsComponentDefinitions.Input,
-  },
-});
-
-const { registry } = defineRegistry(catalog, {
-  components: {
-    Button: uswdsComponents.Button,
-    Alert: uswdsComponents.Alert,
-    Input: uswdsComponents.Input,
-  },
-});
-```
-
-### shadcn/ui (Web)
-
-```tsx
-import { defineCatalog } from "@json-render/core";
-import { schema } from "@json-render/react/schema";
-import { defineRegistry, Renderer } from "@json-render/react";
-import { shadcnComponentDefinitions } from "@json-render/shadcn/catalog";
-import { shadcnComponents } from "@json-render/shadcn";
-
-// Pick components from the 36 standard definitions
-const catalog = defineCatalog(schema, {
-  components: {
-    Card: shadcnComponentDefinitions.Card,
-    Stack: shadcnComponentDefinitions.Stack,
-    Heading: shadcnComponentDefinitions.Heading,
-    Button: shadcnComponentDefinitions.Button,
-  },
-  actions: {},
-});
-
-// Use matching implementations
-const { registry } = defineRegistry(catalog, {
-  components: {
-    Card: shadcnComponents.Card,
-    Stack: shadcnComponents.Stack,
-    Heading: shadcnComponents.Heading,
-    Button: shadcnComponents.Button,
-  },
-});
-
-<Renderer spec={spec} registry={registry} />;
-```
-
-### React Native (Mobile)
-
-```tsx
-import { defineCatalog } from "@json-render/core";
-import { schema } from "@json-render/react-native/schema";
-import {
-  standardComponentDefinitions,
-  standardActionDefinitions,
-} from "@json-render/react-native/catalog";
-import { defineRegistry, Renderer } from "@json-render/react-native";
-
-// 25+ standard components included
-const catalog = defineCatalog(schema, {
-  components: { ...standardComponentDefinitions },
-  actions: standardActionDefinitions,
-});
-
-const { registry } = defineRegistry(catalog, { components: {} });
-<Renderer spec={spec} registry={registry} />;
-```
-
-### Remotion (Video)
-
-```tsx
-import { Player } from "@remotion/player";
-import {
-  Renderer,
-  schema,
-  standardComponentDefinitions,
-} from "@json-render/remotion";
-
-// Timeline spec format
-const spec = {
-  composition: {
-    id: "video",
-    fps: 30,
-    width: 1920,
-    height: 1080,
-    durationInFrames: 300,
-  },
-  tracks: [{ id: "main", name: "Main", type: "video", enabled: true }],
-  clips: [
-    {
-      id: "clip-1",
-      trackId: "main",
-      component: "TitleCard",
-      props: { title: "Hello" },
-      from: 0,
-      durationInFrames: 90,
-    },
-  ],
-  audio: { tracks: [] },
-};
-
-<Player
-  component={Renderer}
-  inputProps={{ spec }}
-  durationInFrames={spec.composition.durationInFrames}
-  fps={spec.composition.fps}
-  compositionWidth={spec.composition.width}
-  compositionHeight={spec.composition.height}
-/>;
-```
-
-### React PDF (Documents)
-
-```typescript
-import { renderToBuffer } from "@json-render/react-pdf";
-
-const spec = {
-  root: "doc",
-  elements: {
-    doc: {
-      type: "Document",
-      props: { title: "Invoice" },
-      children: ["page-1"],
-    },
-    "page-1": {
-      type: "Page",
-      props: { size: "A4" },
-      children: ["heading-1", "table-1"],
-    },
-    "heading-1": {
-      type: "Heading",
-      props: { text: "Invoice #1234", level: "h1" },
-      children: [],
-    },
-    "table-1": {
-      type: "Table",
-      props: {
-        columns: [
-          { header: "Item", width: "60%" },
-          { header: "Price", width: "40%", align: "right" },
-        ],
-        rows: [
-          ["Widget A", "$10.00"],
-          ["Widget B", "$25.00"],
-        ],
-      },
-      children: [],
-    },
-  },
-};
-
-// Render to buffer, stream, or file
-const buffer = await renderToBuffer(spec);
-```
-
-### React Email (Email)
-
-```typescript
-import { renderToHtml } from "@json-render/react-email";
-import { schema, standardComponentDefinitions } from "@json-render/react-email";
-import { defineCatalog } from "@json-render/core";
-
-const catalog = defineCatalog(schema, {
-  components: standardComponentDefinitions,
-});
-
-const spec = {
-  root: "html-1",
-  elements: {
-    "html-1": {
-      type: "Html",
-      props: { lang: "en", dir: "ltr" },
-      children: ["head-1", "body-1"],
-    },
-    "head-1": { type: "Head", props: {}, children: [] },
-    "body-1": {
-      type: "Body",
-      props: { style: { backgroundColor: "#f6f9fc" } },
-      children: ["container-1"],
-    },
-    "container-1": {
-      type: "Container",
-      props: {
-        style: { maxWidth: "600px", margin: "0 auto", padding: "20px" },
-      },
-      children: ["heading-1", "text-1"],
-    },
-    "heading-1": { type: "Heading", props: { text: "Welcome" }, children: [] },
-    "text-1": {
-      type: "Text",
-      props: { text: "Thanks for signing up." },
-      children: [],
-    },
-  },
-};
-
-const html = await renderToHtml(spec);
-```
-
-### Image (SVG/PNG)
-
-```typescript
-import { renderToPng } from "@json-render/image/render";
-
-const spec = {
-  root: "frame",
-  elements: {
-    frame: {
-      type: "Frame",
-      props: { width: 1200, height: 630, backgroundColor: "#1a1a2e" },
-      children: ["heading"],
-    },
-    heading: {
-      type: "Heading",
-      props: { text: "Hello World", level: "h1", color: "#ffffff" },
-      children: [],
-    },
-  },
-};
-
-// Render to PNG (requires @resvg/resvg-js)
-const png = await renderToPng(spec, { fonts });
-
-// Or render to SVG string
-import { renderToSvg } from "@json-render/image/render";
-const svg = await renderToSvg(spec, { fonts });
-```
-
-### Three.js (3D)
-
-```tsx
-import { defineCatalog } from "@json-render/core";
-import { schema, defineRegistry } from "@json-render/react";
-import {
-  threeComponentDefinitions,
-  threeComponents,
-  ThreeCanvas,
-} from "@json-render/react-three-fiber";
-
-const catalog = defineCatalog(schema, {
-  components: {
-    Box: threeComponentDefinitions.Box,
-    Sphere: threeComponentDefinitions.Sphere,
-    AmbientLight: threeComponentDefinitions.AmbientLight,
-    DirectionalLight: threeComponentDefinitions.DirectionalLight,
-    OrbitControls: threeComponentDefinitions.OrbitControls,
-  },
-  actions: {},
-});
-
-const { registry } = defineRegistry(catalog, {
-  components: {
-    Box: threeComponents.Box,
-    Sphere: threeComponents.Sphere,
-    AmbientLight: threeComponents.AmbientLight,
-    DirectionalLight: threeComponents.DirectionalLight,
-    OrbitControls: threeComponents.OrbitControls,
-  },
-});
-
-<ThreeCanvas
-  spec={spec}
-  registry={registry}
-  shadows
-  camera={{ position: [5, 5, 5], fov: 50 }}
-  style={{ width: "100%", height: "100vh" }}
-/>;
-```
-
-### Next.js (Full Apps)
-
-```typescript
-import type { NextAppSpec } from "@json-render/next";
-import { createNextApp } from "@json-render/next/server";
-import { NextAppProvider } from "@json-render/next";
-
-const spec: NextAppSpec = {
-  metadata: { title: { default: "My App", template: "%s | My App" } },
-  layouts: {
-    main: {
-      root: "shell",
-      elements: {
-        shell: { type: "Container", props: {}, children: ["nav", "slot"] },
-        nav: { type: "NavBar", props: {}, children: [] },
-        slot: { type: "Slot", props: {}, children: [] },
-      },
-    },
-  },
-  routes: {
-    "/": {
-      layout: "main",
-      metadata: { title: "Home" },
-      page: {
-        root: "hero",
-        elements: {
-          hero: { type: "Card", props: { title: "Welcome" }, children: [] },
-        },
-      },
-    },
-  },
-};
-
-// Server: creates Page, generateMetadata, generateStaticParams
-const app = createNextApp({ spec });
-
-// Client: wrap your layout with NextAppProvider
-// <NextAppProvider registry={registry} handlers={handlers}>
-//   {children}
-// </NextAppProvider>
-```
-
-### shadcn-svelte (Svelte)
-
-```typescript
-import { defineCatalog } from "@json-render/core";
-import { schema } from "@json-render/svelte/schema";
-import { defineRegistry, Renderer } from "@json-render/svelte";
-import { shadcnComponentDefinitions } from "@json-render/shadcn-svelte/catalog";
-import { shadcnComponents } from "@json-render/shadcn-svelte";
-
-const catalog = defineCatalog(schema, {
-  components: {
-    Card: shadcnComponentDefinitions.Card,
-    Stack: shadcnComponentDefinitions.Stack,
-    Heading: shadcnComponentDefinitions.Heading,
-    Button: shadcnComponentDefinitions.Button,
-  },
-  actions: {},
-});
-
-const { registry } = defineRegistry(catalog, {
-  components: {
-    Card: shadcnComponents.Card,
-    Stack: shadcnComponents.Stack,
-    Heading: shadcnComponents.Heading,
-    Button: shadcnComponents.Button,
-  },
-});
-
-// In your Svelte component:
-// <Renderer spec={spec} registry={registry} />
-```
-
-### Ink (Terminal)
-
-```tsx
-import { defineCatalog } from "@json-render/core";
-import {
-  schema,
-  standardComponentDefinitions,
-  standardActionDefinitions,
-  defineRegistry,
-  Renderer,
-  JSONUIProvider,
-} from "@json-render/ink";
-
-const catalog = defineCatalog(schema, {
-  components: { ...standardComponentDefinitions },
-  actions: standardActionDefinitions,
-});
-
-const { registry } = defineRegistry(catalog, { components: {} });
-
-const spec = {
-  root: "card-1",
-  elements: {
-    "card-1": {
-      type: "Card",
-      props: { title: "Status" },
-      children: ["status-1"],
-    },
-    "status-1": {
-      type: "StatusLine",
-      props: { label: "Build", status: "success" },
-      children: [],
-    },
-  },
-};
-
-<JSONUIProvider initialState={{}}>
-  <Renderer spec={spec} registry={registry} />
-</JSONUIProvider>;
-```
-
-## Features
-
-### Streaming (SpecStream)
-
-Stream AI responses progressively:
-
-```typescript
-import { createSpecStreamCompiler } from "@json-render/core";
-
-const compiler = createSpecStreamCompiler<MySpec>();
-
-// Process chunks as they arrive
-const { result, newPatches } = compiler.push(chunk);
-setSpec(result); // Update UI with partial result
-
-// Get final result
-const finalSpec = compiler.getResult();
-```
-
-### AI Prompt Generation
-
-Generate system prompts from your catalog:
+### 3. Generate a system prompt for AI
 
 ```typescript
 const systemPrompt = catalog.prompt();
-// Includes component descriptions, props schemas, available actions
+// Pass to your AI model — it will generate specs constrained to USWDS components
 ```
 
-### Conditional Visibility
+## Components
 
-```json
-{
-  "type": "Alert",
-  "props": { "message": "Error occurred" },
-  "visible": [
-    { "$state": "/form/hasError" },
-    { "$state": "/form/errorDismissed", "not": true }
-  ]
-}
-```
+58 USWDS components organized by category:
 
-### Dynamic Props
+### Layout
+`Grid` `CardGroup` `Card` `Divider` `Footer` `Section`
 
-Any prop value can be data-driven using expressions:
+### Navigation
+`Header` `SkipNav` `SideNav` `LanguageSelector` `Link` `InPageNavigation` `Breadcrumb` `Identifier` `GovBanner`
 
-```json
-{
-  "type": "Icon",
-  "props": {
-    "name": {
-      "$cond": { "$state": "/activeTab", "eq": "home" },
-      "$then": "home",
-      "$else": "home-outline"
+### Data Display
+`Collection` `IconList` `Tooltip` `Table` `Heading` `Text` `Prose` `Hero` `GraphicList`
+
+### Feedback
+`Alert` `SiteAlert` `Tag` `SummaryBox` `ProcessList`
+
+### Forms
+`Button` `ButtonGroup` `Input` `Textarea` `Select` `Checkbox` `CheckboxGroup` `Radio` `FileInput` `Search` `RangeInput` `DateInputGroup` `DateRangePicker` `InputMask` `Password` `ComboBox` `DatePicker` `TimePicker` `CharacterCount` `Modal` `Form`
+
+### Utilities
+`Accordion` `Pagination` `StepIndicator` `Icon` `InputGroup` `List` `ValidationChecklist` `EmbedContainer`
+
+## Custom Components
+
+Extend the catalog with your own components alongside USWDS:
+
+```typescript
+import { defineCatalog } from "@json-render/core";
+import { schema } from "@json-render/react/schema";
+import { uswdsComponentDefinitions } from "@cdt5058/json-render-uswds/catalog";
+import { uswdsComponents } from "@cdt5058/json-render-uswds";
+import { defineRegistry } from "@json-render/react";
+import { z } from "zod";
+
+const catalog = defineCatalog(schema, {
+  components: {
+    ...uswdsComponentDefinitions,
+    AgencyBanner: {
+      props: z.object({
+        name: z.string(),
+        logoUrl: z.string().nullable(),
+      }),
+      description: "Custom agency-specific banner",
     },
-    "color": {
-      "$cond": { "$state": "/activeTab", "eq": "home" },
-      "$then": "#007AFF",
-      "$else": "#8E8E93"
-    }
-  }
-}
-```
-
-Expression forms:
-
-- **`{ "$state": "/state/key" }`** - reads a value from the state model
-- **`{ "$cond": <condition>, "$then": <value>, "$else": <value> }`** - evaluates a condition and picks a branch
-- **`{ "$template": "Hello, ${/user/name}!" }`** - interpolates state values into strings
-- **`{ "$computed": "fn", "args": { ... } }`** - calls a registered function with resolved args
-
-### Actions
-
-Components can trigger actions, including the built-in `setState` action:
-
-```json
-{
-  "type": "Pressable",
-  "props": {
-    "action": "setState",
-    "actionParams": { "statePath": "/activeTab", "value": "home" }
   },
-  "children": ["home-icon"]
-}
-```
+});
 
-The `setState` action updates the state model directly, which re-evaluates visibility conditions and dynamic prop expressions.
-
-### State Watchers
-
-React to state changes by triggering actions:
-
-```json
-{
-  "type": "Select",
-  "props": {
-    "value": { "$bindState": "/form/country" },
-    "options": ["US", "Canada", "UK"]
+const { registry } = defineRegistry(catalog, {
+  components: {
+    ...uswdsComponents,
+    AgencyBanner: ({ props }) => (
+      <div className="usa-banner">
+        {props.logoUrl && <img src={props.logoUrl} alt={props.name} />}
+        <span>{props.name}</span>
+      </div>
+    ),
   },
-  "watch": {
-    "/form/country": {
-      "action": "loadCities",
-      "params": { "country": { "$state": "/form/country" } }
-    }
-  }
-}
+});
 ```
 
-`watch` is a top-level field on elements (sibling of `type`/`props`/`children`). Watchers fire when the watched value changes, not on initial render.
+## Accessibility
 
----
+All components are built to meet federal accessibility requirements:
 
-## Demo
+- **WCAG 2.1 AA** compliant
+- Semantic HTML with proper landmark regions
+- ARIA roles, labels, and live regions
+- Full keyboard navigation
+- Visible focus indicators
+- Color contrast ratios that meet federal standards
+- Accessible form validation and error messages
 
-```bash
-git clone https://github.com/vercel-labs/json-render
-cd json-render
-pnpm install
-pnpm dev
+See the [USWDS Accessibility guidance](https://designsystem.digital.gov/how-to-use-uswds/accessibility/) for more details.
+
+## State Management
+
+Use `StateProvider` from `@json-render/react` to enable data binding:
+
+```tsx
+import { StateProvider, createStateStore } from "@json-render/react";
+
+const store = createStateStore({ formData: {} });
+
+<StateProvider store={store}>
+  <Renderer spec={spec} registry={registry} />
+</StateProvider>
 ```
 
-- http://json-render.localhost:1355 - Docs & Playground
-- http://dashboard-demo.json-render.localhost:1355 - Example Dashboard
-- http://react-email-demo.json-render.localhost:1355 - React Email Example
-- http://remotion-demo.json-render.localhost:1355 - Remotion Video Example
-- Chat Example: run `pnpm dev` in `examples/chat`
-- Svelte Example: run `pnpm dev` in `examples/svelte` or `examples/svelte-chat`
-- Vue Example: run `pnpm dev` in `examples/vue`
-- Vite Renderers (React + Vue + Svelte + Solid): run `pnpm dev` in `examples/vite-renderers`
-- React Native example: run `npx expo start` in `examples/react-native`
+## AI-Assisted Development
 
-## How It Works
+This repo includes a [Claude Code](https://claude.ai/code) skill at `skills/uswds/SKILL.md`. If you use Claude Code, the skill gives Claude context about all 58 USWDS components, installation, and usage patterns — so it can help you build USWDS specs and catalogs without needing to look things up.
 
-```mermaid
-flowchart LR
-    A[User Prompt] --> B[AI + Catalog]
-    B --> C[JSON Spec]
-    C --> D[Renderer]
+## Credits
 
-    B -.- E([guardrailed])
-    C -.- F([predictable])
-    D -.- G([streamed])
-```
+This package is a USWDS adapter built on top of **[json-render](https://github.com/vercel-labs/json-render)**, an open-source Generative UI framework created and maintained by [Vercel](https://vercel.com). The core rendering engine, catalog system, schema design, and React renderer are all their work.
 
-1. **Define the guardrails** - what components, actions, and data bindings AI can use
-2. **Prompt** - describe what you want in natural language
-3. **AI generates JSON** - output is always predictable, constrained to your catalog
-4. **Render fast** - stream and render progressively as the model responds
+- [json-render on GitHub](https://github.com/vercel-labs/json-render)
+- [json-render documentation](https://json-render.dev)
+- [U.S. Web Design System](https://designsystem.digital.gov/)
 
 ## License
 

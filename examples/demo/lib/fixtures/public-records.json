@@ -1,0 +1,454 @@
+{
+  "root": "page-root",
+  "elements": {
+    "page-root": {
+      "type": "Prose",
+      "props": {
+        "element": "main"
+      },
+      "children": [
+        "skip-nav",
+        "gov-banner",
+        "site-alert",
+        "header",
+        "hero-section",
+        "main-content",
+        "table-section",
+        "footer",
+        "identifier"
+      ]
+    },
+    "skip-nav": {
+      "type": "SkipNav",
+      "props": {
+        "href": "#main-content",
+        "label": "Skip to main content"
+      },
+      "children": []
+    },
+    "gov-banner": {
+      "type": "GovBanner",
+      "props": {
+        "tld": ".gov"
+      },
+      "children": []
+    },
+    "site-alert": {
+      "type": "SiteAlert",
+      "props": {
+        "type": "info",
+        "heading": "Service Advisory — Scheduled Maintenance",
+        "message": "The Public Records Request Portal will undergo scheduled maintenance on Saturday, January 18, 2025, from 10:00 PM to 2:00 AM EST. During this time, online submissions will be temporarily unavailable. Requests submitted by mail, email or in person will not be affected. We apologize for the inconvenience.",
+        "slim": false
+      },
+      "children": []
+    },
+    "header": {
+      "type": "Header",
+      "props": {
+        "variant": "extended",
+        "siteName": "City of Fairview — Office of the City Clerk",
+        "siteUrl": "/",
+        "navItems": [
+          { "label": "Home", "href": "/" },
+          { "label": "Public Records", "href": "/public-records", "current": true },
+          {
+            "label": "Services",
+            "href": "/services",
+            "items": [
+              { "label": "Business Licenses", "href": "/services/licenses" },
+              { "label": "Permits", "href": "/services/permits" },
+              { "label": "Vital Records", "href": "/services/vital-records" }
+            ]
+          },
+          { "label": "About Us", "href": "/about" },
+          { "label": "Contact", "href": "/contact" }
+        ],
+        "showSearch": true
+      },
+      "children": []
+    },
+    "hero-section": {
+      "type": "Hero",
+      "props": {
+        "heading": "Public Records Request",
+        "eyebrow": "Office of the City Clerk",
+        "body": "The City of Fairview is committed to government transparency. Under the Freedom of Information Act (FOIA) and state open records laws, you have the right to request access to public records maintained by the city. Our team processes requests promptly and will respond within 5 business days of receipt.",
+        "ariaLabel": "Public Records Request hero banner"
+      },
+      "children": []
+    },
+    "main-content": {
+      "type": "Section",
+      "props": {
+        "variant": "default"
+      },
+      "children": [
+        "breadcrumb",
+        "content-grid"
+      ]
+    },
+    "breadcrumb": {
+      "type": "Breadcrumb",
+      "props": {
+        "items": [
+          { "label": "Home", "href": "/" },
+          { "label": "Services", "href": "/services" },
+          { "label": "Public Records Request" }
+        ]
+      },
+      "children": []
+    },
+    "content-grid": {
+      "type": "Grid",
+      "props": {
+        "columns": 2,
+        "gap": "lg"
+      },
+      "children": [
+        "left-column",
+        "right-column"
+      ]
+    },
+    "left-column": {
+      "type": "Prose",
+      "props": {
+        "element": "section"
+      },
+      "children": [
+        "process-heading",
+        "process-intro",
+        "process-list",
+        "summary-box",
+        "new-request-section"
+      ]
+    },
+    "process-heading": {
+      "type": "Heading",
+      "props": {
+        "text": "How to Submit a Public Records Request",
+        "level": "h2"
+      },
+      "children": []
+    },
+    "process-intro": {
+      "type": "Text",
+      "props": {
+        "text": "Follow the steps below to submit your request. All requests are logged and tracked for your convenience. You may check the status of your request at any time using your confirmation number.",
+        "variant": "lead"
+      },
+      "children": []
+    },
+    "process-list": {
+      "type": "ProcessList",
+      "props": {
+        "items": [
+          {
+            "heading": "Identify the Records You Need",
+            "content": "Be as specific as possible when describing the records you are requesting. Include dates, names, departments, or any other details that will help us locate the documents efficiently."
+          },
+          {
+            "heading": "Submit Your Request",
+            "content": "Click the \"Start New Request\" button below to fill out the online request form. You may also submit requests via email at records@fairview.gov, by mail, or in person at City Hall."
+          },
+          {
+            "heading": "Receive Confirmation",
+            "content": "You will receive a confirmation number and email acknowledgment within 1 business day. Use this number to track the progress of your request."
+          },
+          {
+            "heading": "Records Review & Processing",
+            "content": "Our team will review your request and gather the responsive documents. Some records may require redaction of exempt information under applicable law. Complex requests may take additional time."
+          },
+          {
+            "heading": "Receive Your Records",
+            "content": "Once processed, you will be notified by email or phone. Records can be provided electronically, by mail, or for in-person pickup. Fees may apply for copies exceeding 50 pages."
+          }
+        ]
+      },
+      "children": []
+    },
+    "summary-box": {
+      "type": "SummaryBox",
+      "props": {
+        "heading": "Key Information",
+        "items": [
+          "Response time: Within 5 business days of receipt",
+          "No fee for the first 50 pages of copies",
+          "Additional pages: $0.15 per page for standard copies",
+          "Electronic records provided at no charge when available",
+          "Expedited processing available for urgent media or legal requests",
+          "Appeals may be filed within 30 days of a denial"
+        ]
+      },
+      "children": []
+    },
+    "new-request-section": {
+      "type": "Prose",
+      "props": {
+        "element": "div"
+      },
+      "children": [
+        "new-request-heading",
+        "new-request-text",
+        "new-request-button-row"
+      ]
+    },
+    "new-request-heading": {
+      "type": "Heading",
+      "props": {
+        "text": "Ready to Submit a Request?",
+        "level": "h3"
+      },
+      "children": []
+    },
+    "new-request-text": {
+      "type": "Text",
+      "props": {
+        "text": "Start a new public records request using our secure online form. You will need to provide your contact information and a description of the records you are seeking.",
+        "variant": "body"
+      },
+      "children": []
+    },
+    "new-request-button-row": {
+      "type": "Grid",
+      "props": {
+        "columns": 2,
+        "gap": "md"
+      },
+      "children": [
+        "new-request-button",
+        "check-status-button"
+      ]
+    },
+    "new-request-button": {
+      "type": "Button",
+      "props": {
+        "label": "Start New Request",
+        "variant": "default",
+        "type": "button"
+      },
+      "children": []
+    },
+    "check-status-button": {
+      "type": "Button",
+      "props": {
+        "label": "Check Request Status",
+        "variant": "outline",
+        "type": "button"
+      },
+      "children": []
+    },
+    "right-column": {
+      "type": "Prose",
+      "props": {
+        "element": "aside"
+      },
+      "children": [
+        "sidebar-contact-heading",
+        "sidebar-icon-list",
+        "sidebar-divider",
+        "sidebar-faq-heading",
+        "sidebar-accordion"
+      ]
+    },
+    "sidebar-contact-heading": {
+      "type": "Heading",
+      "props": {
+        "text": "Contact Information",
+        "level": "h3"
+      },
+      "children": []
+    },
+    "sidebar-icon-list": {
+      "type": "IconList",
+      "props": {
+        "size": "lg",
+        "items": [
+          { "icon": "location_on", "content": "City Hall, 200 Main Street, Suite 110, Fairview, ST 45678", "color": "info" },
+          { "icon": "phone", "content": "(555) 234-5678 — Mon–Fri, 8:00 AM – 5:00 PM", "color": "info" },
+          { "icon": "mail", "content": "records@fairview.gov", "color": "info" },
+          { "icon": "schedule", "content": "Office Hours: Monday–Friday, 8:00 AM – 5:00 PM", "color": "info" }
+        ]
+      },
+      "children": []
+    },
+    "sidebar-divider": {
+      "type": "Divider",
+      "props": {},
+      "children": []
+    },
+    "sidebar-faq-heading": {
+      "type": "Heading",
+      "props": {
+        "text": "Frequently Asked Questions",
+        "level": "h3"
+      },
+      "children": []
+    },
+    "sidebar-accordion": {
+      "type": "Accordion",
+      "props": {
+        "bordered": true,
+        "multiselectable": true,
+        "items": [
+          {
+            "title": "What records can I request?",
+            "content": "You may request any record maintained by the City of Fairview that is not exempt from disclosure under state or federal law. This includes meeting minutes, contracts, budgets, correspondence, permits, and more."
+          },
+          {
+            "title": "Are there any fees?",
+            "content": "The first 50 pages of standard copies are provided at no charge. Additional pages cost $0.15 each. Electronic records are generally provided free of charge. Specialized media or certified copies may incur additional fees."
+          },
+          {
+            "title": "How long will it take to get my records?",
+            "content": "We will acknowledge your request within 1 business day and provide a substantive response within 5 business days. Complex requests involving large volumes of records or legal review may require an extension of up to 10 additional business days."
+          },
+          {
+            "title": "Can I appeal a denial?",
+            "content": "Yes. If your request is denied in whole or in part, you will receive a written explanation of the legal basis for the denial. You may file an appeal with the City Manager's Office within 30 calendar days of the denial."
+          },
+          {
+            "title": "Can I submit a request anonymously?",
+            "content": "You are not required to state the reason for your request. However, we do need a name and contact method (email or mailing address) to deliver the responsive records to you."
+          }
+        ]
+      },
+      "children": []
+    },
+    "table-section": {
+      "type": "Section",
+      "props": {
+        "variant": "light",
+        "title": "Recent Public Records Requests"
+      },
+      "children": [
+        "table-intro",
+        "requests-table",
+        "table-note",
+        "pagination"
+      ]
+    },
+    "table-intro": {
+      "type": "Text",
+      "props": {
+        "text": "The following table shows recently submitted public records requests and their current processing status. This information is updated daily.",
+        "variant": "body"
+      },
+      "children": []
+    },
+    "requests-table": {
+      "type": "Table",
+      "props": {
+        "caption": "Recent Public Records Requests — Updated January 13, 2025",
+        "striped": true,
+        "scrollable": true,
+        "columns": [
+          "Confirmation #",
+          "Date Submitted",
+          "Requester",
+          "Department",
+          "Description",
+          "Status",
+          "Est. Completion"
+        ],
+        "rows": [
+          ["PRR-2025-0042", "01/10/2025", "Michael Torres", "Finance", "Annual budget reports for FY2022–FY2024", "In Review", "01/17/2025"],
+          ["PRR-2025-0041", "01/09/2025", "Sarah Chen", "Planning & Zoning", "Zoning variance applications for 400 block of Oak Avenue, 2023–2024", "Processing", "01/16/2025"],
+          ["PRR-2025-0040", "01/08/2025", "David Washington", "Police Department", "Incident reports for traffic accidents at Main St. & 5th Ave., Dec 2024", "Completed", "01/13/2025"],
+          ["PRR-2025-0039", "01/07/2025", "Emily Nguyen", "City Clerk", "City Council meeting minutes from November and December 2024", "Completed", "01/10/2025"],
+          ["PRR-2025-0038", "01/06/2025", "Robert Martinez", "Public Works", "Water quality testing results for Fairview Reservoir, Q3–Q4 2024", "Completed", "01/10/2025"],
+          ["PRR-2025-0037", "01/03/2025", "Jennifer Adams", "Human Resources", "Salary schedules and classification plans for all city departments, current fiscal year", "Completed", "01/08/2025"],
+          ["PRR-2025-0036", "01/02/2025", "Thomas Kim", "Fire Department", "Inspection reports for commercial properties on Industrial Blvd., 2024", "Partially Denied", "01/07/2025"],
+          ["PRR-2025-0035", "12/30/2024", "Lisa Patel", "Parks & Recreation", "Contracts and invoices for Riverside Park renovation project", "Completed", "01/06/2025"]
+        ]
+      },
+      "children": []
+    },
+    "table-note": {
+      "type": "Alert",
+      "props": {
+        "type": "info",
+        "slim": true,
+        "message": "Status definitions: \"In Review\" — request received and being evaluated; \"Processing\" — records being gathered and reviewed; \"Completed\" — records available for pickup or delivery; \"Partially Denied\" — some records withheld under applicable exemptions."
+      },
+      "children": []
+    },
+    "pagination": {
+      "type": "Pagination",
+      "props": {
+        "totalPages": 12,
+        "page": { "$bindState": "/currentPage" },
+        "ariaLabel": "Public records request table pagination"
+      },
+      "children": []
+    },
+    "footer": {
+      "type": "Footer",
+      "props": {
+        "variant": "big",
+        "agencyName": "City of Fairview",
+        "agencyUrl": "/",
+        "returnToTop": true,
+        "navGroups": [
+          {
+            "heading": "City Services",
+            "links": [
+              { "label": "Public Records", "href": "/public-records" },
+              { "label": "Business Licenses", "href": "/services/licenses" },
+              { "label": "Building Permits", "href": "/services/permits" },
+              { "label": "Vital Records", "href": "/services/vital-records" }
+            ]
+          },
+          {
+            "heading": "Government",
+            "links": [
+              { "label": "City Council", "href": "/government/council" },
+              { "label": "Departments", "href": "/government/departments" },
+              { "label": "Meeting Agendas", "href": "/government/meetings" },
+              { "label": "Budget & Finance", "href": "/government/budget" }
+            ]
+          },
+          {
+            "heading": "Community",
+            "links": [
+              { "label": "Events Calendar", "href": "/community/events" },
+              { "label": "Parks & Recreation", "href": "/community/parks" },
+              { "label": "Public Safety", "href": "/community/safety" },
+              { "label": "Volunteer Opportunities", "href": "/community/volunteer" }
+            ]
+          }
+        ],
+        "contactHeading": "City Clerk's Office",
+        "contactInfo": [
+          { "type": "address", "value": "200 Main Street, Suite 110, Fairview, ST 45678" },
+          { "type": "phone", "value": "(555) 234-5678" },
+          { "type": "email", "value": "records@fairview.gov" }
+        ],
+        "socialLinks": [
+          { "platform": "facebook", "href": "https://facebook.com/CityOfFairview", "label": "Facebook" },
+          { "platform": "twitter", "href": "https://twitter.com/FairviewGov", "label": "Twitter" },
+          { "platform": "youtube", "href": "https://youtube.com/CityOfFairview", "label": "YouTube" },
+          { "platform": "instagram", "href": "https://instagram.com/CityOfFairview", "label": "Instagram" }
+        ]
+      },
+      "children": []
+    },
+    "identifier": {
+      "type": "Identifier",
+      "props": {
+        "domain": "fairview.gov",
+        "agencyName": "City of Fairview",
+        "agencyUrl": "/",
+        "disclaimer": "An official website of the City of Fairview",
+        "links": [
+          { "label": "Accessibility", "href": "/accessibility" },
+          { "label": "Privacy Policy", "href": "/privacy" },
+          { "label": "FOIA", "href": "/foia" },
+          { "label": "No FEAR Act", "href": "/no-fear-act" }
+        ],
+        "showUsagov": false
+      },
+      "children": []
+    }
+  }
+}

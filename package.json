@@ -1,68 +1,93 @@
 {
-  "name": "json-render",
-  "private": true,
+  "name": "@cdt5058/json-render-uswds",
+  "version": "0.1.0",
+  "description": "U.S. Web Design System (USWDS) component library for @json-render/core. JSON becomes accessible, government-compliant React components.",
   "license": "Apache-2.0",
+  "keywords": [
+    "json",
+    "ui",
+    "react",
+    "uswds",
+    "us-web-design-system",
+    "government",
+    "accessibility",
+    "ai",
+    "generative-ui",
+    "llm",
+    "renderer",
+    "components",
+    "federal"
+  ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/vercel-labs/json-render.git"
+    "url": "git+https://github.com/cdt5058/json-render-uswds.git"
   },
-  "homepage": "https://github.com/vercel-labs/json-render#readme",
+  "homepage": "https://github.com/cdt5058/json-render-uswds#readme",
   "bugs": {
-    "url": "https://github.com/vercel-labs/json-render/issues"
+    "url": "https://github.com/cdt5058/json-render-uswds/issues"
   },
+  "publishConfig": {
+    "access": "public"
+  },
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    },
+    "./catalog": {
+      "types": "./dist/catalog.d.ts",
+      "import": "./dist/catalog.mjs",
+      "require": "./dist/catalog.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "CHANGELOG.md"
+  ],
   "scripts": {
-    "build": "turbo run build",
-    "predev": "command -v portless >/dev/null 2>&1 || (echo '\\nportless is required but not installed. Run: npm i -g portless\\nSee: https://github.com/vercel-labs/portless\\n' && exit 1)",
-    "dev": "turbo run dev --concurrency 20",
-    "lint": "turbo run lint",
-    "format": "prettier --write \"**/*.{ts,tsx}\"",
-    "type-check": "turbo run check-types",
-    "check-types": "turbo run check-types",
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "test:e2e": "pnpm --filter e2e-tests test",
-    "prepare": "husky",
     "changeset": "changeset",
-    "ci:version": "changeset version && pnpm install --no-frozen-lockfile",
-    "ci:publish": "pnpm run build && changeset publish",
-    "generate:og": "npx tsx scripts/generate-og-images.mts"
+    "ci:version": "changeset version",
+    "ci:publish": "npm run build && changeset publish"
+  },
+  "dependencies": {
+    "@json-render/core": "^0.16.0",
+    "@json-render/react": "^0.16.0"
   },
   "devDependencies": {
-    "@changesets/cli": "2.29.8",
-    "@resvg/resvg-js": "2.6.2",
-    "@solidjs/testing-library": "^0.8.10",
-    "@sveltejs/vite-plugin-svelte": "^6.2.4",
-    "@testing-library/dom": "^10.4.1",
+    "@changesets/cli": "^2.29.8",
     "@testing-library/react": "^16.3.1",
-    "@testing-library/svelte": "^5.2.0",
     "@types/react": "^19.2.3",
-    "husky": "^9.1.7",
+    "@types/react-dom": "^19.2.3",
     "jsdom": "^27.4.0",
-    "lint-staged": "^16.2.7",
-    "prettier": "^3.7.4",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
-    "satori": "0.25.0",
-    "solid-js": "^1.9.11",
-    "svelte": "^5.0.0",
-    "turbo": "^2.7.4",
-    "typescript": "5.9.2",
-    "vite-plugin-solid": "^2.11.10",
-    "vitest": "^4.0.17"
+    "tsup": "^8.0.2",
+    "typescript": "^5.4.5",
+    "vitest": "^4.0.17",
+    "zod": "^4.3.6"
   },
-  "packageManager": "pnpm@10.29.3",
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "zod": "^4.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@uswds/uswds": {
+      "optional": true
+    }
+  },
   "engines": {
     "node": ">=18"
-  },
-  "lint-staged": {
-    "*.{ts,tsx}": "prettier --write"
-  },
-  "workspaces": [
-    "apps/*",
-    "examples/*",
-    "examples/stripe-app/*",
-    "packages/*",
-    "tests/*"
-  ]
+  }
 }
