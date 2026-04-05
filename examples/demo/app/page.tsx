@@ -19,6 +19,64 @@ const EXAMPLE_PROMPTS = [
 ];
 
 type Tab = "render" | "source";
+type Provider = "anthropic" | "openai" | "google" | "ollama" | "lmstudio" | "custom";
+
+interface ProviderConfig {
+  label: string;
+  defaultModel: string;
+  suggestions: string[];
+  needsBaseUrl: boolean;
+  defaultBaseUrl?: string;
+  needsApiKey: boolean;
+}
+
+const PROVIDERS: Record<Provider, ProviderConfig> = {
+  anthropic: {
+    label: "Anthropic",
+    defaultModel: "claude-opus-4-6",
+    suggestions: ["claude-opus-4-6", "claude-sonnet-4-6", "claude-haiku-4-5-20251001"],
+    needsBaseUrl: false,
+    needsApiKey: false,
+  },
+  openai: {
+    label: "OpenAI",
+    defaultModel: "gpt-4o",
+    suggestions: ["gpt-4o", "gpt-4o-mini", "gpt-4-turbo", "o1", "o3-mini"],
+    needsBaseUrl: false,
+    needsApiKey: true,
+  },
+  google: {
+    label: "Google",
+    defaultModel: "gemini-2.0-flash",
+    suggestions: ["gemini-2.0-flash", "gemini-1.5-pro", "gemini-1.5-flash"],
+    needsBaseUrl: false,
+    needsApiKey: true,
+  },
+  ollama: {
+    label: "Ollama (local)",
+    defaultModel: "llama3.1",
+    suggestions: ["llama3.1", "llama3.1:70b", "mistral", "mixtral", "gemma2", "qwen2.5-coder"],
+    needsBaseUrl: true,
+    defaultBaseUrl: "http://localhost:11434/v1",
+    needsApiKey: false,
+  },
+  lmstudio: {
+    label: "LM Studio (local)",
+    defaultModel: "local-model",
+    suggestions: ["local-model"],
+    needsBaseUrl: true,
+    defaultBaseUrl: "http://localhost:1234/v1",
+    needsApiKey: false,
+  },
+  custom: {
+    label: "Custom (OpenAI-compatible)",
+    defaultModel: "",
+    suggestions: [],
+    needsBaseUrl: true,
+    defaultBaseUrl: "",
+    needsApiKey: true,
+  },
+};
 
 export default function Home() {
   const [prompt, setPrompt] = useState("");
@@ -28,6 +86,23 @@ export default function Home() {
   const [activeTab, setActiveTab] = useState<Tab>("render");
   const [streamingJSON, setStreamingJSON] = useState("");
   const [sidebarOpen, setSidebarOpen] = useState(true);
+
+  // Model picker state
+  const [provider, setProvider] = useState<Provider>("anthropic");
+  const [modelId, setModelId] = useState(PROVIDERS.anthropic.defaultModel);
+  const [baseUrl, setBaseUrl] = useState("");
+  const [apiKey, setApiKey] = useState("");
+  const [showModelPicker, setShowModelPicker] = useState(false);
+
+  const providerConfig = PROVIDERS[provider];
+
+  const handleProviderChange = (newProvider: Provider) => {
+    const config = PROVIDERS[newProvider];
+    setProvider(newProvider);
+    setModelId(config.defaultModel);
+    setBaseUrl(config.defaultBaseUrl || "");
+    setApiKey("");
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -43,7 +118,13 @@ export default function Home() {
       const response = await fetch("/api/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt }),
+        body: JSON.stringify({
+          prompt,
+          provider,
+          modelId,
+          baseUrl: baseUrl || undefined,
+          apiKey: apiKey || undefined,
+        }),
       });
 
       if (!response.ok) {
@@ -109,17 +190,10 @@ export default function Home() {
               className="text-gray-400 hover:text-white transition p-1 rounded"
               title={sidebarOpen ? "Hide sidebar" : "Show sidebar"}
             >
-              {sidebarOpen ? (
-                <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <rect x="3" y="3" width="18" height="18" rx="2" />
-                  <path d="M9 3v18" />
-                </svg>
-              ) : (
-                <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <rect x="3" y="3" width="18" height="18" rx="2" />
-                  <path d="M9 3v18" />
-                </svg>
-              )}
+              <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <rect x="3" y="3" width="18" height="18" rx="2" />
+                <path d="M9 3v18" />
+              </svg>
             </button>
             <div>
               <div className="flex items-baseline gap-1">
@@ -164,6 +238,122 @@ export default function Home() {
                   className="w-full h-36 resize-none rounded-lg border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
+
+              {/* Model picker toggle */}
+              <div className="border border-gray-200 rounded-lg overflow-hidden">
+                <button
+                  type="button"
+                  onClick={() => setShowModelPicker((v) => !v)}
+                  className="w-full flex items-center justify-between px-3 py-2 text-xs text-gray-600 hover:bg-gray-50 transition"
+                >
+                  <span className="flex items-center gap-1.5">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <circle cx="12" cy="12" r="3" />
+                      <path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14" />
+                    </svg>
+                    <span className="font-medium">{providerConfig.label}</span>
+                    <span className="text-gray-400">·</span>
+                    <span className="font-mono text-gray-500 truncate max-w-[100px]">{modelId || "no model"}</span>
+                  </span>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className={`w-3.5 h-3.5 transition-transform ${showModelPicker ? "rotate-180" : ""}`}
+                    viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
+                  >
+                    <polyline points="6 9 12 15 18 9" />
+                  </svg>
+                </button>
+
+                {showModelPicker && (
+                  <div className="border-t border-gray-200 p-3 space-y-3 bg-gray-50">
+                    {/* Provider select */}
+                    <div>
+                      <label className="block text-xs font-medium text-gray-600 mb-1">Provider</label>
+                      <select
+                        value={provider}
+                        onChange={(e) => handleProviderChange(e.target.value as Provider)}
+                        className="w-full rounded border border-gray-300 px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-blue-500 bg-white"
+                      >
+                        {(Object.keys(PROVIDERS) as Provider[]).map((p) => (
+                          <option key={p} value={p}>{PROVIDERS[p].label}</option>
+                        ))}
+                      </select>
+                    </div>
+
+                    {/* Model input */}
+                    <div>
+                      <label className="block text-xs font-medium text-gray-600 mb-1">Model</label>
+                      <input
+                        type="text"
+                        value={modelId}
+                        onChange={(e) => setModelId(e.target.value)}
+                        placeholder="Model ID"
+                        className="w-full rounded border border-gray-300 px-2 py-1.5 text-xs font-mono focus:outline-none focus:ring-1 focus:ring-blue-500"
+                      />
+                      {providerConfig.suggestions.length > 0 && (
+                        <div className="flex flex-wrap gap-1 mt-1.5">
+                          {providerConfig.suggestions.map((s) => (
+                            <button
+                              key={s}
+                              type="button"
+                              onClick={() => setModelId(s)}
+                              className={`text-xs px-1.5 py-0.5 rounded font-mono transition ${
+                                modelId === s
+                                  ? "bg-blue-100 text-blue-700 border border-blue-300"
+                                  : "bg-white border border-gray-200 text-gray-500 hover:border-blue-300 hover:text-blue-600"
+                              }`}
+                            >
+                              {s}
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Base URL (local providers) */}
+                    {providerConfig.needsBaseUrl && (
+                      <div>
+                        <label className="block text-xs font-medium text-gray-600 mb-1">Base URL</label>
+                        <input
+                          type="text"
+                          value={baseUrl}
+                          onChange={(e) => setBaseUrl(e.target.value)}
+                          placeholder={providerConfig.defaultBaseUrl || "http://localhost:11434/v1"}
+                          className="w-full rounded border border-gray-300 px-2 py-1.5 text-xs font-mono focus:outline-none focus:ring-1 focus:ring-blue-500"
+                        />
+                      </div>
+                    )}
+
+                    {/* API Key */}
+                    {providerConfig.needsApiKey && (
+                      <div>
+                        <label className="block text-xs font-medium text-gray-600 mb-1">
+                          API Key
+                          <span className="ml-1 text-gray-400 font-normal">(sent only to your server)</span>
+                        </label>
+                        <input
+                          type="password"
+                          value={apiKey}
+                          onChange={(e) => setApiKey(e.target.value)}
+                          placeholder="sk-..."
+                          autoComplete="off"
+                          className="w-full rounded border border-gray-300 px-2 py-1.5 text-xs font-mono focus:outline-none focus:ring-1 focus:ring-blue-500"
+                        />
+                      </div>
+                    )}
+
+                    {/* Local model hint */}
+                    {(provider === "ollama" || provider === "lmstudio") && (
+                      <p className="text-xs text-gray-400 leading-relaxed">
+                        {provider === "ollama"
+                          ? "Make sure Ollama is running locally. Pull a model with: ollama pull llama3.1"
+                          : "Make sure LM Studio is running with a model loaded and the local server enabled."}
+                      </p>
+                    )}
+                  </div>
+                )}
+              </div>
+
               <button
                 type="submit"
                 disabled={isLoading || !prompt.trim()}

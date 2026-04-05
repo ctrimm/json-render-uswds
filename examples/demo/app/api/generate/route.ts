@@ -1,5 +1,7 @@
-import { anthropic } from "@ai-sdk/anthropic";
-import { streamText } from "ai";
+import { createAnthropic } from "@ai-sdk/anthropic";
+import { createOpenAI } from "@ai-sdk/openai";
+import { createGoogleGenerativeAI } from "@ai-sdk/google";
+import { streamText, LanguageModel } from "ai";
 import { catalog } from "@/lib/catalog";
 import { specSchema } from "@/lib/spec-schema";
 
@@ -23,9 +25,43 @@ function extractSingleJSON(text: string) {
   return text;
 }
 
+function getModel(provider: string, modelId: string, baseUrl?: string, apiKey?: string): LanguageModel {
+  switch (provider) {
+    case "anthropic": {
+      const anthropic = createAnthropic({ apiKey: apiKey || process.env.ANTHROPIC_API_KEY });
+      return anthropic(modelId) as LanguageModel;
+    }
+    case "openai": {
+      const openai = createOpenAI({ apiKey: apiKey || process.env.OPENAI_API_KEY });
+      return openai(modelId) as LanguageModel;
+    }
+    case "google": {
+      const google = createGoogleGenerativeAI({ apiKey: apiKey || process.env.GOOGLE_GENERATIVE_AI_API_KEY });
+      return google(modelId) as LanguageModel;
+    }
+    case "ollama":
+    case "lmstudio":
+    case "custom": {
+      const resolvedBaseUrl =
+        baseUrl ||
+        (provider === "ollama" ? "http://localhost:11434/v1" : "http://localhost:1234/v1");
+      const openaiCompat = createOpenAI({
+        baseURL: resolvedBaseUrl,
+        apiKey: apiKey || "local", // local servers typically ignore the key
+      });
+      return openaiCompat(modelId) as LanguageModel;
+    }
+    default: {
+      // Fallback to Anthropic
+      const anthropic = createAnthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+      return anthropic("claude-opus-4-6") as LanguageModel;
+    }
+  }
+}
+
 export async function POST(req: Request) {
   try {
-    const { prompt } = await req.json();
+    const { prompt, provider = "anthropic", modelId = "claude-opus-4-6", baseUrl, apiKey } = await req.json();
 
     if (!prompt || typeof prompt !== "string") {
       return Response.json(
@@ -62,8 +98,18 @@ CRITICAL INSTRUCTIONS:
 - Include proper headers, navigation, and footers
 - Make content accessible and follow federal guidelines`;
 
+    let model: LanguageModel;
+    try {
+      model = getModel(provider, modelId, baseUrl, apiKey);
+    } catch (err) {
+      return Response.json(
+        { error: `Failed to initialize model: ${err instanceof Error ? err.message : String(err)}` },
+        { status: 400 }
+      );
+    }
+
     const result = streamText({
-      model: anthropic("claude-opus-4-6"),
+      model,
       system: systemPrompt,
       prompt: `Create a USWDS page for the following request: ${prompt}`,
       temperature: 0.7,

@@ -14,6 +14,26 @@ import { type UswdsProps } from "./catalog";
 // Helpers
 // =============================================================================
 
+/**
+ * Block javascript:, vbscript:, and data: URIs to prevent XSS via href/src.
+ * Returns "#" for any dangerous URL; otherwise returns the original value.
+ */
+function safeHref(url: string | null | undefined): string | undefined {
+  if (!url) return undefined;
+  if (/^\s*(javascript|vbscript|data):/i.test(url)) return "#";
+  return url;
+}
+
+/**
+ * Sanitize a user-supplied URL for use inside a CSS url() value.
+ * Strips characters that could break the url() context or trigger
+ * CSS injection (quotes, parens, backslashes, newlines).
+ */
+function safeCssUrl(url: string | null | undefined): string | undefined {
+  if (!url) return undefined;
+  return url.replace(/['"()\\\n\r]/g, "");
+}
+
 function getPaginationRange(
   current: number,
   total: number,
@@ -227,7 +247,7 @@ export const uswdsComponents = {
           <p className="usa-footer__logo-heading">
             <a
               className="usa-footer__logo-anchor"
-              href={props.agencyUrl ?? "/"}
+              href={safeHref(props.agencyUrl) ?? "/"}
             >
               {props.agencyName}
             </a>
@@ -269,7 +289,7 @@ export const uswdsComponents = {
             <div key={s.platform} className="grid-col-auto">
               <a
                 className="usa-social-link"
-                href={s.href}
+                href={safeHref(s.href)}
                 aria-label={s.label}
                 rel="noreferrer"
                 target="_blank"
@@ -310,7 +330,7 @@ export const uswdsComponents = {
                             className="mobile-lg:grid-col-auto usa-footer__primary-content"
                           >
                             <a
-                              href={link.href}
+                              href={safeHref(link.href)}
                               className="usa-footer__primary-link"
                             >
                               {link.label}
@@ -357,7 +377,7 @@ export const uswdsComponents = {
                     <ul className="usa-list usa-list--unstyled">
                       {group.links.map((link, j) => (
                         <li key={j} className="usa-footer__secondary-link">
-                          <a href={link.href}>{link.label}</a>
+                          <a href={safeHref(link.href)}>{link.label}</a>
                         </li>
                       ))}
                     </ul>
@@ -396,7 +416,7 @@ export const uswdsComponents = {
                   key={i}
                   className="mobile-lg:grid-col-4 desktop:grid-col-auto usa-footer__primary-content"
                 >
-                  <a href={link.href} className="usa-footer__primary-link">
+                  <a href={safeHref(link.href)} className="usa-footer__primary-link">
                     {link.label}
                   </a>
                 </li>
@@ -694,7 +714,7 @@ export const uswdsComponents = {
                 aria-current={isLast ? "page" : undefined}
               >
                 {item.href && !isLast ? (
-                  <a href={item.href} className="usa-breadcrumb__link">
+                  <a href={safeHref(item.href)} className="usa-breadcrumb__link">
                     <span>{item.label}</span>
                   </a>
                 ) : (
@@ -726,7 +746,7 @@ export const uswdsComponents = {
             <div className="usa-navbar">
               <div className="usa-logo">
                 <em className="usa-logo__text">
-                  <a href={props.siteUrl ?? "/"} title="Home">
+                  <a href={safeHref(props.siteUrl) ?? "/"} title="Home">
                     {props.logoUrl && (
                       <img
                         className="usa-header__logo"
@@ -836,14 +856,14 @@ export const uswdsComponents = {
                           >
                             {(item.items ?? []).map((sub, j) => (
                               <li key={j} className="usa-nav__submenu-item">
-                                <a href={sub.href}>{sub.label}</a>
+                                <a href={safeHref(sub.href)}>{sub.label}</a>
                               </li>
                             ))}
                           </ul>
                         </>
                       ) : (
                         <a
-                          href={item.href}
+                          href={safeHref(item.href)}
                           className={`usa-nav__link${item.current ? " usa-current" : ""}`}
                           aria-current={item.current ? "page" : undefined}
                         >
@@ -863,7 +883,7 @@ export const uswdsComponents = {
 
   SkipNav: ({ props }: BaseComponentProps<UswdsProps<"SkipNav">>) => {
     return (
-      <a className="usa-skipnav" href={props.href ?? "#main-content"}>
+      <a className="usa-skipnav" href={safeHref(props.href) ?? "#main-content"}>
         {props.label ?? "Skip to main content"}
       </a>
     );
@@ -877,7 +897,7 @@ export const uswdsComponents = {
           {items.map((item, i) => (
             <li key={i} className="usa-sidenav__item">
               <a
-                href={item.href}
+                href={safeHref(item.href)}
                 className={item.current ? "usa-current" : undefined}
                 aria-current={item.current ? "page" : undefined}
               >
@@ -888,7 +908,7 @@ export const uswdsComponents = {
                   {item.children.map((child, j) => (
                     <li key={j} className="usa-sidenav__item">
                       <a
-                        href={child.href}
+                        href={safeHref(child.href)}
                         className={child.current ? "usa-current" : undefined}
                         aria-current={child.current ? "page" : undefined}
                       >
@@ -933,7 +953,7 @@ export const uswdsComponents = {
                 .map((lang) => (
                   <li key={lang.lang} className="usa-language__submenu-item">
                     <a
-                      href={lang.href}
+                      href={safeHref(lang.href)}
                       lang={lang.lang}
                       hrefLang={lang.lang}
                       className="usa-language__submenu-link"
@@ -952,7 +972,7 @@ export const uswdsComponents = {
   Link: ({ props, emit }: BaseComponentProps<UswdsProps<"Link">>) => {
     return (
       <a
-        href={props.href}
+        href={safeHref(props.href)}
         className={props.variant === "nav" ? "usa-nav__link" : "usa-link"}
         target={props.external ? "_blank" : undefined}
         rel={props.external ? "noreferrer" : undefined}
@@ -993,7 +1013,7 @@ export const uswdsComponents = {
         <ul className="usa-in-page-nav__list">
           {items.map((item, i) => (
             <li key={i} className="usa-in-page-nav__item">
-              <a href={item.href} className="usa-in-page-nav__link">
+              <a href={safeHref(item.href)} className="usa-in-page-nav__link">
                 {item.label}
               </a>
             </li>
@@ -1315,7 +1335,7 @@ export const uswdsComponents = {
             {props.logoUrl && (
               <div className="usa-identifier__logos">
                 <a
-                  href={props.agencyUrl ?? "/"}
+                  href={safeHref(props.agencyUrl) ?? "/"}
                   className="usa-identifier__logo"
                 >
                   <img
@@ -1336,7 +1356,7 @@ export const uswdsComponents = {
                 {props.disclaimer ?? (
                   <>
                     An official website of the{" "}
-                    <a className="usa-link" href={props.agencyUrl ?? "/"}>
+                    <a className="usa-link" href={safeHref(props.agencyUrl) ?? "/"}>
                       {props.agencyName}
                     </a>
                   </>
@@ -1355,7 +1375,7 @@ export const uswdsComponents = {
                 {links.map((link, i) => (
                   <li key={i} className="usa-identifier__required-links-item">
                     <a
-                      href={link.href}
+                      href={safeHref(link.href)}
                       className="usa-identifier__required-link usa-link"
                     >
                       {link.label}
@@ -1460,7 +1480,7 @@ export const uswdsComponents = {
             <div className="usa-collection__body">
               <h3 className="usa-collection__heading">
                 {item.href ? (
-                  <a className="usa-link" href={item.href}>
+                  <a className="usa-link" href={safeHref(item.href)}>
                     {item.heading}
                   </a>
                 ) : (
@@ -3143,7 +3163,7 @@ export const uswdsComponents = {
         aria-label={props.ariaLabel ?? "Introduction"}
         style={
           props.backgroundUrl
-            ? { backgroundImage: `url(${props.backgroundUrl})` }
+            ? { backgroundImage: `url(${safeCssUrl(props.backgroundUrl)})` }
             : undefined
         }
       >
@@ -3198,10 +3218,12 @@ export const uswdsComponents = {
     return (
       <div className="usa-embed-container">
         <iframe
-          src={props.src}
+          src={safeHref(props.src)}
           title={props.title}
+          sandbox="allow-scripts allow-same-origin allow-fullscreen allow-forms allow-popups"
           allowFullScreen
           loading="lazy"
+          referrerPolicy="no-referrer-when-downgrade"
         />
       </div>
     );

@@ -9,6 +9,8 @@
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^1.0.0",
+    "@ai-sdk/google": "^1.2.22",
+    "@ai-sdk/openai": "^1.3.24",
     "@cdt5058/json-render-uswds": "file:../../",
     "@json-render/core": "^0.16.0",
     "@json-render/react": "^0.16.0",
