@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Renderer, JSONUIProvider } from "@json-render/react";
 import { registry } from "@/lib/registry";
 import type { Spec } from "@/lib/spec-schema";
@@ -119,6 +119,41 @@ export default function Home() {
   const [baseUrl, setBaseUrl] = useState("");
   const [apiKey, setApiKey] = useState("");
   const [showModelPicker, setShowModelPicker] = useState(false);
+  const previewRef = useRef<HTMLDivElement>(null);
+
+  const downloadJSON = () => {
+    if (!spec) return;
+    const blob = new Blob([JSON.stringify(spec, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "uswds-spec.json";
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const downloadHTML = () => {
+    if (!previewRef.current) return;
+    const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>USWDS Page</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/uswds/3.8.2/css/uswds.min.css">
+</head>
+<body>
+${previewRef.current.innerHTML}
+</body>
+</html>`;
+    const blob = new Blob([html], { type: "text/html" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "uswds-page.html";
+    a.click();
+    URL.revokeObjectURL(url);
+  };
 
   const providerConfig = PROVIDERS[provider];
 
@@ -464,6 +499,37 @@ export default function Home() {
                   <Button
                     variant="ghost"
                     size="sm"
+                    onClick={downloadJSON}
+                    disabled={!spec}
+                    className="h-7 text-xs gap-1.5 text-muted-foreground"
+                    title="Download JSON spec"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                      <polyline points="7 10 12 15 17 10" />
+                      <line x1="12" y1="15" x2="12" y2="3" />
+                    </svg>
+                    JSON
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={downloadHTML}
+                    disabled={!spec || activeTab !== "render"}
+                    className="h-7 text-xs gap-1.5 text-muted-foreground"
+                    title="Download rendered HTML (switch to Preview tab first)"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                      <polyline points="7 10 12 15 17 10" />
+                      <line x1="12" y1="15" x2="12" y2="3" />
+                    </svg>
+                    HTML
+                  </Button>
+                  <div className="w-px h-4 bg-border mx-1" />
+                  <Button
+                    variant="ghost"
+                    size="sm"
                     onClick={() => {
                       if (spec) {
                         localStorage.setItem("preview-spec", JSON.stringify(spec));
@@ -514,9 +580,11 @@ export default function Home() {
             )}
 
             {!isLoading && spec && activeTab === "render" && (
-              <JSONUIProvider registry={registry} initialState={{}}>
-                <Renderer spec={spec} registry={registry} />
-              </JSONUIProvider>
+              <div ref={previewRef}>
+                <JSONUIProvider registry={registry} initialState={{}}>
+                  <Renderer spec={spec} registry={registry} />
+                </JSONUIProvider>
+              </div>
             )}
 
             {!isLoading && spec && activeTab === "source" && (
