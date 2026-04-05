@@ -1,0 +1,124 @@
+{
+  "root": "main",
+  "elements": {
+    "main": {
+      "type": "Prose",
+      "props": {
+        "element": "main"
+      },
+      "children": [
+        "gov-banner",
+        "header",
+        "hero",
+        "site-alert",
+        "section",
+        "footer",
+        "identifier"
+      ]
+    },
+    "gov-banner": {
+      "type": "GovBanner",
+      "props": {
+        "tld": ".gov"
+      },
+      "children": []
+    },
+    "header": {
+      "type": "Header",
+      "props": {
+        "siteName": "Public Records Request",
+        "variant": "basic",
+        "navItems": [
+          { "label": "Home", "href": "#", "current": true },
+          { "label": "Requests", "href": "#" },
+          { "label": "Contact", "href": "#" }
+        ]
+      },
+      "children": []
+    },
+    "hero": {
+      "type": "Hero",
+      "props": {
+        "heading": "Request Public Records",
+        "eyebrow": "Transparency is our commitment",
+        "body": "Learn how to access public records efficiently. Submit your request, track status, and gain insights into the process."
+      },
+      "children": []
+    },
+    "site-alert": {
+      "type": "SiteAlert",
+      "props": {
+        "heading": "Service Advisory",
+        "message": "Due to scheduled maintenance, response times may be delayed. We apologize for any inconvenience.",
+        "type": "info"
+      },
+      "children": []
+    },
+    "section": {
+      "type": "Section",
+      "props": {
+        "title": "Recent Public Records Requests",
+        "variant": "light"
+      },
+      "children": [
+        "records-table",
+        "start-request-button"
+      ]
+    },
+    "records-table": {
+      "type": "Table",
+      "props": {
+        "columns": ["Request ID", "Description", "Date Submitted", "Status"],
+        "rows": [
+          ["REQ-001", "City budget report", "2023-10-01", "Approved"],
+          ["REQ-002", "Public meeting minutes", "2023-09-15", "Pending"],
+          ["REQ-003", "Environmental study", "2023-09-10", "Denied"]
+        ],
+        "caption": "List of recent public records requests and their statuses",
+        "striped": true
+      },
+      "children": []
+    },
+    "start-request-button": {
+      "type": "Button",
+      "props": {
+        "label": "Start a New Request",
+        "variant": "default"
+      },
+      "children": []
+    },
+    "footer": {
+      "type": "Footer",
+      "props": {
+        "variant": "medium",
+        "agencyName": "Your Government Agency",
+        "navGroups": [
+          {
+            "heading": "About Us",
+            "links": [
+              { "label": "Our Mission", "href": "#" },
+              { "label": "Leadership", "href": "#" }
+            ]
+          },
+          {
+            "heading": "Get Involved",
+            "links": [
+              { "label": "Volunteer", "href": "#" },
+              { "label": "Careers", "href": "#" }
+            ]
+          }
+        ]
+      },
+      "children": []
+    },
+    "identifier": {
+      "type": "Identifier",
+      "props": {
+        "domain": "youragency.gov",
+        "agencyName": "Your Government Agency",
+        "disclaimer": "An official website of the United States government."
+      },
+      "children": []
+    }
+  }
+}

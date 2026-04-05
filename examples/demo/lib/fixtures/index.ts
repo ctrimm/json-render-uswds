@@ -1,5 +1,6 @@
 import type { Spec } from "@/lib/spec-schema";
 import publicRecordsSpec from "./public-records.json";
+import publicRecordsGpt4oSpec from "./public-records-gpt4o.json";
 import federalBenefitsSpec from "./federal-benefits.json";
 
 export interface Fixture {
@@ -42,18 +43,16 @@ export const FIXTURES: Fixture[] = [
     provider: "anthropic",
     spec: federalBenefitsSpec as Spec,
   },
-  // To add more model variants, import the JSON and add entries with the same groupId.
-  // Example:
-  // {
-  //   id: "public-records-gpt4o",
-  //   groupId: "public-records",
-  //   label: "Public Records Request",
-  //   description: "...",
-  //   prompt: "...(same prompt)...",
-  //   model: "gpt-4o",
-  //   provider: "openai",
-  //   spec: publicRecordsGpt4oSpec as Spec,
-  // },
+  {
+    id: "public-records-gpt4o",
+    groupId: "public-records",
+    label: "Public Records Request",
+    description: "FOIA-style records request portal with hero, process list, status table, and footer.",
+    prompt: "Create a public records request page with a hero section explaining the process, a table showing recent requests and their status, and a button to start a new request. Include site alert for any current service advisories.",
+    model: "gpt-4o",
+    provider: "openai",
+    spec: publicRecordsGpt4oSpec as Spec,
+  },
 ];
 
 /** Returns fixtures grouped for sidebar rendering */
