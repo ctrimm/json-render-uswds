@@ -39,6 +39,13 @@ function getModel(provider: string, modelId: string, baseUrl?: string, apiKey?: 
       const google = createGoogleGenerativeAI({ apiKey: apiKey || process.env.GOOGLE_GENERATIVE_AI_API_KEY });
       return google(modelId) as LanguageModel;
     }
+    case "openrouter": {
+      const openrouter = createOpenAI({
+        baseURL: "https://openrouter.ai/api/v1",
+        apiKey: apiKey || process.env.OPENROUTER_API_KEY,
+      });
+      return openrouter(modelId) as LanguageModel;
+    }
     case "ollama":
     case "lmstudio":
     case "custom": {
