@@ -4,7 +4,7 @@ import { useState, useRef } from "react";
 import { Renderer, JSONUIProvider } from "@json-render/react";
 import { registry } from "@/lib/registry";
 import type { Spec } from "@/lib/spec-schema";
-import { FIXTURES } from "@/lib/fixtures";
+import { getFixtureGroups } from "@/lib/fixtures";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
@@ -119,6 +119,10 @@ export default function Home() {
   const [baseUrl, setBaseUrl] = useState("");
   const [apiKey, setApiKey] = useState("");
   const [showModelPicker, setShowModelPicker] = useState(false);
+  // Track which variant is active per fixture group
+  const [activeVariants, setActiveVariants] = useState<Record<string, string>>(() =>
+    Object.fromEntries(getFixtureGroups().map((g) => [g.groupId, g.variants[0].id]))
+  );
   const previewRef = useRef<HTMLDivElement>(null);
 
   const downloadJSON = () => {
@@ -419,28 +423,55 @@ ${previewRef.current.innerHTML}
                   Load fixture
                 </p>
                 <div className="space-y-2">
-                  {FIXTURES.map((fixture) => (
-                    <button
-                      key={fixture.id}
-                      onClick={() => {
-                        setSpec(fixture.spec);
-                        setPrompt(fixture.prompt);
-                        setActiveTab("render");
-                        setSidebarOpen(false);
-                      }}
-                      className="w-full text-left p-3 rounded-lg border border-sidebar-border bg-background/60 hover:bg-sidebar-accent hover:border-primary/30 transition group"
-                    >
-                      <div className="flex items-start justify-between gap-2 mb-1">
-                        <span className="text-xs font-semibold text-sidebar-foreground group-hover:text-primary transition">
-                          {fixture.label}
-                        </span>
-                        <Badge variant="outline" className={`text-[10px] shrink-0 ${PROVIDER_BADGES[fixture.provider] ?? ""}`}>
-                          {fixture.model.split("-").slice(0, 2).join("-")}
-                        </Badge>
+                  {getFixtureGroups().map((group) => {
+                    const activeId = activeVariants[group.groupId];
+                    const activeFixture = group.variants.find((v) => v.id === activeId) ?? group.variants[0];
+                    return (
+                      <div key={group.groupId} className="rounded-lg border border-sidebar-border bg-background/60 overflow-hidden">
+                        {/* Model variant pills — only shown when >1 variant exists */}
+                        {group.variants.length > 1 && (
+                          <div className="flex items-center gap-1 px-3 pt-2.5 flex-wrap">
+                            {group.variants.map((v) => (
+                              <button
+                                key={v.id}
+                                type="button"
+                                onClick={() => setActiveVariants((prev) => ({ ...prev, [group.groupId]: v.id }))}
+                                className={`text-[10px] font-medium px-2 py-0.5 rounded-full border transition ${
+                                  v.id === activeId
+                                    ? `${PROVIDER_BADGES[v.provider] ?? "bg-primary/10 text-primary border-primary/30"} font-semibold`
+                                    : "bg-transparent text-muted-foreground border-border hover:border-primary/30 hover:text-foreground"
+                                }`}
+                              >
+                                {v.model.split(/[-/]/).slice(0, 2).join("-")}
+                              </button>
+                            ))}
+                          </div>
+                        )}
+                        {/* Load button */}
+                        <button
+                          onClick={() => {
+                            setSpec(activeFixture.spec);
+                            setPrompt(activeFixture.prompt);
+                            setActiveTab("render");
+                            setSidebarOpen(false);
+                          }}
+                          className="w-full text-left p-3 hover:bg-sidebar-accent transition group"
+                        >
+                          <div className="flex items-start justify-between gap-2 mb-1">
+                            <span className="text-xs font-semibold text-sidebar-foreground group-hover:text-primary transition">
+                              {group.label}
+                            </span>
+                            {group.variants.length === 1 && (
+                              <Badge variant="outline" className={`text-[10px] shrink-0 ${PROVIDER_BADGES[activeFixture.provider] ?? ""}`}>
+                                {activeFixture.model.split("-").slice(0, 2).join("-")}
+                              </Badge>
+                            )}
+                          </div>
+                          <p className="text-[11px] text-muted-foreground leading-relaxed">{group.description}</p>
+                        </button>
                       </div>
-                      <p className="text-[11px] text-muted-foreground leading-relaxed">{fixture.description}</p>
-                    </button>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
 
