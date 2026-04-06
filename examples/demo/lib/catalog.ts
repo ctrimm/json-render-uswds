@@ -4,4 +4,5 @@ import { uswdsComponentDefinitions } from "@cdt5058/json-render-uswds/catalog";
 
 export const catalog = defineCatalog(schema, {
   components: uswdsComponentDefinitions,
+  actions: {},
 });
