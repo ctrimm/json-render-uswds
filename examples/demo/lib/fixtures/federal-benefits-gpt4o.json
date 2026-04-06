@@ -1,0 +1,207 @@
+{
+  "root": "main-root",
+  "elements": {
+    "main-root": {
+      "type": "Prose",
+      "props": {},
+      "children": [
+        "header",
+        "process-list",
+        "navigation",
+        "form-section",
+        "footer"
+      ]
+    },
+    "header": {
+      "type": "Header",
+      "props": {
+        "variant": "extended",
+        "siteName": "Federal Benefits Application",
+        "siteUrl": "#",
+        "logoUrl": "https://via.placeholder.com/150",
+        "logoAlt": "Agency Logo",
+        "navItems": [
+          { "label": "Home", "href": "#", "current": true },
+          { "label": "Programs", "href": "#" },
+          { "label": "Contact", "href": "#" },
+          { "label": "Help", "href": "#" }
+        ]
+      },
+      "children": []
+    },
+    "process-list": {
+      "type": "ProcessList",
+      "props": {
+        "items": [
+          { "heading": "Step 1: Applicant Information", "content": "Provide your personal details." },
+          { "heading": "Step 2: Income Verification", "content": "Submit proof of income." },
+          { "heading": "Step 3: Document Upload", "content": "Upload required documents." },
+          { "heading": "Step 4: Review & Submit", "content": "Review your information before submitting the application." }
+        ]
+      },
+      "children": []
+    },
+    "navigation": {
+      "type": "SideNav",
+      "props": {
+        "items": [
+          { "label": "Personal Information", "href": "#applicant-info", "current": true },
+          { "label": "Income Verification", "href": "#income-verification" },
+          { "label": "Document Upload", "href": "#document-upload" },
+          { "label": "Review & Submit", "href": "#review" }
+        ],
+        "ariaLabel": "Sections Navigation"
+      },
+      "children": []
+    },
+    "form-section": {
+      "type": "Section",
+      "props": {
+        "title": "Federal Benefits Application",
+        "variant": "default"
+      },
+      "children": ["form"]
+    },
+    "form": {
+      "type": "Form",
+      "props": {},
+      "children": [
+        "applicant-info-section",
+        "income-verification-section",
+        "document-upload-section",
+        "submit-button"
+      ]
+    },
+    "applicant-info-section": {
+      "type": "Section",
+      "props": {
+        "title": "Applicant Information",
+        "text": "Please provide your personal details."
+      },
+      "children": ["first-name", "last-name", "email", "phone"]
+    },
+    "first-name": {
+      "type": "Input",
+      "props": {
+        "label": "First Name",
+        "name": "firstName",
+        "placeholder": "Enter your first name",
+        "required": true,
+        "value": { "$bindState": "/form/applicant/firstName" },
+        "checks": [{ "type": "required", "message": "First name is required" }]
+      },
+      "children": []
+    },
+    "last-name": {
+      "type": "Input",
+      "props": {
+        "label": "Last Name",
+        "name": "lastName",
+        "placeholder": "Enter your last name",
+        "required": true,
+        "value": { "$bindState": "/form/applicant/lastName" },
+        "checks": [{ "type": "required", "message": "Last name is required" }]
+      },
+      "children": []
+    },
+    "email": {
+      "type": "Input",
+      "props": {
+        "label": "Email",
+        "name": "email",
+        "type": "email",
+        "placeholder": "Enter your email",
+        "required": true,
+        "value": { "$bindState": "/form/applicant/email" },
+        "checks": [
+          { "type": "required", "message": "Email is required" },
+          { "type": "email", "message": "Email must be valid" }
+        ]
+      },
+      "children": []
+    },
+    "phone": {
+      "type": "Input",
+      "props": {
+        "label": "Phone Number",
+        "name": "phoneNumber",
+        "type": "tel",
+        "placeholder": "Enter your phone number",
+        "required": true,
+        "value": { "$bindState": "/form/applicant/phoneNumber" },
+        "checks": [
+          { "type": "required", "message": "Phone number is required" },
+          { "type": "pattern", "message": "Phone number must be valid", "args": { "pattern": "^\\+?[1-9]\\d{1,14}$" } }
+        ]
+      },
+      "children": []
+    },
+    "income-verification-section": {
+      "type": "Section",
+      "props": {
+        "title": "Income Verification",
+        "text": "Submit proof of your income."
+      },
+      "children": ["income-docs"]
+    },
+    "income-docs": {
+      "type": "FileInput",
+      "props": {
+        "label": "Upload Income Documents",
+        "name": "incomeDocs",
+        "hint": "Accepted file types: PDF, DOC",
+        "accept": ".pdf,.doc",
+        "required": true
+      },
+      "children": []
+    },
+    "document-upload-section": {
+      "type": "Section",
+      "props": {
+        "title": "Document Upload",
+        "text": "Upload required documents to complete your application."
+      },
+      "children": ["document-upload"]
+    },
+    "document-upload": {
+      "type": "FileInput",
+      "props": {
+        "label": "Upload Supporting Documents",
+        "name": "supportingDocs",
+        "hint": "Accepted file types: PDF, DOC",
+        "accept": ".pdf,.doc",
+        "required": true,
+        "multiple": true
+      },
+      "children": []
+    },
+    "submit-button": {
+      "type": "Button",
+      "props": {
+        "label": "Submit Application",
+        "variant": "default",
+        "type": "submit"
+      },
+      "children": []
+    },
+    "footer": {
+      "type": "Footer",
+      "props": {
+        "variant": "medium",
+        "agencyName": "U.S. Department of Benefits",
+        "agencyUrl": "https://www.benefits.gov",
+        "navGroups": [
+          {
+            "heading": "Helpful Links",
+            "links": [
+              { "label": "Privacy Policy", "href": "#" },
+              { "label": "Terms of Use", "href": "#" },
+              { "label": "Contact Us", "href": "#" }
+            ]
+          }
+        ]
+      },
+      "children": []
+    }
+  }
+}

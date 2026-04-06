@@ -4,7 +4,7 @@ import { useState, useRef } from "react";
 import { Renderer, JSONUIProvider } from "@json-render/react";
 import { registry } from "@/lib/registry";
 import type { Spec } from "@/lib/spec-schema";
-import { getFixtureGroups } from "@/lib/fixtures";
+import { FIXTURES, getFixtureGroups, type Fixture } from "@/lib/fixtures";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
@@ -119,11 +119,25 @@ export default function Home() {
   const [baseUrl, setBaseUrl] = useState("");
   const [apiKey, setApiKey] = useState("");
   const [showModelPicker, setShowModelPicker] = useState(false);
-  // Track which variant is active per fixture group
-  const [activeVariants, setActiveVariants] = useState<Record<string, string>>(() =>
-    Object.fromEntries(getFixtureGroups().map((g) => [g.groupId, g.variants[0].id]))
-  );
+  // Compare mode: slot A and/or slot B — any fixtures from any group
+  const [compareSlots, setCompareSlots] = useState<[string | null, string | null]>([null, null]);
+  // Track which fixture is currently loaded (for tab bar badge)
+  const [loadedFixture, setLoadedFixture] = useState<Fixture | null>(null);
   const previewRef = useRef<HTMLDivElement>(null);
+  const comparePanelRefs = useRef<(HTMLDivElement | null)[]>([null, null]);
+  const isSyncingScroll = useRef(false);
+
+  // Derived: are we in compare view? (any slot set)
+  const isCompareActive = compareSlots[0] !== null || compareSlots[1] !== null;
+
+  const handleCompareScroll = (sourceIndex: number) => {
+    if (isSyncingScroll.current) return;
+    isSyncingScroll.current = true;
+    const source = comparePanelRefs.current[sourceIndex];
+    const target = comparePanelRefs.current[1 - sourceIndex];
+    if (source && target) target.scrollTop = source.scrollTop;
+    requestAnimationFrame(() => { isSyncingScroll.current = false; });
+  };
 
   const downloadJSON = () => {
     if (!spec) return;
@@ -178,6 +192,8 @@ ${previewRef.current.innerHTML}
     setSpec(null);
     setStreamingJSON("");
     setActiveTab("source");
+    setLoadedFixture(null);
+    setCompareSlots([null, null]);
 
     try {
       const response = await fetch("/api/generate", {
@@ -235,7 +251,7 @@ ${previewRef.current.innerHTML}
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
+    <div className="h-screen flex flex-col bg-background overflow-hidden">
       {/* Header */}
       <header className="bg-sidebar border-b border-sidebar-border px-4 py-2.5 shrink-0">
         <div className="flex items-center justify-between gap-4">
@@ -419,59 +435,64 @@ ${previewRef.current.innerHTML}
 
               {/* Fixtures */}
               <div className="space-y-2">
-                <p className="text-xs font-semibold text-sidebar-foreground/50 uppercase tracking-wider">
-                  Load fixture
-                </p>
+                <div className="flex items-center justify-between">
+                  <p className="text-xs font-semibold text-sidebar-foreground/50 uppercase tracking-wider">
+                    Load fixture
+                  </p>
+                  {(compareSlots[0] || compareSlots[1]) && (
+                    <button
+                      className="text-[10px] text-muted-foreground hover:text-foreground transition"
+                      onClick={() => setCompareSlots([null, null])}
+                    >
+                      Clear A/B
+                    </button>
+                  )}
+                </div>
                 <div className="space-y-2">
-                  {getFixtureGroups().map((group) => {
-                    const activeId = activeVariants[group.groupId];
-                    const activeFixture = group.variants.find((v) => v.id === activeId) ?? group.variants[0];
-                    return (
-                      <div key={group.groupId} className="rounded-lg border border-sidebar-border bg-background/60 overflow-hidden">
-                        {/* Model variant pills — only shown when >1 variant exists */}
-                        {group.variants.length > 1 && (
-                          <div className="flex items-center gap-1 px-3 pt-2.5 flex-wrap">
-                            {group.variants.map((v) => (
-                              <button
-                                key={v.id}
-                                type="button"
-                                onClick={() => setActiveVariants((prev) => ({ ...prev, [group.groupId]: v.id }))}
-                                className={`text-[10px] font-medium px-2 py-0.5 rounded-full border transition ${
-                                  v.id === activeId
-                                    ? `${PROVIDER_BADGES[v.provider] ?? "bg-primary/10 text-primary border-primary/30"} font-semibold`
-                                    : "bg-transparent text-muted-foreground border-border hover:border-primary/30 hover:text-foreground"
-                                }`}
-                              >
-                                {v.model.split(/[-/]/).slice(0, 2).join("-")}
-                              </button>
-                            ))}
-                          </div>
-                        )}
-                        {/* Load button */}
-                        <button
-                          onClick={() => {
-                            setSpec(activeFixture.spec);
-                            setPrompt(activeFixture.prompt);
-                            setActiveTab("render");
-                            setSidebarOpen(false);
-                          }}
-                          className="w-full text-left p-3 hover:bg-sidebar-accent transition group"
-                        >
-                          <div className="flex items-start justify-between gap-2 mb-1">
-                            <span className="text-xs font-semibold text-sidebar-foreground group-hover:text-primary transition">
-                              {group.label}
-                            </span>
-                            {group.variants.length === 1 && (
-                              <Badge variant="outline" className={`text-[10px] shrink-0 ${PROVIDER_BADGES[activeFixture.provider] ?? ""}`}>
-                                {activeFixture.model.split("-").slice(0, 2).join("-")}
-                              </Badge>
-                            )}
-                          </div>
-                          <p className="text-[11px] text-muted-foreground leading-relaxed">{group.description}</p>
-                        </button>
+                  {getFixtureGroups().map((group) => (
+                    <div key={group.groupId} className="rounded-lg border border-sidebar-border bg-background/60 overflow-hidden">
+                      <div className="px-3 pt-2.5 pb-1.5">
+                        <p className="text-xs font-semibold text-sidebar-foreground">{group.label}</p>
+                        <p className="text-[11px] text-muted-foreground leading-relaxed">{group.description}</p>
                       </div>
-                    );
-                  })}
+                      <div className="divide-y divide-sidebar-border">
+                        {group.variants.map((v) => (
+                          <div key={v.id} className="flex items-center gap-1.5 px-3 py-1.5">
+                            <span className={`shrink-0 text-[9px] px-1.5 py-0.5 rounded border font-sans ${PROVIDER_BADGES[v.provider] ?? "bg-muted text-muted-foreground border-border"}`}>
+                              {v.provider}
+                            </span>
+                            <span className="font-mono text-[11px] text-muted-foreground flex-1 truncate min-w-0">{v.model}</span>
+                            {/* A slot */}
+                            <button
+                              title="Assign to slot A"
+                              onClick={() => setCompareSlots([v.id, compareSlots[1]])}
+                              className={`w-5 h-5 rounded text-[10px] font-bold border transition shrink-0 ${compareSlots[0] === v.id ? "bg-blue-500 text-white border-blue-600" : "border-border text-muted-foreground hover:bg-sidebar-accent"}`}
+                            >A</button>
+                            {/* B slot */}
+                            <button
+                              title="Assign to slot B"
+                              onClick={() => setCompareSlots([compareSlots[0], v.id])}
+                              className={`w-5 h-5 rounded text-[10px] font-bold border transition shrink-0 ${compareSlots[1] === v.id ? "bg-green-500 text-white border-green-600" : "border-border text-muted-foreground hover:bg-sidebar-accent"}`}
+                            >B</button>
+                            {/* Load */}
+                            <button
+                              title="Load this fixture"
+                              onClick={() => {
+                                setSpec(v.spec);
+                                setPrompt(v.prompt);
+                                setActiveTab("render");
+                                setCompareSlots([null, null]);
+                                setLoadedFixture(v);
+                              }}
+                              className="text-[11px] text-primary hover:text-primary/80 font-medium transition shrink-0"
+                            >
+                              Load
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
 
@@ -503,7 +524,52 @@ ${previewRef.current.innerHTML}
         <div className="flex-1 flex flex-col overflow-hidden bg-background">
           {/* Tab bar */}
           <div className="border-b border-border flex items-center px-2 bg-card shrink-0">
-            {(spec || isLoading) ? (
+            {isCompareActive ? (
+              (() => {
+                const fixtureA = compareSlots[0] ? FIXTURES.find((f) => f.id === compareSlots[0]) : null;
+                const fixtureB = compareSlots[1] ? FIXTURES.find((f) => f.id === compareSlots[1]) : null;
+                return (
+                  <>
+                    <div className="flex items-center gap-2 px-2 py-2.5 min-w-0 overflow-hidden">
+                      <span className="w-4 h-4 rounded text-[10px] font-bold bg-blue-500 text-white flex items-center justify-center shrink-0">A</span>
+                      {fixtureA ? (
+                        <span className={`text-[10px] font-mono px-1.5 py-0.5 rounded border shrink-0 ${PROVIDER_BADGES[fixtureA.provider] ?? ""}`}>
+                          {fixtureA.provider} / {fixtureA.model}
+                        </span>
+                      ) : (
+                        <span className="text-[10px] text-muted-foreground italic shrink-0">not set</span>
+                      )}
+                      {fixtureB && (
+                        <>
+                          <span className="text-xs text-muted-foreground shrink-0">vs</span>
+                          <span className="w-4 h-4 rounded text-[10px] font-bold bg-green-500 text-white flex items-center justify-center shrink-0">B</span>
+                          <span className={`text-[10px] font-mono px-1.5 py-0.5 rounded border shrink-0 ${PROVIDER_BADGES[fixtureB.provider] ?? ""}`}>
+                            {fixtureB.provider} / {fixtureB.model}
+                          </span>
+                        </>
+                      )}
+                      {!fixtureB && (
+                        <span className="text-[10px] text-muted-foreground italic shrink-0">— pick B to compare</span>
+                      )}
+                    </div>
+                    <div className="ml-auto pr-1 shrink-0">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-7 text-xs text-muted-foreground"
+                        onClick={() => setCompareSlots([null, null])}
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5 mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <line x1="18" y1="6" x2="6" y2="18" />
+                          <line x1="6" y1="6" x2="18" y2="18" />
+                        </svg>
+                        Exit compare
+                      </Button>
+                    </div>
+                  </>
+                );
+              })()
+            ) : (spec || isLoading) ? (
               <>
                 <button
                   onClick={() => setActiveTab("render")}
@@ -526,6 +592,14 @@ ${previewRef.current.innerHTML}
                 >
                   JSON
                 </button>
+                {loadedFixture && (
+                  <div className="flex items-center gap-1.5 ml-3">
+                    <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded border ${PROVIDER_BADGES[loadedFixture.provider] ?? "bg-muted text-muted-foreground border-border"}`}>
+                      {loadedFixture.provider}
+                    </span>
+                    <span className="text-[10px] font-mono text-muted-foreground">{loadedFixture.model}</span>
+                  </div>
+                )}
                 <div className="ml-auto flex items-center gap-1 pr-1">
                   <Button
                     variant="ghost"
@@ -591,58 +665,99 @@ ${previewRef.current.innerHTML}
           </div>
 
           {/* Content area */}
-          <div className="flex-1 overflow-auto">
-            {isLoading && activeTab === "source" && (
-              <pre className="text-xs bg-zinc-950 text-zinc-300 p-4 font-mono min-h-full leading-relaxed">
-                {streamingJSON || "Generating JSON..."}
-              </pre>
-            )}
+          <div className="flex-1 overflow-hidden flex">
+            {/* Compare view — single panel (A only) or split (A + B) */}
+            {isCompareActive && (() => {
+              const fixtureA = compareSlots[0] ? FIXTURES.find((f) => f.id === compareSlots[0]) : null;
+              const fixtureB = compareSlots[1] ? FIXTURES.find((f) => f.id === compareSlots[1]) : null;
+              const slotColors = [
+                { bg: "bg-blue-500", label: "A" },
+                { bg: "bg-green-500", label: "B" },
+              ];
+              const panels = [fixtureA, fixtureB].filter(Boolean) as Fixture[];
+              return (
+                <>
+                  {panels.map((fixture, index) => (
+                    <div
+                      key={fixture.id}
+                      ref={(el) => { comparePanelRefs.current[index] = el; }}
+                      onScroll={() => handleCompareScroll(index)}
+                      className="flex-1 min-w-0 border-r-2 border-border last:border-r-0 overflow-auto relative"
+                    >
+                      <div className="sticky top-0 z-10 flex items-center gap-2 px-3 py-2 bg-card border-b border-border">
+                        <span className={`w-4 h-4 rounded text-[10px] font-bold ${slotColors[index].bg} text-white flex items-center justify-center shrink-0`}>
+                          {slotColors[index].label}
+                        </span>
+                        <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded border ${PROVIDER_BADGES[fixture.provider] ?? "bg-muted text-muted-foreground border-border"}`}>
+                          {fixture.provider}
+                        </span>
+                        <span className="text-xs font-mono text-muted-foreground truncate">{fixture.model}</span>
+                      </div>
+                      <JSONUIProvider registry={registry} initialState={{}}>
+                        <Renderer spec={fixture.spec} registry={registry} />
+                      </JSONUIProvider>
+                    </div>
+                  ))}
+                </>
+              );
+            })()}
 
-            {isLoading && activeTab === "render" && (
-              <div className="flex items-center justify-center h-full">
-                <div className="text-center space-y-3">
-                  <svg className="animate-spin w-8 h-8 text-primary mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                  </svg>
-                  <p className="text-sm text-muted-foreground">Building your USWDS page...</p>
-                </div>
-              </div>
-            )}
+            {/* Normal content (hidden in compare mode) */}
+            {!isCompareActive && (
+              <div className="flex-1 overflow-auto">
+                {isLoading && activeTab === "source" && (
+                  <pre className="text-xs bg-zinc-950 text-zinc-300 p-4 font-mono min-h-full leading-relaxed">
+                    {streamingJSON || "Generating JSON..."}
+                  </pre>
+                )}
 
-            {!isLoading && spec && activeTab === "render" && (
-              <div ref={previewRef}>
-                <JSONUIProvider registry={registry} initialState={{}}>
-                  <Renderer spec={spec} registry={registry} />
-                </JSONUIProvider>
-              </div>
-            )}
-
-            {!isLoading && spec && activeTab === "source" && (
-              <pre className="text-xs bg-zinc-950 text-zinc-300 p-4 font-mono min-h-full leading-relaxed">
-                {JSON.stringify(spec, null, 2)}
-              </pre>
-            )}
-
-            {!isLoading && !spec && !error && (
-              <div className="flex items-center justify-center h-full">
-                <div className="text-center space-y-3 max-w-sm px-4">
-                  <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center mx-auto">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6 text-muted-foreground" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                      <rect x="3" y="3" width="18" height="18" rx="2" />
-                      <path d="M3 9h18M9 21V9" />
-                    </svg>
+                {isLoading && activeTab === "render" && (
+                  <div className="flex items-center justify-center h-full">
+                    <div className="text-center space-y-3">
+                      <svg className="animate-spin w-8 h-8 text-primary mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                      </svg>
+                      <p className="text-sm text-muted-foreground">Building your USWDS page...</p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-sm font-medium text-foreground">No page generated yet</p>
-                    <p className="text-xs text-muted-foreground mt-1">Describe a government page in the sidebar, load a fixture, or try an example prompt.</p>
+                )}
+
+                {!isLoading && spec && activeTab === "render" && (
+                  <div ref={previewRef}>
+                    <JSONUIProvider registry={registry} initialState={{}}>
+                      <Renderer spec={spec} registry={registry} />
+                    </JSONUIProvider>
                   </div>
-                  {!sidebarOpen && (
-                    <Button variant="outline" size="sm" onClick={() => setSidebarOpen(true)}>
-                      Open sidebar
-                    </Button>
-                  )}
-                </div>
+                )}
+
+                {!isLoading && spec && activeTab === "source" && (
+                  <pre className="text-xs bg-zinc-950 text-zinc-300 p-4 font-mono min-h-full leading-relaxed">
+                    {JSON.stringify(spec, null, 2)}
+                  </pre>
+                )}
+
+                {!isLoading && !spec && !error && (
+                  <div className="flex items-center justify-center h-full">
+                    <div className="text-center space-y-3 max-w-sm px-4">
+                      <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center mx-auto">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6 text-muted-foreground" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                          <rect x="3" y="3" width="18" height="18" rx="2" />
+                          <path d="M3 9h18M9 21V9" />
+                        </svg>
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium text-foreground">No page generated yet</p>
+                        <p className="text-xs text-muted-foreground mt-1">Describe a government page in the sidebar, load a fixture, or try an example prompt.</p>
+                      </div>
+                      {!sidebarOpen && (
+                        <Button variant="outline" size="sm" onClick={() => setSidebarOpen(true)}>
+                          Open sidebar
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </div>

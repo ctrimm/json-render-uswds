@@ -1,0 +1,260 @@
+{
+  "root": "page",
+  "elements": {
+    "page": {
+      "type": "Section",
+      "props": {
+        "variant": "default"
+      },
+      "children": [
+        "header",
+        "main",
+        "footer"
+      ]
+    },
+    "header": {
+      "type": "Header",
+      "props": {
+        "variant": "basic",
+        "siteName": "U.S. Department of Veterans Affairs",
+        "siteUrl": "https://www.va.gov",
+        "logoUrl": "https://www.va.gov/img/design/logo/logo-black.svg",
+        "logoAlt": "VA logo",
+        "navItems": [
+          {
+            "label": "Home",
+            "href": "/",
+            "current": true
+          },
+          {
+            "label": "About",
+            "href": "/about"
+          }
+        ]
+      },
+      "children": []
+    },
+    "main": {
+      "type": "Section",
+      "props": {
+        "title": "Apply for Federal Benefits",
+        "variant": "light"
+      },
+      "children": [
+        "process-list",
+        "form"
+      ]
+    },
+    "process-list": {
+      "type": "ProcessList",
+      "props": {
+        "items": [
+          {
+            "heading": "Applicant Information",
+            "content": "Provide personal and contact information"
+          },
+          {
+            "heading": "Income Verification",
+            "content": "Verify your income and benefits"
+          },
+          {
+            "heading": "Document Upload",
+            "content": "Upload required documents"
+          },
+          {
+            "heading": "Review and Submit",
+            "content": "Review your application and submit"
+          }
+        ]
+      },
+      "children": []
+    },
+    "form": {
+      "type": "Form",
+      "props": {
+        "large": true
+      },
+      "children": [
+        "applicant-info",
+        "income-verification",
+        "document-upload",
+        "review-submit"
+      ]
+    },
+    "applicant-info": {
+      "type": "Section",
+      "props": {
+        "title": "Applicant Information"
+      },
+      "children": [
+        "name",
+        "address",
+        "ssn"
+      ]
+    },
+    "name": {
+      "type": "InputGroup",
+      "props": {
+        "label": "Full Name",
+        "name": "name",
+        "prefix": null,
+        "suffix": null,
+        "value": {
+          "$bindState": "/applicant/name"
+        }
+      },
+      "children": []
+    },
+    "address": {
+      "type": "InputGroup",
+      "props": {
+        "label": "Address",
+        "name": "address",
+        "prefix": null,
+        "suffix": null,
+        "value": {
+          "$bindState": "/applicant/address"
+        }
+      },
+      "children": []
+    },
+    "ssn": {
+      "type": "InputMask",
+      "props": {
+        "label": "Social Security Number",
+        "name": "ssn",
+        "preset": "ssn",
+        "value": {
+          "$bindState": "/applicant/ssn"
+        }
+      },
+      "children": []
+    },
+    "income-verification": {
+      "type": "Section",
+      "props": {
+        "title": "Income Verification"
+      },
+      "children": [
+        "income-source",
+        "benefits"
+      ]
+    },
+    "income-source": {
+      "type": "InputGroup",
+      "props": {
+        "label": "Income Source",
+        "name": "incomeSource",
+        "prefix": null,
+        "suffix": null,
+        "value": {
+          "$bindState": "/income/source"
+        }
+      },
+      "children": []
+    },
+    "benefits": {
+      "type": "CheckboxGroup",
+      "props": {
+        "legend": "Benefits",
+        "name": "benefits",
+        "options": [
+          {
+            "label": "Disability",
+            "value": "disability"
+          },
+          {
+            "label": "Retirement",
+            "value": "retirement"
+          }
+        ],
+        "values": {
+          "$bindState": "/income/benefits"
+        }
+      },
+      "children": []
+    },
+    "document-upload": {
+      "type": "Section",
+      "props": {
+        "title": "Document Upload"
+      },
+      "children": [
+        "file-input"
+      ]
+    },
+    "file-input": {
+      "type": "FileInput",
+      "props": {
+        "label": "Upload Required Documents",
+        "name": "documents",
+        "accept": ".pdf,.doc,.docx",
+        "multiple": true
+      },
+      "children": []
+    },
+    "review-submit": {
+      "type": "Section",
+      "props": {
+        "title": "Review and Submit"
+      },
+      "children": [
+        "summary",
+        "submit-button"
+      ]
+    },
+    "summary": {
+      "type": "SummaryBox",
+      "props": {
+        "heading": "Application Summary",
+        "items": [
+          {
+            "label": "Applicant Name",
+            "value": {
+              "$state": "/applicant/name"
+            }
+          },
+          {
+            "label": "Address",
+            "value": {
+              "$state": "/applicant/address"
+            }
+          },
+          {
+            "label": "Income Source",
+            "value": {
+              "$state": "/income/source"
+            }
+          },
+          {
+            "label": "Benefits",
+            "value": {
+              "$state": "/income/benefits"
+            }
+          }
+        ]
+      },
+      "children": []
+    },
+    "submit-button": {
+      "type": "Button",
+      "props": {
+        "label": "Submit Application",
+        "variant": "default",
+        "type": "submit"
+      },
+      "children": []
+    },
+    "footer": {
+      "type": "Footer",
+      "props": {
+        "variant": "medium",
+        "agencyName": "U.S. Department of Veterans Affairs",
+        "agencyUrl": "https://www.va.gov",
+        "logoUrl": "https://www.va.gov/img/design/logo/logo-black.svg",
+        "logoAlt": "VA logo"
+      },
+      "children": []
+    }
+  }
+}

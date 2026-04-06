@@ -1,0 +1,387 @@
+{
+  "root": "page",
+  "elements": {
+    "page": {
+      "type": "Grid",
+      "props": {
+        "columns": 1,
+        "gap": "md"
+      },
+      "children": [
+        "header",
+        "skipnav",
+        "process-list",
+        "form-section",
+        "footer"
+      ]
+    },
+    "header": {
+      "type": "Header",
+      "props": {
+        "variant": "extended",
+        "siteName": "Federal Benefits Application",
+        "siteUrl": "/",
+        "logoUrl": "/images/logo.png",
+        "logoAlt": "Agency Logo",
+        "navItems": [
+          {
+            "label": "Home",
+            "href": "/"
+          },
+          {
+            "label": "About",
+            "href": "/about"
+          },
+          {
+            "label": "Contact",
+            "href": "/contact"
+          }
+        ]
+      },
+      "children": []
+    },
+    "skipnav": {
+      "type": "SkipNav",
+      "props": {},
+      "children": []
+    },
+    "process-list": {
+      "type": "ProcessList",
+      "props": {
+        "items": [
+          {
+            "heading": "Applicant Information",
+            "content": "Enter your personal details and contact information."
+          },
+          {
+            "heading": "Income Verification",
+            "content": "Provide details about your income and employment."
+          },
+          {
+            "heading": "Document Upload",
+            "content": "Upload required documents to support your application."
+          },
+          {
+            "heading": "Review and Submit",
+            "content": "Review your application and submit it for processing."
+          }
+        ]
+      },
+      "children": []
+    },
+    "form-section": {
+      "type": "Section",
+      "props": {
+        "title": "Application Form"
+      },
+      "children": [
+        "form"
+      ]
+    },
+    "form": {
+      "type": "Form",
+      "props": {
+        "large": true
+      },
+      "children": [
+        "applicant-info",
+        "income-verification",
+        "document-upload",
+        "submit-button"
+      ]
+    },
+    "applicant-info": {
+      "type": "Section",
+      "props": {
+        "title": "Applicant Information"
+      },
+      "children": [
+        "name",
+        "dob",
+        "email",
+        "phone",
+        "address"
+      ]
+    },
+    "name": {
+      "type": "Input",
+      "props": {
+        "label": "Full Name",
+        "name": "name",
+        "type": "text",
+        "required": true,
+        "value": {
+          "$bindState": "/form/name"
+        },
+        "checks": [
+          {
+            "type": "required",
+            "message": "Name is required"
+          }
+        ]
+      },
+      "children": []
+    },
+    "dob": {
+      "type": "DateInputGroup",
+      "props": {
+        "label": "Date of Birth",
+        "name": "dob",
+        "required": true,
+        "monthValue": {
+          "$bindState": "/form/dobMonth"
+        },
+        "dayValue": {
+          "$bindState": "/form/dobDay"
+        },
+        "yearValue": {
+          "$bindState": "/form/dobYear"
+        }
+      },
+      "children": []
+    },
+    "email": {
+      "type": "Input",
+      "props": {
+        "label": "Email Address",
+        "name": "email",
+        "type": "email",
+        "required": true,
+        "value": {
+          "$bindState": "/form/email"
+        },
+        "checks": [
+          {
+            "type": "required",
+            "message": "Email is required"
+          },
+          {
+            "type": "email",
+            "message": "Invalid email address"
+          }
+        ]
+      },
+      "children": []
+    },
+    "phone": {
+      "type": "InputMask",
+      "props": {
+        "label": "Phone Number",
+        "name": "phone",
+        "preset": "phone",
+        "required": true,
+        "value": {
+          "$bindState": "/form/phone"
+        },
+        "checks": [
+          {
+            "type": "required",
+            "message": "Phone number is required"
+          }
+        ]
+      },
+      "children": []
+    },
+    "address": {
+      "type": "Textarea",
+      "props": {
+        "label": "Address",
+        "name": "address",
+        "required": true,
+        "value": {
+          "$bindState": "/form/address"
+        },
+        "checks": [
+          {
+            "type": "required",
+            "message": "Address is required"
+          }
+        ]
+      },
+      "children": []
+    },
+    "income-verification": {
+      "type": "Section",
+      "props": {
+        "title": "Income Verification"
+      },
+      "children": [
+        "employment-status",
+        "employer-name",
+        "income"
+      ]
+    },
+    "employment-status": {
+      "type": "Radio",
+      "props": {
+        "legend": "Employment Status",
+        "name": "employment-status",
+        "options": [
+          {
+            "label": "Employed",
+            "value": "employed"
+          },
+          {
+            "label": "Unemployed",
+            "value": "unemployed"
+          },
+          {
+            "label": "Self-Employed",
+            "value": "self-employed"
+          }
+        ],
+        "value": {
+          "$bindState": "/form/employmentStatus"
+        },
+        "required": true
+      },
+      "children": []
+    },
+    "employer-name": {
+      "type": "Input",
+      "props": {
+        "label": "Employer Name",
+        "name": "employer-name",
+        "type": "text",
+        "value": {
+          "$bindState": "/form/employerName"
+        },
+        "requiredIf": {
+          "field": {
+            "$state": "/form/employmentStatus"
+          }
+        }
+      },
+      "children": []
+    },
+    "income": {
+      "type": "InputGroup",
+      "props": {
+        "label": "Annual Income",
+        "name": "income",
+        "type": "number",
+        "prefix": "$",
+        "value": {
+          "$bindState": "/form/income"
+        },
+        "required": true,
+        "checks": [
+          {
+            "type": "required",
+            "message": "Income is required"
+          },
+          {
+            "type": "numeric",
+            "message": "Income must be a number"
+          }
+        ]
+      },
+      "children": []
+    },
+    "document-upload": {
+      "type": "Section",
+      "props": {
+        "title": "Document Upload"
+      },
+      "children": [
+        "upload-instructions",
+        "file-input"
+      ]
+    },
+    "upload-instructions": {
+      "type": "Text",
+      "props": {
+        "text": "Please upload the required documents (PDF, JPG, PNG)."
+      },
+      "children": []
+    },
+    "file-input": {
+      "type": "FileInput",
+      "props": {
+        "label": "Upload Documents",
+        "name": "documents",
+        "accept": ".pdf,.jpg,.png",
+        "multiple": true,
+        "required": true
+      },
+      "children": []
+    },
+    "submit-button": {
+      "type": "Button",
+      "props": {
+        "label": "Submit Application",
+        "variant": "primary",
+        "type": "submit"
+      },
+      "children": []
+    },
+    "footer": {
+      "type": "Footer",
+      "props": {
+        "variant": "medium",
+        "agencyName": "Federal Benefits Agency",
+        "agencyUrl": "/",
+        "logoUrl": "/images/logo.png",
+        "logoAlt": "Agency Logo",
+        "navGroups": [
+          {
+            "heading": "Resources",
+            "links": [
+              {
+                "label": "Privacy Policy",
+                "href": "/privacy"
+              },
+              {
+                "label": "Terms of Service",
+                "href": "/terms"
+              }
+            ]
+          },
+          {
+            "heading": "Contact",
+            "links": [
+              {
+                "label": "Contact Us",
+                "href": "/contact"
+              }
+            ]
+          }
+        ],
+        "contactHeading": "Contact Information",
+        "contactInfo": [
+          {
+            "type": "address",
+            "value": "123 Main Street, Washington, DC 20001"
+          },
+          {
+            "type": "phone",
+            "value": "(555) 123-4567"
+          },
+          {
+            "type": "email",
+            "value": "info@example.gov"
+          }
+        ],
+        "socialLinks": [
+          {
+            "platform": "facebook",
+            "href": "#",
+            "label": "Facebook"
+          },
+          {
+            "platform": "twitter",
+            "href": "#",
+            "label": "Twitter"
+          },
+          {
+            "platform": "youtube",
+            "href": "#",
+            "label": "YouTube"
+          }
+        ],
+        "returnToTop": true
+      },
+      "children": []
+    }
+  }
+}

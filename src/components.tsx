@@ -631,7 +631,7 @@ export const uswdsComponents = {
     props,
   }: BaseComponentProps<UswdsProps<"StepIndicator">>) => {
     const steps = props.steps ?? [];
-    const current = Math.max(1, Math.min(steps.length, props.currentStep));
+    const current = Math.max(1, Math.min(steps.length, Number(props.currentStep) || 1));
 
     const countersClass =
       props.counters === "small"
