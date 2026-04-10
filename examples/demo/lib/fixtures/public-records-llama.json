@@ -1,0 +1,231 @@
+{
+  "root": "main-content",
+  "elements": {
+    "main-content": {
+      "type": "Grid",
+      "props": {
+        "columns": 12,
+        "gap": "md"
+      },
+      "children": [
+        "hero-section",
+        "table-section",
+        "button-section"
+      ]
+    },
+    "hero-section": {
+      "type": "Hero",
+      "props": {
+        "heading": "Public Records Request",
+        "eyebrow": "Transparency and Open Government",
+        "body": "Submit a request for public records through our streamlined online portal. Learn more about the process and what to expect.",
+        "backgroundUrl": "https://example.gov/images/hero-background.jpg"
+      },
+      "children": []
+    },
+    "table-section": {
+      "type": "Grid",
+      "props": {
+        "columns": 12,
+        "gap": "md"
+      },
+      "children": [
+        "table-container"
+      ]
+    },
+    "table-container": {
+      "type": "Prose",
+      "props": {
+        "element": "section"
+      },
+      "children": [
+        "recent-requests-heading",
+        "recent-requests-table"
+      ]
+    },
+    "recent-requests-heading": {
+      "type": "Heading",
+      "props": {
+        "text": "Recent Public Records Requests",
+        "level": "h2"
+      },
+      "children": []
+    },
+    "recent-requests-table": {
+      "type": "Table",
+      "props": {
+        "columns": [
+          "Request ID",
+          "Date Submitted",
+          "Status"
+        ],
+        "rows": [
+          [
+            "REQ-001",
+            "2023-04-01",
+            "In Progress"
+          ],
+          [
+            "REQ-002",
+            "2023-03-25",
+            "Fulfilled"
+          ],
+          [
+            "REQ-003",
+            "2023-03-20",
+            "Pending"
+          ],
+          [
+            "REQ-004",
+            "2023-03-15",
+            "Denied"
+          ]
+        ],
+        "caption": "List of recent public records requests and their current status"
+      },
+      "children": []
+    },
+    "button-section": {
+      "type": "Grid",
+      "props": {
+        "columns": 12,
+        "gap": "md"
+      },
+      "children": [
+        "new-request-button-container"
+      ]
+    },
+    "new-request-button-container": {
+      "type": "Button",
+      "props": {
+        "label": "Start a New Public Records Request",
+        "variant": "default"
+      },
+      "children": []
+    },
+    "site-alert": {
+      "type": "SiteAlert",
+      "props": {
+        "heading": "Service Advisory",
+        "message": "Our public records request system is currently experiencing delays due to scheduled maintenance. We apologize for any inconvenience.",
+        "type": "info"
+      },
+      "children": []
+    },
+    "new-request-modal": {
+      "type": "Modal",
+      "props": {
+        "heading": "New Public Records Request",
+        "openPath": "/newRequestModal",
+        "large": true
+      },
+      "children": [
+        "new-request-form"
+      ]
+    },
+    "new-request-form": {
+      "type": "Form",
+      "props": {
+        "large": true
+      },
+      "children": [
+        "request-description-input",
+        "submit-request-button"
+      ]
+    },
+    "request-description-input": {
+      "type": "Textarea",
+      "props": {
+        "label": "Describe the records you are requesting",
+        "name": "requestDescription",
+        "rows": 4,
+        "value": {
+          "$bindState": "/newRequestDescription"
+        },
+        "checks": [
+          {
+            "type": "required",
+            "message": "Please describe the records you are requesting"
+          }
+        ]
+      },
+      "children": []
+    },
+    "submit-request-button": {
+      "type": "Button",
+      "props": {
+        "label": "Submit Request",
+        "variant": "default",
+        "type": "submit"
+      },
+      "children": []
+    },
+    "header": {
+      "type": "Header",
+      "props": {
+        "variant": "basic",
+        "siteName": "Example Government Agency",
+        "siteUrl": "https://example.gov"
+      },
+      "children": []
+    },
+    "footer": {
+      "type": "Footer",
+      "props": {
+        "variant": "medium",
+        "agencyName": "Example Government Agency",
+        "agencyUrl": "https://example.gov",
+        "navGroups": [
+          {
+            "heading": "Resources",
+            "links": [
+              {
+                "label": "FAQs",
+                "href": "/faqs"
+              },
+              {
+                "label": "Contact Us",
+                "href": "/contact"
+              }
+            ]
+          }
+        ],
+        "contactHeading": "Get in Touch",
+        "contactInfo": [
+          {
+            "type": "address",
+            "value": "123 Main St, Anytown, USA 12345"
+          },
+          {
+            "type": "phone",
+            "value": "555-555-5555"
+          },
+          {
+            "type": "email",
+            "value": "info@example.gov"
+          }
+        ]
+      },
+      "children": []
+    },
+    "skip-nav": {
+      "type": "SkipNav",
+      "props": {
+        "href": "#main-content"
+      },
+      "children": []
+    },
+    "gov-banner": {
+      "type": "GovBanner",
+      "props": {
+        "tld": ".gov"
+      },
+      "children": []
+    },
+    "state": {
+      "type": "State",
+      "props": {},
+      "children": []
+    }
+  }
+}

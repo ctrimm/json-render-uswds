@@ -1,0 +1,182 @@
+{
+  "root": "page",
+  "elements": {
+    "page": {
+      "type": "Grid",
+      "props": {
+        "columns": 1
+      },
+      "children": [
+        "site-alert",
+        "header",
+        "hero",
+        "main",
+        "footer"
+      ]
+    },
+    "site-alert": {
+      "type": "SiteAlert",
+      "props": {
+        "heading": "Service Advisory",
+        "message": "We are currently experiencing higher than usual request volumes. Please expect delays in processing."
+      },
+      "children": []
+    },
+    "header": {
+      "type": "Header",
+      "props": {
+        "siteName": "Public Records Request Portal",
+        "siteUrl": "/",
+        "navItems": [
+          {
+            "label": "Home",
+            "href": "/"
+          },
+          {
+            "label": "About",
+            "href": "/about"
+          },
+          {
+            "label": "Contact",
+            "href": "/contact"
+          }
+        ]
+      },
+      "children": []
+    },
+    "hero": {
+      "type": "Hero",
+      "props": {
+        "heading": "Request Public Records",
+        "body": "Learn how to request access to public records and track the status of your requests.",
+        "backgroundUrl": "https://source.unsplash.com/random/1920x600?government",
+        "ariaLabel": "Public Records Hero"
+      },
+      "children": []
+    },
+    "main": {
+      "type": "Section",
+      "props": {},
+      "children": [
+        "table-section",
+        "button-section"
+      ]
+    },
+    "table-section": {
+      "type": "Section",
+      "props": {
+        "title": "Recent Requests"
+      },
+      "children": [
+        "table"
+      ]
+    },
+    "table": {
+      "type": "Table",
+      "props": {
+        "columns": [
+          "Request ID",
+          "Date Submitted",
+          "Description",
+          "Status"
+        ],
+        "rows": [
+          [
+            {
+              "$item": "id"
+            },
+            {
+              "$item": "date"
+            },
+            {
+              "$item": "description"
+            },
+            {
+              "$item": "status"
+            }
+          ]
+        ],
+        "striped": true
+      },
+      "children": []
+    },
+    "button-section": {
+      "type": "Section",
+      "props": {},
+      "children": [
+        "button"
+      ]
+    },
+    "button": {
+      "type": "Button",
+      "props": {
+        "label": "Start a New Request",
+        "variant": "accent-cool"
+      },
+      "children": []
+    },
+    "footer": {
+      "type": "Footer",
+      "props": {
+        "agencyName": "Public Records Office",
+        "agencyUrl": "/",
+        "navGroups": [
+          {
+            "heading": "Resources",
+            "links": [
+              {
+                "label": "Forms",
+                "href": "/forms"
+              },
+              {
+                "label": "Policies",
+                "href": "/policies"
+              }
+            ]
+          },
+          {
+            "heading": "About",
+            "links": [
+              {
+                "label": "Our Mission",
+                "href": "/mission"
+              },
+              {
+                "label": "Contact Us",
+                "href": "/contact"
+              }
+            ]
+          }
+        ],
+        "contactHeading": "Contact Information",
+        "contactInfo": [
+          {
+            "type": "address",
+            "value": "123 Main Street, Washington, DC 20001"
+          },
+          {
+            "type": "phone",
+            "value": "(202) 555-1212"
+          },
+          {
+            "type": "email",
+            "value": "records@example.gov"
+          }
+        ],
+        "socialLinks": [
+          {
+            "platform": "twitter",
+            "href": "#",
+            "label": "Twitter"
+          },
+          {
+            "platform": "facebook",
+            "href": "#",
+            "label": "Facebook"
+          }
+        ]
+      },
+      "children": []
+    }
+  }
+}
