@@ -7,7 +7,6 @@ import type { Spec } from "@/lib/spec-schema";
 import { FIXTURES, getFixtureGroups, type Fixture } from "@/lib/fixtures";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
