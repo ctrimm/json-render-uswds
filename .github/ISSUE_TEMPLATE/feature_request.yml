@@ -1,0 +1,25 @@
+name: Feature Request
+description: Suggest a new component or enhancement
+labels: ["enhancement"]
+body:
+  - type: input
+    id: summary
+    attributes:
+      label: What would you like?
+      placeholder: e.g. Add support for the USWDS Breadcrumb component
+    validations:
+      required: true
+
+  - type: textarea
+    id: use_case
+    attributes:
+      label: Use case
+      description: What are you trying to build? Why does this matter?
+    validations:
+      required: true
+
+  - type: input
+    id: uswds_link
+    attributes:
+      label: USWDS component link (if applicable)
+      placeholder: https://designsystem.digital.gov/components/...
