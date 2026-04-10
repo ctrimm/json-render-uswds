@@ -166,6 +166,29 @@ const store = createStateStore({ formData: {} });
 
 This repo includes a [Claude Code](https://claude.ai/code) skill at `skills/uswds/SKILL.md`. If you use Claude Code, the skill gives Claude context about all 58 USWDS components, installation, and usage patterns — so it can help you build USWDS specs and catalogs without needing to look things up.
 
+## Troubleshooting
+
+**`Cannot find module '@cdt5058/json-render-uswds'`**
+Make sure you've run `npm install` and that your bundler supports the `exports` field in `package.json` (Webpack 5+, Vite, Next.js 12+ all do).
+
+**USWDS styles aren't applying**
+You must import the USWDS CSS yourself — it is not bundled. Add one of:
+```tsx
+import "@uswds/uswds/css/uswds.css"; // via npm package
+```
+```html
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/uswds/3.8.2/css/uswds.min.css">
+```
+
+**TypeScript errors about `zod` types**
+Ensure you have `zod ^4.0.0` installed. Zod 3.x is not compatible.
+
+**Components render but look unstyled**
+Check that your bundler is processing CSS imports. In Next.js, import the CSS in `app/layout.tsx` or `pages/_app.tsx`. In Vite, import it in `main.tsx`.
+
+**Demo app fails to start**
+The demo requires API keys. Copy `.env.example` to `.env.local` and add at least `ANTHROPIC_API_KEY`. Local model support (Ollama) requires no API key — select a local model from the model picker.
+
 ## Credits
 
 This package is a USWDS adapter built on top of **[json-render](https://github.com/vercel-labs/json-render)**, an open-source Generative UI framework created and maintained by [Vercel](https://vercel.com). The core rendering engine, catalog system, schema design, and React renderer are all their work.
