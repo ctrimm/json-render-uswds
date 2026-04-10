@@ -1,7 +1,7 @@
 {
-  "name": "@cdt5058/json-render-uswds",
+  "name": "@ctrimm/json-render-uswds",
   "version": "0.1.0",
-  "author": "json-render contributors",
+  "author": "ctrimm",
   "description": "U.S. Web Design System (USWDS) component library for @json-render/core. JSON becomes accessible, government-compliant React components.",
   "license": "Apache-2.0",
   "keywords": [
@@ -21,11 +21,11 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/cdt5058/json-render-uswds.git"
+    "url": "git+https://github.com/ctrimm/json-render-uswds.git"
   },
-  "homepage": "https://github.com/cdt5058/json-render-uswds#readme",
+  "homepage": "https://github.com/ctrimm/json-render-uswds#readme",
   "bugs": {
-    "url": "https://github.com/cdt5058/json-render-uswds/issues"
+    "url": "https://github.com/ctrimm/json-render-uswds/issues"
   },
   "publishConfig": {
     "access": "public"
