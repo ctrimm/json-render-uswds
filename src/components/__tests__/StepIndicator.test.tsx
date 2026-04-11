@@ -7,7 +7,12 @@ const { StepIndicator } = uswdsComponents;
 
 // Wrapper to convert regular props to json-render component format
 function StepIndicatorTest(props: any) {
-  return <StepIndicatorTest props={props} />;
+  return <StepIndicator props={props} />;
+}
+
+// Helper: assert that text appears at least once in the document
+function expectText(pattern: RegExp) {
+  expect(screen.getAllByText(pattern, { selector: "*" }).length).toBeGreaterThan(0);
 }
 
 describe("StepIndicator", () => {
@@ -16,82 +21,81 @@ describe("StepIndicator", () => {
   describe("Undefined/null handling", () => {
     it("should render step 1 when currentStep is undefined", () => {
       render(<StepIndicatorTest steps={defaultSteps} currentStep={undefined} />);
-      expect(screen.getByText(/step 1/i, { selector: "*" })).toBeInTheDocument();
+      expectText(/step 1/i);
     });
 
     it("should render step 1 when currentStep is null", () => {
       render(<StepIndicatorTest steps={defaultSteps} currentStep={null} />);
-      expect(screen.getByText(/step 1/i, { selector: "*" })).toBeInTheDocument();
+      expectText(/step 1/i);
     });
 
     it("should render step 1 when currentStep prop is missing", () => {
       render(<StepIndicatorTest steps={defaultSteps} />);
-      expect(screen.getByText(/step 1/i, { selector: "*" })).toBeInTheDocument();
+      expectText(/step 1/i);
     });
 
     it("should render step 1 when currentStep is 0", () => {
       render(<StepIndicatorTest steps={defaultSteps} currentStep={0} />);
-      expect(screen.getByText(/step 1/i, { selector: "*" })).toBeInTheDocument();
+      expectText(/step 1/i);
     });
 
     it("should render step 1 when currentStep is negative", () => {
       render(<StepIndicatorTest steps={defaultSteps} currentStep={-1} />);
-      expect(screen.getByText(/step 1/i, { selector: "*" })).toBeInTheDocument();
+      expectText(/step 1/i);
     });
   });
 
   describe("String parsing", () => {
     it("should parse string number and render correct step", () => {
       render(<StepIndicatorTest steps={defaultSteps} currentStep={"2"} />);
-      expect(screen.getByText(/step 2/i, { selector: "*" })).toBeInTheDocument();
+      expectText(/step 2/i);
     });
 
     it("should clamp string number above max to steps.length", () => {
       render(<StepIndicatorTest steps={defaultSteps} currentStep={"5"} />);
-      expect(screen.getByText(/step 4/i, { selector: "*" })).toBeInTheDocument();
+      expectText(/step 4/i);
     });
 
     it("should default to 1 for non-numeric string", () => {
       render(<StepIndicatorTest steps={defaultSteps} currentStep={"not a number"} />);
-      expect(screen.getByText(/step 1/i, { selector: "*" })).toBeInTheDocument();
+      expectText(/step 1/i);
     });
 
     it("should default to 1 for empty string", () => {
       render(<StepIndicatorTest steps={defaultSteps} currentStep={""} />);
-      expect(screen.getByText(/step 1/i, { selector: "*" })).toBeInTheDocument();
+      expectText(/step 1/i);
     });
 
     it("should parse valid string numbers correctly", () => {
       render(<StepIndicatorTest steps={defaultSteps} currentStep={"3"} />);
-      expect(screen.getByText(/step 3/i, { selector: "*" })).toBeInTheDocument();
+      expectText(/step 3/i);
     });
   });
 
   describe("Clamping bounds", () => {
     it("should clamp to max when currentStep exceeds steps.length", () => {
       render(<StepIndicatorTest steps={defaultSteps} currentStep={10} />);
-      expect(screen.getByText(/step 4/i, { selector: "*" })).toBeInTheDocument();
+      expectText(/step 4/i);
     });
 
     it("should clamp to min (1) when currentStep is less than 1", () => {
       render(<StepIndicatorTest steps={defaultSteps} currentStep={-5} />);
-      expect(screen.getByText(/step 1/i, { selector: "*" })).toBeInTheDocument();
+      expectText(/step 1/i);
     });
 
     it("should keep valid steps unchanged", () => {
-      const steps = defaultSteps;
-      render(<StepIndicatorTest steps={steps} currentStep={2} />);
-      expect(screen.getByText(/step 2/i, { selector: "*" })).toBeInTheDocument();
+      render(<StepIndicatorTest steps={defaultSteps} currentStep={2} />);
+      expectText(/step 2/i);
     });
 
     it("should handle step at max boundary", () => {
       render(<StepIndicatorTest steps={defaultSteps} currentStep={4} />);
-      expect(screen.getByText(/step 4/i, { selector: "*" })).toBeInTheDocument();
+      expectText(/step 4/i);
     });
 
     it("should handle step at min boundary", () => {
       render(<StepIndicatorTest steps={defaultSteps} currentStep={1} />);
-      expect(screen.getByText(/step 1/i, { selector: "*" })).toBeInTheDocument();
+      expectText(/step 1/i);
     });
   });
 
@@ -105,19 +109,19 @@ describe("StepIndicator", () => {
 
     it("should handle combined invalid values without crashing", () => {
       render(<StepIndicatorTest steps={defaultSteps} currentStep={null} />);
-      expect(screen.getByText(/step 1/i, { selector: "*" })).toBeInTheDocument();
+      expectText(/step 1/i);
     });
 
     it("should render valid step with undefined input", () => {
       render(<StepIndicatorTest steps={defaultSteps} currentStep={undefined} />);
-      expect(screen.getByText(/step 1/i, { selector: "*" })).toBeInTheDocument();
+      expectText(/step 1/i);
     });
   });
 
   describe("Normal operation - correct step marking", () => {
     it("should render correct step for valid input", () => {
       render(<StepIndicatorTest steps={defaultSteps} currentStep={2} />);
-      expect(screen.getByText(/step 2/i, { selector: "*" })).toBeInTheDocument();
+      expectText(/step 2/i);
     });
 
     it("should mark current step with correct CSS class", () => {
@@ -155,34 +159,34 @@ describe("StepIndicator", () => {
           currentStep={3}
         />
       );
-      expect(screen.getByText(/phase 3/i, { selector: "*" })).toBeInTheDocument();
+      expectText(/phase 3/i);
     });
 
     it("should handle step 1 as current", () => {
       render(<StepIndicatorTest steps={defaultSteps} currentStep={1} />);
-      expect(screen.getByText(/step 1/i, { selector: "*" })).toBeInTheDocument();
+      expectText(/step 1/i);
     });
 
     it("should handle last step as current", () => {
       render(<StepIndicatorTest steps={defaultSteps} currentStep={4} />);
-      expect(screen.getByText(/step 4/i, { selector: "*" })).toBeInTheDocument();
+      expectText(/step 4/i);
     });
 
     it("should handle middle step as current", () => {
       render(<StepIndicatorTest steps={defaultSteps} currentStep={2} />);
-      expect(screen.getByText(/step 2/i, { selector: "*" })).toBeInTheDocument();
+      expectText(/step 2/i);
     });
   });
 
   describe("Edge cases", () => {
     it("should handle single step array", () => {
       render(<StepIndicatorTest steps={["Only Step"]} currentStep={1} />);
-      expect(screen.getByText(/only step/i, { selector: "*" })).toBeInTheDocument();
+      expectText(/only step/i);
     });
 
     it("should clamp with single step correctly", () => {
       render(<StepIndicatorTest steps={["Only Step"]} currentStep={10} />);
-      expect(screen.getByText(/only step/i, { selector: "*" })).toBeInTheDocument();
+      expectText(/only step/i);
     });
 
     it("should handle empty steps array gracefully", () => {
@@ -200,32 +204,32 @@ describe("StepIndicator", () => {
 
     it("should handle very small (negative) currentStep value", () => {
       render(<StepIndicatorTest steps={defaultSteps} currentStep={-999999} />);
-      expect(screen.getByText(/step 1/i, { selector: "*" })).toBeInTheDocument();
+      expectText(/step 1/i);
     });
   });
 
   describe("Type coercion", () => {
     it("should coerce boolean true to 1", () => {
       render(<StepIndicatorTest steps={defaultSteps} currentStep={true as any} />);
-      expect(screen.getByText(/step 1/i, { selector: "*" })).toBeInTheDocument();
+      expectText(/step 1/i);
     });
 
     it("should coerce boolean false to 0 (defaults to 1)", () => {
       render(<StepIndicatorTest steps={defaultSteps} currentStep={false as any} />);
-      expect(screen.getByText(/step 1/i, { selector: "*" })).toBeInTheDocument();
+      expectText(/step 1/i);
     });
 
     it("should parse decimal numbers correctly", () => {
       render(<StepIndicatorTest steps={defaultSteps} currentStep={2.7} />);
       // Should truncate/floor to 2
-      expect(screen.getByText(/step 2/i, { selector: "*" })).toBeInTheDocument();
+      expectText(/step 2/i);
     });
 
     it("should handle whitespace in string numbers", () => {
       render(
         <StepIndicatorTest steps={defaultSteps} currentStep={" 2 " as any} />
       );
-      expect(screen.getByText(/step 2/i, { selector: "*" })).toBeInTheDocument();
+      expectText(/step 2/i);
     });
   });
 
@@ -240,15 +244,18 @@ describe("StepIndicator", () => {
       rerender(<StepIndicatorTest steps={defaultSteps} currentStep={"invalid"} />);
       rerender(<StepIndicatorTest steps={defaultSteps} currentStep={4} />);
 
-      expect(screen.getByText(/step 4/i, { selector: "*" })).toBeInTheDocument();
+      expectText(/step 4/i);
     });
   });
 
   describe("Display formatting", () => {
     it("should display step counter", () => {
-      render(<StepIndicatorTest steps={defaultSteps} currentStep={2} />);
-      // Should display something like "Step 2 of 4"
-      expect(screen.getByText(/2.*4/)).toBeInTheDocument();
+      const { container } = render(
+        <StepIndicatorTest steps={defaultSteps} currentStep={2} />
+      );
+      // Counter is split across spans ("2" + "of 4"), check via container text
+      const counter = container.querySelector(".usa-step-indicator__heading-counter");
+      expect(counter?.textContent?.replace(/\s+/g, " ").trim()).toMatch(/2.*of.*4/i);
     });
 
     it("should display correct heading/label", () => {
@@ -258,19 +265,17 @@ describe("StepIndicator", () => {
           currentStep={1}
         />
       );
-      expect(
-        screen.getByText(/application/i, { selector: "*" })
-      ).toBeInTheDocument();
+      expectText(/application/i);
     });
 
     it("should update heading when currentStep changes", () => {
       const { rerender } = render(
         <StepIndicatorTest steps={defaultSteps} currentStep={1} />
       );
-      expect(screen.getByText(/step 1/i, { selector: "*" })).toBeInTheDocument();
+      expectText(/step 1/i);
 
       rerender(<StepIndicatorTest steps={defaultSteps} currentStep={3} />);
-      expect(screen.getByText(/step 3/i, { selector: "*" })).toBeInTheDocument();
+      expectText(/step 3/i);
     });
   });
 });

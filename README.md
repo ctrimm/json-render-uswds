@@ -1,5 +1,10 @@
 # @cdt5058/json-render-uswds
 
+[![CI](https://github.com/ctrimm/json-render-uswds/actions/workflows/ci.yml/badge.svg)](https://github.com/ctrimm/json-render-uswds/actions/workflows/ci.yml)
+[![npm](https://img.shields.io/npm/v/@cdt5058/json-render-uswds)](https://www.npmjs.com/package/@cdt5058/json-render-uswds)
+[![License: Apache 2.0](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+
 U.S. Web Design System (USWDS) component library for [`@json-render/core`](https://github.com/vercel-labs/json-render). Generate accessible, government-compliant React UIs from JSON specs.
 
 > Built on top of [json-render](https://github.com/vercel-labs/json-render) by [Vercel](https://vercel.com) — the Generative UI framework for safe, schema-constrained AI-generated interfaces.
@@ -165,6 +170,29 @@ const store = createStateStore({ formData: {} });
 ## AI-Assisted Development
 
 This repo includes a [Claude Code](https://claude.ai/code) skill at `skills/uswds/SKILL.md`. If you use Claude Code, the skill gives Claude context about all 58 USWDS components, installation, and usage patterns — so it can help you build USWDS specs and catalogs without needing to look things up.
+
+## Troubleshooting
+
+**`Cannot find module '@cdt5058/json-render-uswds'`**
+Make sure you've run `npm install` and that your bundler supports the `exports` field in `package.json` (Webpack 5+, Vite, Next.js 12+ all do).
+
+**USWDS styles aren't applying**
+You must import the USWDS CSS yourself — it is not bundled. Add one of:
+```tsx
+import "@uswds/uswds/css/uswds.css"; // via npm package
+```
+```html
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/uswds/3.8.2/css/uswds.min.css">
+```
+
+**TypeScript errors about `zod` types**
+Ensure you have `zod ^4.0.0` installed. Zod 3.x is not compatible.
+
+**Components render but look unstyled**
+Check that your bundler is processing CSS imports. In Next.js, import the CSS in `app/layout.tsx` or `pages/_app.tsx`. In Vite, import it in `main.tsx`.
+
+**Demo app fails to start**
+The demo requires API keys. Copy `.env.example` to `.env.local` and add at least `ANTHROPIC_API_KEY`. Local model support (Ollama) requires no API key — select a local model from the model picker.
 
 ## Credits
 
