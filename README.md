@@ -27,9 +27,13 @@ Then open [http://localhost:3000](http://localhost:3000).
 
 ## Install
 
+**Prerequisites:** Node.js `>=22.14.0`, React `^19.0.0`, and `zod ^4.0.0`.
+
 ```bash
-npm install @cdt5058/json-render-uswds @json-render/core @json-render/react @uswds/uswds
+npm install @cdt5058/json-render-uswds react react-dom @uswds/uswds zod
 ```
+
+`@json-render/core` and `@json-render/react` are pulled in automatically as runtime dependencies — you do not need to install them yourself. `@uswds/uswds` is an optional peer (only needed if you want to import the CSS from the npm package rather than the CDN).
 
 ## Import USWDS CSS
 
