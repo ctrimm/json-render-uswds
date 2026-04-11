@@ -7,7 +7,13 @@ const { StepIndicator } = uswdsComponents;
 
 // Wrapper to convert regular props to json-render component format
 function StepIndicatorTest(props: any) {
-  return <StepIndicator props={props} />;
+  return (
+    <StepIndicator
+      props={props}
+      emit={() => {}}
+      on={() => ({ emit: () => {}, shouldPreventDefault: false, bound: false })}
+    />
+  );
 }
 
 // Helper: assert that text appears at least once in the document
