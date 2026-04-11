@@ -121,7 +121,7 @@ describe("Compare Feature", () => {
     it("should show normal content when compareSlots is [null, null]", () => {
       render(<Home />);
       expect(
-        screen.getByText(/No page generated yet/i)
+        screen.getByText(/No fixture loaded/i)
       ).toBeInTheDocument();
     });
   });
@@ -297,7 +297,7 @@ describe("Compare Feature", () => {
 
       expect(aButton).not.toHaveClass("bg-blue-500");
       expect(
-        screen.getByText(/No page generated yet/i)
+        screen.getByText(/No fixture loaded/i)
       ).toBeInTheDocument();
     });
 

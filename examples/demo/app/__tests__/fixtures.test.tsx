@@ -112,30 +112,27 @@ import Home from "../page";
 
 describe("Fixture Loading", () => {
   describe("Loading a Fixture", () => {
-    it("should set spec, prompt, and activeTab when clicking Load", async () => {
+    it("should set spec and activeTab when clicking Load", async () => {
       const user = userEvent.setup();
       render(<Home />);
 
-      // Get the first Load button across all fixtures
       const loadButtons = screen.getAllByText("Load");
       await user.click(loadButtons[0]);
 
-      // Verify a fixture was loaded (prompt text appears)
-      const prompts = screen.getAllByText(/Create a public records request page/);
-      expect(prompts.length).toBeGreaterThan(0);
+      // Renderer should now be visible
+      expect(screen.getByTestId("renderer")).toBeInTheDocument();
     });
 
     it("should display loaded fixture badge in tab bar", async () => {
       const user = userEvent.setup();
       render(<Home />);
 
-      // Get the first Load button across all fixtures
       const loadButtons = screen.getAllByText("Load");
       await user.click(loadButtons[0]);
 
-      // Verify the prompt text is displayed (confirming fixture was loaded)
-      const prompts = screen.getAllByText(/Create a public records request page/);
-      expect(prompts.length).toBeGreaterThan(0);
+      // Provider badge should appear in the tab bar
+      const badges = screen.getAllByText(/anthropic|openai/i);
+      expect(badges.length).toBeGreaterThan(0);
     });
 
     it("should clear compareSlots when loading a fixture", async () => {
@@ -446,18 +443,15 @@ describe("Fixture Loading", () => {
   });
 
   describe("Fixture Structure", () => {
-    it("should load fixture with correct prompt", async () => {
+    it("should render spec content when fixture is loaded", async () => {
       const user = userEvent.setup();
       render(<Home />);
 
       const loadButtons = screen.getAllByText("Load");
-      const loadButton = loadButtons[0];
+      await user.click(loadButtons[0]);
 
-      await user.click(loadButton);
-
-      // Verify the fixture prompt was loaded
-      const prompts = screen.getAllByText(/Create a public records request page/i);
-      expect(prompts.length).toBeGreaterThan(0);
+      // Renderer should be visible with the spec
+      expect(screen.getByTestId("renderer")).toBeInTheDocument();
     });
 
     it("should display correct provider and model per fixture", () => {
