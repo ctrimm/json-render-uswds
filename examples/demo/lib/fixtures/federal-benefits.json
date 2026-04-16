@@ -377,9 +377,12 @@
     "divider-section1": { "type": "Divider", "props": {}, "children": [] },
     "nav-buttons-1": {
       "type": "ButtonGroup",
-      "props": {
-        "buttons": [{ "label": "Continue to Income Verification", "value": "next", "variant": "default" }]
-      },
+      "props": { "segmented": false },
+      "children": ["btn-next-1"]
+    },
+    "btn-next-1": {
+      "type": "Button",
+      "props": { "label": "Continue to Income Verification", "variant": "default" },
       "children": []
     },
     "section-2": {

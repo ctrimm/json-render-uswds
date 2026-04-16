@@ -166,41 +166,19 @@ export const uswdsComponents = {
     return <hr className="usa-divider" />;
   },
 
-  CardGroup: ({ props }: BaseComponentProps<UswdsProps<"CardGroup">>) => {
-    const cards = props.cards ?? [];
+  CardGroup: ({ children }: BaseComponentProps<UswdsProps<"CardGroup">>) => {
     return (
       <ul className="usa-card-group">
-        {cards.map((card, i) => (
-          <li
-            key={i}
-            className={`usa-card tablet:grid-col-4${props.flag ? " usa-card--flag" : ""}`}
-          >
-            <div className="usa-card__container">
-              {card.mediaUrl && (
-                <div className="usa-card__media">
-                  <div className="usa-card__img">
-                    <img src={card.mediaUrl} alt={card.mediaAlt ?? ""} />
-                  </div>
-                </div>
-              )}
-              {card.title && (
-                <div className="usa-card__header">
-                  <h2 className="usa-card__heading">{card.title}</h2>
-                </div>
-              )}
-              {card.description && (
-                <div className="usa-card__body">
-                  <p>{card.description}</p>
-                </div>
-              )}
-              {card.footer && (
-                <div className="usa-card__footer">
-                  <p>{card.footer}</p>
-                </div>
-              )}
-            </div>
-          </li>
-        ))}
+        {/* Render child Card components as list items */}
+        {Array.isArray(children) ? (
+          children.map((child, i) => (
+            <li key={i} className="tablet:grid-col-4">
+              {child}
+            </li>
+          ))
+        ) : (
+          <li className="tablet:grid-col-4">{children}</li>
+        )}
       </ul>
     );
   },
@@ -443,71 +421,59 @@ export const uswdsComponents = {
 
   // ── Navigation ────────────────────────────────────────────────────────
 
-  Accordion: ({ props }: BaseComponentProps<UswdsProps<"Accordion">>) => {
-    const items = props.items ?? [];
-    const [openItems, setOpenItems] = useState<Set<number>>(() => {
-      const initial = new Set<number>();
-      items.forEach((item, i) => {
-        if (item.expanded) initial.add(i);
-      });
-      return initial;
-    });
+  AccordionSection: ({
+    props,
+    children,
+  }: BaseComponentProps<UswdsProps<"AccordionSection">>) => {
+    // Self-contained accordion section with its own open/close state
+    const [isOpen, setIsOpen] = useState(props.expanded ?? false);
+    const uid = useId();
+    const headingId = `accordion-heading-${uid}`;
+    const contentId = `accordion-content-${uid}`;
 
-    const toggle = (index: number) => {
-      setOpenItems((prev) => {
-        const next = new Set(prev);
-        if (props.multiselectable) {
-          if (next.has(index)) {
-            next.delete(index);
-          } else {
-            next.add(index);
-          }
-        } else {
-          if (next.has(index)) {
-            next.clear();
-          } else {
-            next.clear();
-            next.add(index);
-          }
-        }
-        return next;
-      });
-    };
+    return (
+      <div>
+        <h4 className="usa-accordion__heading">
+          <button
+            type="button"
+            className="usa-accordion__button"
+            aria-expanded={isOpen}
+            aria-controls={contentId}
+            id={headingId}
+            onClick={() => setIsOpen((v) => !v)}
+          >
+            {props.title}
+          </button>
+        </h4>
+        <div
+          id={contentId}
+          className="usa-accordion__content usa-prose"
+          hidden={!isOpen}
+          role="region"
+          aria-labelledby={headingId}
+        >
+          {children}
+        </div>
+      </div>
+    );
+  },
 
+  Accordion: ({
+    props,
+    children,
+  }: BaseComponentProps<UswdsProps<"Accordion">>) => {
     return (
       <div
         className={`usa-accordion${props.bordered ? " usa-accordion--bordered" : ""}`}
       >
-        {items.map((item, i) => {
-          const isOpen = openItems.has(i);
-          const headingId = `accordion-heading-${i}`;
-          const contentId = `accordion-content-${i}`;
-          return (
-            <div key={i}>
-              <h4 className="usa-accordion__heading">
-                <button
-                  type="button"
-                  className="usa-accordion__button"
-                  aria-expanded={isOpen}
-                  aria-controls={contentId}
-                  id={headingId}
-                  onClick={() => toggle(i)}
-                >
-                  {item.title}
-                </button>
-              </h4>
-              <div
-                id={contentId}
-                className="usa-accordion__content usa-prose"
-                hidden={!isOpen}
-                role="region"
-                aria-labelledby={headingId}
-              >
-                <p>{item.content}</p>
-              </div>
-            </div>
-          );
-        })}
+        {/* Render child AccordionSection components; each manages its own state */}
+        {Array.isArray(children) ? (
+          children.map((child, i) => (
+            <div key={i}>{child}</div>
+          ))
+        ) : (
+          children
+        )}
       </div>
     );
   },
@@ -700,25 +666,24 @@ export const uswdsComponents = {
     );
   },
 
-  Breadcrumb: ({ props }: BaseComponentProps<UswdsProps<"Breadcrumb">>) => {
-    const items = props.items ?? [];
+  Breadcrumb: ({ children }: BaseComponentProps<UswdsProps<"Breadcrumb">>) => {
+    const childArray = Array.isArray(children) ? children : [children];
     return (
       <nav className="usa-breadcrumb" aria-label="Breadcrumbs">
         <ol className="usa-breadcrumb__list">
-          {items.map((item, i) => {
-            const isLast = i === items.length - 1;
+          {childArray.map((child, i) => {
+            const isLast = i === childArray.length - 1;
             return (
               <li
                 key={i}
                 className={`usa-breadcrumb__list-item${isLast ? " usa-current" : ""}`}
                 aria-current={isLast ? "page" : undefined}
               >
-                {item.href && !isLast ? (
-                  <a href={safeHref(item.href)} className="usa-breadcrumb__link">
-                    <span>{item.label}</span>
-                  </a>
+                {/* Mark last child as current; render Link children */}
+                {isLast ? (
+                  <span>{child}</span>
                 ) : (
-                  <span>{item.label}</span>
+                  child
                 )}
               </li>
             );
@@ -889,37 +854,23 @@ export const uswdsComponents = {
     );
   },
 
-  SideNav: ({ props }: BaseComponentProps<UswdsProps<"SideNav">>) => {
-    const items = props.items ?? [];
+  SideNav: ({
+    props,
+    children,
+  }: BaseComponentProps<UswdsProps<"SideNav">>) => {
     return (
       <nav aria-label={props.ariaLabel ?? "Side navigation"}>
         <ul className="usa-sidenav">
-          {items.map((item, i) => (
-            <li key={i} className="usa-sidenav__item">
-              <a
-                href={safeHref(item.href)}
-                className={item.current ? "usa-current" : undefined}
-                aria-current={item.current ? "page" : undefined}
-              >
-                {item.label}
-              </a>
-              {item.children && item.children.length > 0 && (
-                <ul className="usa-sidenav__sublist">
-                  {item.children.map((child, j) => (
-                    <li key={j} className="usa-sidenav__item">
-                      <a
-                        href={safeHref(child.href)}
-                        className={child.current ? "usa-current" : undefined}
-                        aria-current={child.current ? "page" : undefined}
-                      >
-                        {child.label}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </li>
-          ))}
+          {/* Render Link children directly; parent wraps each link and handles nesting */}
+          {Array.isArray(children) ? (
+            children.map((child, i) => (
+              <li key={i} className="usa-sidenav__item">
+                {child}
+              </li>
+            ))
+          ) : (
+            <li className="usa-sidenav__item">{children}</li>
+          )}
         </ul>
       </nav>
     );
@@ -998,8 +949,8 @@ export const uswdsComponents = {
 
   InPageNavigation: ({
     props,
+    children,
   }: BaseComponentProps<UswdsProps<"InPageNavigation">>) => {
-    const items = props.items ?? [];
     return (
       <nav
         aria-label={props.heading ?? "On this page"}
@@ -1011,13 +962,16 @@ export const uswdsComponents = {
           </p>
         </div>
         <ul className="usa-in-page-nav__list">
-          {items.map((item, i) => (
-            <li key={i} className="usa-in-page-nav__item">
-              <a href={safeHref(item.href)} className="usa-in-page-nav__link">
-                {item.label}
-              </a>
-            </li>
-          ))}
+          {/* Render child Link components as list items */}
+          {Array.isArray(children) ? (
+            children.map((child, i) => (
+              <li key={i} className="usa-in-page-nav__item">
+                {child}
+              </li>
+            ))
+          ) : (
+            <li className="usa-in-page-nav__item">{children}</li>
+          )}
         </ul>
       </nav>
     );
@@ -1568,25 +1522,22 @@ export const uswdsComponents = {
 
   ButtonGroup: ({
     props,
-    emit,
+    children,
   }: BaseComponentProps<UswdsProps<"ButtonGroup">>) => {
-    const buttons = props.buttons ?? [];
     return (
       <ul
         className={`usa-button-group${props.segmented ? " usa-button-group--segmented" : ""}`}
       >
-        {buttons.map((btn) => (
-          <li key={btn.value} className="usa-button-group__item">
-            <button
-              type="button"
-              className={getButtonClass(btn.variant ?? "default")}
-              onClick={() => emit("press")}
-              data-value={btn.value}
-            >
-              {btn.label}
-            </button>
-          </li>
-        ))}
+        {/* Wrap each rendered child Button in a list item */}
+        {Array.isArray(children) ? (
+          children.map((child, i) => (
+            <li key={i} className="usa-button-group__item">
+              {child}
+            </li>
+          ))
+        ) : (
+          <li className="usa-button-group__item">{children}</li>
+        )}
       </ul>
     );
   },

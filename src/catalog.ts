@@ -50,35 +50,21 @@ export const uswdsComponentDefinitions = {
   },
 
   CardGroup: {
-    props: z.object({
-      cards: z.array(
-        z.object({
-          title: z.string().nullable(),
-          description: z.string().nullable(),
-          mediaUrl: z.string().nullable(),
-          mediaAlt: z.string().nullable(),
-          footer: z.string().nullable(),
-        }),
-      ),
-      flag: z.boolean().nullable(),
-    }),
+    props: z.object({}),
+    slots: ["default"],
     description:
-      "USWDS group of cards in a responsive grid. cards: [{title, description, mediaUrl?, mediaAlt?, footer?}]. flag for horizontal card layout.",
+      "USWDS responsive grid of Card components. Renders child Card elements in a 3-column grid on tablet+.",
     example: {
-      cards: [
+      type: "CardGroup",
+      props: {},
+      children: [
         {
-          title: "Card One",
-          description: "Description one.",
-          mediaUrl: null,
-          mediaAlt: null,
-          footer: null,
+          type: "Card",
+          props: { title: "Card One", description: "Description one." },
         },
         {
-          title: "Card Two",
-          description: "Description two.",
-          mediaUrl: null,
-          mediaAlt: null,
-          footer: null,
+          type: "Card",
+          props: { title: "Card Two", description: "Description two." },
         },
       ],
     },
@@ -180,24 +166,42 @@ export const uswdsComponentDefinitions = {
   // Navigation Components
   // ==========================================================================
 
+  AccordionSection: {
+    props: z.object({
+      title: z.string(),
+      expanded: z.boolean().nullable(),
+    }),
+    slots: ["default"],
+    description:
+      "USWDS accordion section. Child component of Accordion. title is the button label, children are the collapsed content. Each section manages its own open/close state.",
+    example: {
+      type: "AccordionSection",
+      props: { title: "Section title", expanded: false },
+      children: [{ type: "Text", props: { text: "Section content" } }],
+    },
+  },
+
   Accordion: {
     props: z.object({
-      items: z.array(
-        z.object({
-          title: z.string(),
-          content: z.string(),
-          expanded: z.boolean().nullable(),
-        }),
-      ),
       bordered: z.boolean().nullable(),
-      multiselectable: z.boolean().nullable(),
     }),
+    slots: ["default"],
     description:
-      "USWDS accordion. Items as [{title, content, expanded?}]. bordered adds border styling. multiselectable allows multiple open panels.",
+      "USWDS accordion container. Renders child AccordionSection components. Each section manages its own open/close state independently. Note: multiselectable behavior requires Accordion-level state coordination via framework state bindings.",
     example: {
-      items: [
-        { title: "First item", content: "Content for first item." },
-        { title: "Second item", content: "Content for second item." },
+      type: "Accordion",
+      props: { bordered: false },
+      children: [
+        {
+          type: "AccordionSection",
+          props: { title: "First section", expanded: false },
+          children: [{ type: "Text", props: { text: "First section content" } }],
+        },
+        {
+          type: "AccordionSection",
+          props: { title: "Second section", expanded: false },
+          children: [{ type: "Text", props: { text: "Second section content" } }],
+        },
       ],
     },
   },
@@ -293,50 +297,22 @@ export const uswdsComponentDefinitions = {
 
   SideNav: {
     props: z.object({
-      items: z.array(
-        z.object({
-          label: z.string(),
-          href: z.string(),
-          current: z.boolean().nullable(),
-          children: z
-            .array(
-              z.object({
-                label: z.string(),
-                href: z.string(),
-                current: z.boolean().nullable(),
-              }),
-            )
-            .nullable(),
-        }),
-      ),
       ariaLabel: z.string().nullable(),
     }),
+    slots: ["default"],
     description:
-      "USWDS side navigation. items: [{label, href, current?, children?}]. Mark the active page with current: true.",
+      "USWDS side navigation. Renders child Link components. Link children can themselves contain nested Link children for multi-level navigation.",
     example: {
-      ariaLabel: "Side navigation",
-      items: [
+      type: "SideNav",
+      props: { ariaLabel: "Side navigation" },
+      children: [
+        { type: "Link", props: { label: "Overview", href: "/overview" } },
         {
-          label: "Overview",
-          href: "/overview",
-          current: false,
-          children: null,
-        },
-        {
-          label: "Getting started",
-          href: "/getting-started",
-          current: true,
+          type: "Link",
+          props: { label: "Getting started", href: "/getting-started" },
           children: [
-            {
-              label: "Installation",
-              href: "/getting-started/install",
-              current: false,
-            },
-            {
-              label: "Configuration",
-              href: "/getting-started/config",
-              current: false,
-            },
+            { type: "Link", props: { label: "Installation", href: "/getting-started/install" } },
+            { type: "Link", props: { label: "Configuration", href: "/getting-started/config" } },
           ],
         },
       ],
@@ -382,42 +358,34 @@ export const uswdsComponentDefinitions = {
 
   InPageNavigation: {
     props: z.object({
-      items: z.array(
-        z.object({
-          label: z.string(),
-          href: z.string(),
-        }),
-      ),
       heading: z.string().nullable(),
     }),
+    slots: ["default"],
     description:
-      "USWDS in-page navigation with jump links to sections. items: [{label, href}] where href is an anchor like '#section-1'.",
+      "USWDS in-page navigation with jump links to sections. Renders child Link components as anchor jump links. Links should use href like '#section-1'.",
     example: {
-      heading: "On this page",
-      items: [
-        { label: "Introduction", href: "#introduction" },
-        { label: "Requirements", href: "#requirements" },
-        { label: "How to apply", href: "#how-to-apply" },
+      type: "InPageNavigation",
+      props: { heading: "On this page" },
+      children: [
+        { type: "Link", props: { label: "Introduction", href: "#introduction" } },
+        { type: "Link", props: { label: "Requirements", href: "#requirements" } },
+        { type: "Link", props: { label: "How to apply", href: "#how-to-apply" } },
       ],
     },
   },
 
   Breadcrumb: {
-    props: z.object({
-      items: z.array(
-        z.object({
-          label: z.string(),
-          href: z.string().nullable(),
-        }),
-      ),
-    }),
+    props: z.object({}),
+    slots: ["default"],
     description:
-      "USWDS breadcrumb navigation. items: array of {label, href?}. Last item is current page (no link).",
+      "USWDS breadcrumb navigation. Renders child Link components. Last child is marked as current page.",
     example: {
-      items: [
-        { label: "Home", href: "/" },
-        { label: "Components", href: "/components" },
-        { label: "Breadcrumb", href: null },
+      type: "Breadcrumb",
+      props: {},
+      children: [
+        { type: "Link", props: { label: "Home", href: "/" } },
+        { type: "Link", props: { label: "Components", href: "/components" } },
+        { type: "Link", props: { label: "Breadcrumb", href: "#" } },
       ],
     },
   },
@@ -705,22 +673,18 @@ export const uswdsComponentDefinitions = {
 
   ButtonGroup: {
     props: z.object({
-      buttons: z.array(
-        z.object({
-          label: z.string(),
-          value: z.string(),
-          variant: z.enum(["default", "secondary", "outline"]).nullable(),
-        }),
-      ),
       segmented: z.boolean().nullable(),
     }),
-    events: ["press"],
+    slots: ["default"],
+    events: [],
     description:
-      "USWDS button group. buttons: [{label, value, variant?}]. segmented renders as a connected group.",
+      "USWDS button group wrapper. Renders child Button components in a semantic ul.usa-button-group. segmented renders as a connected group. Children Button components emit their own 'press' events independently.",
     example: {
-      buttons: [
-        { label: "Back", value: "back", variant: "outline" },
-        { label: "Continue", value: "continue", variant: "default" },
+      type: "ButtonGroup",
+      props: { segmented: false },
+      children: [
+        { type: "Button", props: { label: "Back", variant: "outline" } },
+        { type: "Button", props: { label: "Continue", variant: "default" } },
       ],
     },
   },
