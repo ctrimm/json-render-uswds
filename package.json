@@ -1,6 +1,6 @@
 {
   "name": "@cdt5058/json-render-uswds",
-  "version": "0.2.0",
+  "version": "1.0.0",
   "author": "ctrimm",
   "description": "U.S. Web Design System (USWDS) component library for @json-render/core. JSON becomes accessible, government-compliant React components.",
   "license": "Apache-2.0",

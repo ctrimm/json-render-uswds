@@ -183,10 +183,96 @@ export const uswdsComponents = {
     );
   },
 
-  Footer: ({ props }: BaseComponentProps<UswdsProps<"Footer">>) => {
+  // Footer child components for composition-aware layout
+  FooterNav: ({ props, children }: BaseComponentProps<UswdsProps<"FooterNav">>) => {
+    return (
+      <nav aria-label="Footer navigation">
+        <ul className="grid-row grid-gap">
+          {Array.isArray(children) ? (
+            children.map((child, i) => (
+              <li key={i} className="mobile-lg:grid-col-4 desktop:grid-col-auto usa-footer__primary-content">
+                {child}
+              </li>
+            ))
+          ) : (
+            <li className="mobile-lg:grid-col-4 desktop:grid-col-auto usa-footer__primary-content">{children}</li>
+          )}
+        </ul>
+      </nav>
+    );
+  },
+
+  FooterContact: ({ props, children }: BaseComponentProps<UswdsProps<"FooterContact">>) => {
+    return (
+      <address className="usa-footer__address">
+        {props.heading && <p className="usa-footer__contact-heading">{props.heading}</p>}
+        <div className="usa-footer__contact-info grid-row grid-gap">
+          {Array.isArray(children) ? (
+            children.map((child, i) => (
+              <div key={i} className="grid-col-auto">
+                {child}
+              </div>
+            ))
+          ) : (
+            <div className="grid-col-auto">{children}</div>
+          )}
+        </div>
+      </address>
+    );
+  },
+
+  FooterSocial: ({ props, children }: BaseComponentProps<UswdsProps<"FooterSocial">>) => {
+    return (
+      <div className="usa-footer__social-links grid-row grid-gap-1">
+        {Array.isArray(children) ? (
+          children.map((child, i) => (
+            <div key={i} className="grid-col-auto">
+              {child}
+            </div>
+          ))
+        ) : (
+          <div className="grid-col-auto">{children}</div>
+        )}
+      </div>
+    );
+  },
+
+  Footer: ({ props, children }: BaseComponentProps<UswdsProps<"Footer">>) => {
     const variant = props.variant ?? "medium";
     const groups = props.navGroups ?? [];
     const contact = props.contactInfo ?? [];
+    const hasChildren = children && (Array.isArray(children) ? children.length > 0 : !!children);
+
+    const returnToTopEl = props.returnToTop ? (
+      <div className="grid-container usa-footer__return-to-top">
+        <a href="#top">Return to top</a>
+      </div>
+    ) : null;
+
+    // If children are provided, render composition-based footer
+    if (hasChildren) {
+      return (
+        <footer className="usa-footer">
+          {returnToTopEl}
+          <div className="usa-footer__primary-section">
+            <div className="grid-container">
+              <div className="grid-row grid-gap">
+                <div className="tablet:grid-col-fill usa-footer__primary-content">
+                  {/* Render children FooterNav, FooterContact, FooterSocial */}
+                  {Array.isArray(children) ? (
+                    children.map((child, i) => (
+                      <div key={i}>{child}</div>
+                    ))
+                  ) : (
+                    children
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        </footer>
+      );
+    }
 
     const socialIcons: Record<string, string> = {
       facebook:
@@ -203,12 +289,6 @@ export const uswdsComponents = {
         "M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22",
       rss: "M4 11a9 9 0 0 1 9 9M4 4a16 16 0 0 1 16 16 M5 19a1 1 0 1 0 0-2 1 1 0 0 0 0 2z",
     };
-
-    const returnToTopEl = props.returnToTop ? (
-      <div className="grid-container usa-footer__return-to-top">
-        <a href="#top">Return to top</a>
-      </div>
-    ) : null;
 
     const logoEl = (
       <div className="usa-footer__logo grid-row grid-gap-2">

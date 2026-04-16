@@ -160,6 +160,54 @@ export const uswdsComponentDefinitions = {
       socialLinks: null,
       returnToTop: true,
     },
+    slots: ["default"],
+  },
+
+  FooterNav: {
+    props: z.object({}),
+    slots: ["default"],
+    description:
+      "USWDS footer navigation container. Child component of Footer. Renders Link children in a navigation list.",
+    example: {
+      type: "FooterNav",
+      props: {},
+      children: [
+        { type: "Link", props: { href: "/", text: "Home" } },
+        { type: "Link", props: { href: "/about", text: "About" } },
+      ],
+    },
+  },
+
+  FooterContact: {
+    props: z.object({
+      heading: z.string().nullable(),
+    }),
+    slots: ["default"],
+    description:
+      "USWDS footer contact info container. Child component of Footer. Renders contact children with optional heading.",
+    example: {
+      type: "FooterContact",
+      props: { heading: "Contact Us" },
+      children: [
+        { type: "Text", props: { text: "1800 F Street NW" } },
+        { type: "Text", props: { text: "Washington, DC 20405" } },
+      ],
+    },
+  },
+
+  FooterSocial: {
+    props: z.object({}),
+    slots: ["default"],
+    description:
+      "USWDS footer social links container. Child component of Footer. Renders social link children in a grid.",
+    example: {
+      type: "FooterSocial",
+      props: {},
+      children: [
+        { type: "Link", props: { href: "https://facebook.com", text: "Facebook" } },
+        { type: "Link", props: { href: "https://twitter.com", text: "Twitter" } },
+      ],
+    },
   },
 
   // ==========================================================================
