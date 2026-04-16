@@ -83,6 +83,65 @@ const systemPrompt = catalog.prompt();
 // Pass to your AI model — it will generate specs constrained to USWDS components
 ```
 
+## v1.0.0 Stable Release
+
+This is the first stable API release of @cdt5058/json-render-uswds. The library is production-ready and recommended for all new projects.
+
+### What's New in v1.0.0
+
+- **Composition-aware architecture** - All collection components (ButtonGroup, CardGroup, Accordion, etc.) now properly accept child AST nodes instead of prop-driven arrays
+- **@json-render v0.17.0** - Updated to latest upstream release with improved performance and stability
+- **58 USWDS components** - Full coverage of common UI patterns
+- **Full TypeScript support** - Complete type definitions for all components
+- **Accessibility first** - WCAG 2.1 AA compliant with semantic HTML
+
+### Breaking Changes from v0.2.0
+
+Collection components now use **children-based composition** instead of prop-driven arrays:
+
+#### Before (v0.2.0):
+```json
+{
+  "type": "ButtonGroup",
+  "props": {
+    "buttons": [
+      { "label": "Back", "value": "back", "variant": "outline" },
+      { "label": "Next", "value": "next", "variant": "default" }
+    ]
+  }
+}
+```
+
+#### After (v1.0.0):
+```json
+{
+  "type": "ButtonGroup",
+  "props": { "segmented": false },
+  "children": [
+    { "type": "Button", "props": { "label": "Back", "variant": "outline" } },
+    { "type": "Button", "props": { "label": "Next", "variant": "default" } }
+  ]
+}
+```
+
+### Migration Guide
+
+**Affected Components:**
+- `ButtonGroup` - use Button children instead of `buttons` prop
+- `CardGroup` - use Card children instead of `cards` prop
+- `Breadcrumb` - use Link children instead of `items` prop
+- `InPageNavigation` - use Link children instead of `items` prop
+- `SideNav` - use Link children instead of `items` prop (supports nesting)
+- `Accordion` - use AccordionSection children instead of `items` prop
+- **NEW:** `AccordionSection` - child component for Accordion with `title` prop
+
+**Why this change?**
+The composition-first model enables the @json-render framework to properly traverse and render deeply nested UI trees. This prevents the "sinkhole bug" where child components in JSON specs were silently discarded during rendering.
+
+### Known Limitations
+
+**Footer component** - Still uses prop-driven `navGroups`, `contactInfo`, and `socialLinks` arrays. Full composition refactoring planned for v1.1.0. The component works well as-is and supports all three variants (slim, big, medium).
+
 ## Components
 
 58 USWDS components organized by category:

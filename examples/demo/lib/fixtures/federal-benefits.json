@@ -383,7 +383,10 @@
     "btn-next-1": {
       "type": "Button",
       "props": { "label": "Continue to Income Verification", "variant": "default" },
-      "children": []
+      "children": [],
+      "actions": {
+        "press": { "type": "increment", "path": "/currentStep", "by": 1 }
+      }
     },
     "section-2": {
       "type": "Prose",
@@ -532,12 +535,18 @@
     "btn-back-2": {
       "type": "Button",
       "props": { "label": "Back to Applicant Information", "variant": "outline" },
-      "children": []
+      "children": [],
+      "actions": {
+        "press": { "type": "decrement", "path": "/currentStep", "by": 1 }
+      }
     },
     "btn-next-2": {
       "type": "Button",
       "props": { "label": "Continue to Document Upload", "variant": "default" },
-      "children": []
+      "children": [],
+      "actions": {
+        "press": { "type": "increment", "path": "/currentStep", "by": 1 }
+      }
     },
     "section-3": {
       "type": "Prose",
@@ -634,12 +643,18 @@
     "btn-back-3": {
       "type": "Button",
       "props": { "label": "Back to Income Verification", "variant": "outline" },
-      "children": []
+      "children": [],
+      "actions": {
+        "press": { "type": "decrement", "path": "/currentStep", "by": 1 }
+      }
     },
     "btn-next-3": {
       "type": "Button",
       "props": { "label": "Continue to Review & Submit", "variant": "default" },
-      "children": []
+      "children": [],
+      "actions": {
+        "press": { "type": "increment", "path": "/currentStep", "by": 1 }
+      }
     },
     "section-4": {
       "type": "Prose",
@@ -775,12 +790,18 @@
     "btn-back-4": {
       "type": "Button",
       "props": { "label": "Back to Document Upload", "variant": "outline" },
-      "children": []
+      "children": [],
+      "actions": {
+        "press": { "type": "decrement", "path": "/currentStep", "by": 1 }
+      }
     },
     "btn-submit": {
       "type": "Button",
       "props": { "label": "Submit Application", "variant": "default", "type": "submit" },
-      "children": []
+      "children": [],
+      "actions": {
+        "press": { "type": "navigate", "href": "/success" }
+      }
     }
   }
 }
